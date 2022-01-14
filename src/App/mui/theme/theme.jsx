@@ -5,6 +5,9 @@ const theme = (themeType) => {
         return createTheme({
             palette: {
                 mode: 'dark',
+                background: {
+                    paperDark: '#303030',
+                },
             },
         });
     } else {
@@ -19,7 +22,10 @@ const theme = (themeType) => {
                     dark: '#B53D00',
                     contrastText: '#fff',
                 },
-                text: { hint: 'rgba(0, 0, 0, 0.38)' }
+                text: { hint: 'rgba(0, 0, 0, 0.38)' },
+                background: {
+                    paperDark: '#FAFAFA',
+                },
             },
             typography: {
                 // h3: {

@@ -7,8 +7,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import WalletContext from '../../../context/WalletContext/WalletContext';
 
 
-const CartButton = ({ connected }) => {
-    const { web3Modal, signer, setSigner } = useContext(WalletContext);
+const CartButton = ({ }) => {
+    const { signer, } = useContext(WalletContext);
 
 
     return (

@@ -122,7 +122,7 @@ const Footer = ({ themeType, setThemeType }) => {
                     width: "50px",
                 }}>
                 <FormControlLabel
-                    control={<MaterialUISwitch sx={{ m: 1 }} />}
+                    control={<MaterialUISwitch sx={{ m: 1 }} checked={(themeType == "dark") ? true : false} />}
                     label=""
                     onChange={handleSwitchChange}
                 />

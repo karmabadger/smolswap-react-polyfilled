@@ -60,7 +60,7 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
     }
 
     let columnSize = Math.floor(gridWidth / (CardSizes[cardSize].widthPixel + cardMinMarginX));
-    let cardWidthWithMargin = (columnSize != 0) ? gridWidth / columnSize : CardSizes[cardSize].widthPixel;
+    let cardWidthWithMargin = (columnSize !== 0) ? gridWidth / columnSize : CardSizes[cardSize].widthPixel;
     if (cardWidthWithMargin < CardSizes[cardSize].widthPixel + cardMinMarginX) {
         cardWidthWithMargin = CardSizes[cardSize].widthPixel;
         columnSize = 1;
@@ -94,7 +94,11 @@ const Collections = () => {
     // console.log('gridWidth: ', gridWidth, 'columnSize: ', columnSize, "width: ", width, "cardWidthWithMargin: ", cardWidthWithMargin, "cardHeightWithMargin: ", cardHeightWithMargin);
 
     return (
-        <Box id="collections-main-page" sx={{ padding: "0px", mx: `${pageMX}px` }}>
+        <Box id="collections-main-page"
+            sx={{ padding: "0px", mx: `${pageMX}px`, 
+            display: 'flex', flexDirection: 'column',
+        }}
+        >
 
             <TopBox />
             <Divider ></Divider>
@@ -130,7 +134,7 @@ const Collections = () => {
                                 <Box id="search-chips-box" sx={{ display: "flex", flexDirection: "row", gap: "8px" }}>
                                     {searchList.map((item, index) => {
                                         return (
-                                            <Chip key={index} label={item} color="secondary" onDelete={() => { setSearchList(searchList.filter((value) => { return (value != item) })) }} />
+                                            <Chip key={index} label={item} color="secondary" onDelete={() => { setSearchList(searchList.filter((value) => { return (value !== item) })) }} />
                                         )
                                     })
                                     }

@@ -54,10 +54,23 @@ function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen }) {
     ];
 
     return (
-        <Box>
-            <Collapse sx={{ m: "0px" }} orientation="horizontal" in={open} collapsedSize={drawerMinWidth}>
-                <Box sx={{ m: 0, height: "100%" }}
-                    elevation={4}>
+        <Box
+            sx={{
+                // position: 'relative',
+                // zIndex: 5,
+            }}>
+            <Collapse sx={{
+                m: "0px",
+                // position: 'relative',
+                // zIndex: 5,
+            }}
+                orientation="horizontal" in={open} collapsedSize={drawerMinWidth}>
+                <Box sx={{
+                    m: 0, height: "100%",
+                    // position: 'relative',
+                    // zIndex: 5,
+                }}
+                >
                     <Box
                         sx={{ width: drawerWidth, height: '100%' }}>
                         {open ? (
