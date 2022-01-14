@@ -59,20 +59,20 @@ const cartContextObj = {
         "mapping": {},
         addItem: (itemState) => {
             // if not in collections, add it
-            if (!collections.mapping[itemState.collectionAddress]) {
-                collections.mapping[itemState.collectionAddress] = {
+            if (!this.collections.mapping[itemState.collectionAddress]) {
+                this.collections.mapping[itemState.collectionAddress] = {
                     name: '',
                     items: [],
                 }
             }
-            collections.mapping[itemState.collectionAddress].items.push(itemState);
+            this.collections.mapping[itemState.collectionAddress].items.push(itemState);
         },
         removeItem: (itemState) => {
-            collections.mapping[itemState.collectionAddress].items.splice(collections.mapping[itemState.collectionAddress].items.indexOf(itemState), 1);
+            this.collections.mapping[itemState.collectionAddress].items.splice(this.collections.mapping[itemState.collectionAddress].items.indexOf(itemState), 1);
 
             // if no more items in collection, remove it
-            if (collections.mapping[itemState.collectionAddress].items.length === 0) {
-                delete collections.mapping[itemState.collectionAddress];
+            if (this.collections.mapping[itemState.collectionAddress].items.length === 0) {
+                delete this.collections.mapping[itemState.collectionAddress];
             }
         }
     },
@@ -81,20 +81,20 @@ const cartContextObj = {
         console.log("add:", itemState);
 
         // add to collections
-        collections.addItem(itemState);
+        this.collections.addItem(itemState);
 
         // add to itemList
-        itemList.push(itemState);
+        this.itemList.push(itemState);
 
     },
     removeItem: (itemState) => {
         console.log("remove:", itemState);
 
         // remove from collections
-        collections.removeItem(itemState);
+        this.collections.removeItem(itemState);
 
         // remove from itemList
-        itemList.splice(itemList.indexOf(itemState), 1);
+        this.itemList.splice(this.itemList.indexOf(itemState), 1);
     },
 }
 
