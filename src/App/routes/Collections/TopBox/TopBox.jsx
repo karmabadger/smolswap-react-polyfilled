@@ -18,7 +18,9 @@ const TopBox = () => {
     // const theme = useTheme();
 
     return (
-        <Box id="collection-top-box" sx={{ my: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "48px" }} >
+        <Box id="collection-top-box" sx={{ my: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "48px", 
+        // minHeight: "0px" 
+        }} >
 
             <Box id="collection-name-info-box" sx={{ height: "56px", marginTop: "48px" }}>
                 <Typography variant="h3" align='center'>Smol Brains</Typography>

@@ -13,6 +13,8 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import Typography from "@mui/material/Typography";
 
+
+
 // import { Link } from "react-router-dom";
 import Link from '@mui/material/Link';
 
@@ -25,7 +27,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "flex-end"
 }));
 
-const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth }) => {
+const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, matchesDownMD, }) => {
     const theme = useTheme();
 
     return (<Drawer

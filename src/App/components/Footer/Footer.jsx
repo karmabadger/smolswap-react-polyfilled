@@ -5,10 +5,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 
 import IconButton from '@mui/material/IconButton';
+import SvgIcon from '@mui/material/SvgIcon';
 
-import discord_logo from './logos/discord_logo.svg';
-import twitter_logo from './logos/twitter_logo.svg';
-import email_logo from './logos/email_logo.svg';
+import DiscordSvgIcon from './icons/DiscordSvgIcon';
+import TwitterSvgIcon from './icons/TwitterSvgIcon';
+import EmailSvgIcon from './icons/EmailSvgIcon';
+
 
 
 
@@ -97,18 +99,19 @@ const Footer = ({ themeType, setThemeType }) => {
                     gap: "24px",
                 }}>
                 <Box>
-                    <IconButton aria-label="twitter-logo">
-                        <img src={twitter_logo} alt="twitter_logo" />
+                    <IconButton aria-label="twitter-icon">
+                        <TwitterSvgIcon />
                     </IconButton>
                 </Box>
                 <Box>
-                    <IconButton aria-label="discord-logo">
-                        <img src={discord_logo} alt="discord_logo" />
+                    <IconButton aria-label="discord-icon"
+                    >
+                        <DiscordSvgIcon />
                     </IconButton>
                 </Box>
                 <Box>
-                    <IconButton aria-label="email-logo">
-                        <img src={email_logo} alt="email_logo" />
+                    <IconButton aria-label="email-icon">
+                        <EmailSvgIcon />
                     </IconButton>
                 </Box>
             </Box>
@@ -117,8 +120,6 @@ const Footer = ({ themeType, setThemeType }) => {
                 sx={{
                     flexGrow: 0,
                     width: "50px",
-                    // alignContent: "center",
-                    // alignItems: "center",
                 }}>
                 <FormControlLabel
                     control={<MaterialUISwitch sx={{ m: 1 }} />}

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-
 import { styled, useTheme, alpha } from "@mui/material/styles";
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -37,6 +38,9 @@ const AppBar = styled(MuiAppBar, {
 
 export default function Topbar() {
     const theme = useTheme();
+    const matchesDownMD = useMediaQuery(theme.breakpoints.down('md'));
+    const matchesDownSM = useMediaQuery(theme.breakpoints.down('sm'));
+    // console.log("matches down MD", matchesDownMD, "matches down SM", matchesDownSM);
 
     const [open, setOpen] = useState(false);
 
@@ -47,6 +51,7 @@ export default function Topbar() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
 
     return (
         <div>
@@ -62,13 +67,14 @@ export default function Topbar() {
                         <MenuIcon />
                     </IconButton>
 
-                    <LeftSideBox handleDrawerOpen={handleDrawerOpen} open={open} />
-                    <RightSideBox />
+                    <LeftSideBox handleDrawerOpen={handleDrawerOpen} open={open} matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} />
+                    <RightSideBox matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} />
                 </Toolbar>
 
-            </AppBar>
+            </AppBar >
 
-            <NavbarDrawer handleDrawerClose={handleDrawerClose} open={open} drawerWidth={drawerWidth} />
+            <NavbarDrawer handleDrawerClose={handleDrawerClose} open={open} drawerWidth={drawerWidth} matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} />
         </div>
     );
+
 }

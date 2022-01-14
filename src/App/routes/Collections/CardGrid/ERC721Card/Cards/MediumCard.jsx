@@ -20,7 +20,7 @@ import ModalUnstyled from "@mui/base/ModalUnstyled";
 
 import Box from "@mui/material/Box";
 
-import useWindowDimensions from "../../../../../../hooks/useWindowDimentions.jsx";
+import useWindowDimensions from "../../../../../../hooks/useWindowDimensions.jsx";
 
 import smol from "../../../../../../__mock_data__/img/smol.png";
 

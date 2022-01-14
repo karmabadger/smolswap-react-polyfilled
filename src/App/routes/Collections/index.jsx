@@ -39,14 +39,14 @@ import PropertiesDrawer from './Drawer/PropertiesDrawer';
 import SortSelectOptions from './SortSelect/SortSelectOptions';
 import { SizeSelectOptions, CardSizes } from './SizeSelect/SizeSelectOptions';
 
-import useWindowDimensions from "../../../hooks/useWindowDimentions";
+import useWindowDimensions from "../../../hooks/useWindowDimensions";
 
 const drawerWidth = 330;
 const drawerMinWidth = 38;
 const pageMX = 24;
 const gridMLeft = 32;
 const gridScrollBarWidth = 16.8;
-const cardMinMarginX = 14;
+const cardMinMarginX = 5;
 const cardMinMarginY = 14;
 
 function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
@@ -76,7 +76,7 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
 const Collections = () => {
     const theme = useTheme();
 
-    const { height, width } = useWindowDimensions();
+    const { width } = useWindowDimensions();
 
     // for search bar and chips
     const [searchList, setSearchList] = useState([]);
