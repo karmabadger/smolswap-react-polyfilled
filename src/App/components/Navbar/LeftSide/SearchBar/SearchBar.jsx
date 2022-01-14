@@ -57,7 +57,7 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
     zIndex: theme.zIndex.modal
 }));
 
-export default function ({ }) {
+export default function () {
 
 
     const [anchorEl, setAnchorEl] = useState(null);

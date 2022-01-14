@@ -35,7 +35,7 @@ const AppBar = styled(MuiAppBar, {
 
 
 
-export default function topbar({ }) {
+export default function Topbar() {
     const theme = useTheme();
 
     const [open, setOpen] = useState(false);

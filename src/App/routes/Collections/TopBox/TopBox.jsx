@@ -14,7 +14,7 @@ import Chip from '@mui/material/Chip';
 
 
 
-const TopBox = ({ }) => {
+const TopBox = () => {
     // const theme = useTheme();
 
     return (

@@ -73,7 +73,7 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
 
 
 
-const Collections = ({ }) => {
+const Collections = () => {
     const theme = useTheme();
 
     const { height, width } = useWindowDimensions();
