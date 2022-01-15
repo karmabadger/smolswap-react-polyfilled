@@ -3,7 +3,7 @@
 const SizeSelectOptions = [
     "SM",
     "MD",
-    "LG",
+    // "LG",
 ]
 
 const CardSizes = {
@@ -14,8 +14,13 @@ const CardSizes = {
     },
     "SM": {
         index: 1,
-        width: '50%',
-        height: '50%',
+        width: '128px',
+        height: '222px',
+        widthPixel: 128,
+        heightPixel: 222,
+        minMarginX: 2,
+        maxMarginX: 5,
+        minMarginY: 5,
     },
     "MD": {
         index: 2,
@@ -23,6 +28,8 @@ const CardSizes = {
         height: '406px',
         widthPixel: 256,
         heightPixel: 406,
+        minMarginX: 5,
+        minMarginY: 14,
     },
     "LG": {
         index: 3,

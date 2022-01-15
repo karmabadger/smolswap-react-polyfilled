@@ -9,6 +9,22 @@ const theme = (themeType) => {
                     paperDark: '#303030',
                 },
             },
+            typography: {
+                smh1: {
+                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                    fontWeight: '600',
+                    fontSize: '0.72rem',
+                    lineHeight: '1.2',
+                    letterSpacing: '0.00938em',
+                },
+                smbody: {
+                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                    fontWeight: '500',
+                    fontSize: '0.65rem',
+                    lineHeight: '1.2',
+                    letterSpacing: '0.00938em',
+                }
+            },
         });
     } else {
         return createTheme({
@@ -24,10 +40,26 @@ const theme = (themeType) => {
                 },
                 text: { hint: 'rgba(0, 0, 0, 0.38)' },
                 background: {
+                    paper: '#E5E5E5',
+                    default: '#E5E5E5',
                     paperDark: '#FAFAFA',
                 },
             },
             typography: {
+                smh1: {
+                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                    fontWeight: '600',
+                    fontSize: '0.72rem',
+                    lineHeight: '1.2',
+                    letterSpacing: '0.00938em',
+                },
+                smbody: {
+                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                    fontWeight: '500',
+                    fontSize: '0.65rem',
+                    lineHeight: '1.2',
+                    letterSpacing: '0.00938em',
+                }
                 // h3: {
                 //     fontWeight: "normal",
                 //     fontSize: "48px",
@@ -45,6 +77,18 @@ const theme = (themeType) => {
                 //     lineHeight: "150%",
                 //     letterSpacing: "0.15px",
                 // },
+            },
+            components: {
+                MuiButton: {
+                    variants: [
+                        {
+                            props: { variant: "sm" },
+                            style: {
+                                fontSize: "0.6rem",
+                            }
+                        }
+                    ]
+                }
             },
         });
     }

@@ -7,18 +7,19 @@ import Box from '@mui/material/Box';
 
 import ERC721Card from './ERC721Card/ERC721Card';
 
-const Cell = ({ columnIndex, rowIndex, style }) => {
-    return (
-        <div style={style}>
-            <ERC721Card />
-        </div>
-    );
-}
 
 const CardGrid = ({ gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin, cardSize }) => {
     const [count, setCount] = useState(20);
 
     const rowCount = (columnSize != 0) ? Math.ceil(count / columnSize) : 1;
+
+    const Cell = ({ columnIndex, rowIndex, style }) => {
+        return (
+            <div style={style}>
+                <ERC721Card cardSize={cardSize} />
+            </div>
+        );
+    }
     return (
         <Box sx={{ width: "100%" }}>
             <Grid

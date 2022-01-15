@@ -11,7 +11,7 @@ import VirtualizedList from "./VirtualizedList/VirtualizedList";
 
 
 const Search = styled("div")(({ theme }) => ({
-    maxWidth: "800px",
+    // maxWidth: "800px",
     flexGrow: 1,
     position: "relative",
     borderRadius: theme.shape.borderRadius,

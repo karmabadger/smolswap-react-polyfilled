@@ -10,7 +10,7 @@ export default function CreateSvgIcon() {
     return (
         <Box
             sx={{
-                width: '48px',
+                width: '36px',
             }}
         >
             <DiscordIcon size="large" width="100%" height="100%" viewBox="0 0 48 37" fillRule="evenodd" xmlns="http://www.w3.org/2000/svg"

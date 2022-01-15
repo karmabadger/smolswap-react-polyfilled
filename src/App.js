@@ -11,12 +11,11 @@ import WalletContextProvider from './App/components/context/WalletContext/Wallet
 
 import CartContextProvider from './App/components/context/CartContext/CartContextProvider';
 
-import useSessionStorage from './hooks/useSessionStorage';
+import useLocalStorage from './hooks/useLocalStorage';
 
 function App() {
   const [signer, setSigner] = useState(null);
-  // const [themeType, setThemeType] = useState('light');
-  const [themeType, setThemeType] = useSessionStorage('themeType', 'light');
+  const [themeType, setThemeType] = useLocalStorage('themeType', 'light');
 
   return (
     <ThemeProvider theme={theme(themeType)}>

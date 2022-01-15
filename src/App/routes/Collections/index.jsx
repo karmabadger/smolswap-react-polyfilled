@@ -41,15 +41,22 @@ import { SizeSelectOptions, CardSizes } from './SizeSelect/SizeSelectOptions';
 
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
 
+import useLocalStorage from '../../../hooks/useLocalStorage';
+
 const drawerWidth = 330;
 const drawerMinWidth = 38;
 const pageMX = 24;
 const gridMLeft = 32;
 const gridScrollBarWidth = 16.8;
-const cardMinMarginX = 5;
-const cardMinMarginY = 14;
+// const cardMinMarginX = 5;
+// const cardMinMarginY = 14;
 
 function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
+
+    console.log("calculateGridSize", windowWidth, cardSize, drawerOn, CardSizes[cardSize].widthPixel);
+
+    const minMarginX = CardSizes[cardSize].minMarginX;
+    const minMarginY = CardSizes[cardSize].minMarginY;
 
     let gridWidth = windowWidth - pageMX - pageMX - gridMLeft - gridScrollBarWidth;
 
@@ -58,16 +65,19 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
     } else {
         gridWidth -= drawerMinWidth;
     }
+    console.log("gridWidth", gridWidth, cardSize, (CardSizes[cardSize].widthPixel + minMarginX));
 
-    let columnSize = Math.floor(gridWidth / (CardSizes[cardSize].widthPixel + cardMinMarginX));
+    let columnSize = Math.floor(gridWidth / (CardSizes[cardSize].widthPixel + minMarginX));
     let cardWidthWithMargin = (columnSize !== 0) ? gridWidth / columnSize : CardSizes[cardSize].widthPixel;
-    if (cardWidthWithMargin < CardSizes[cardSize].widthPixel + cardMinMarginX) {
+    if (cardWidthWithMargin < CardSizes[cardSize].widthPixel + minMarginX) {
         cardWidthWithMargin = CardSizes[cardSize].widthPixel;
         columnSize = 1;
     } else {
-        cardWidthWithMargin = CardSizes[cardSize].widthPixel + cardMinMarginX;
+        cardWidthWithMargin = CardSizes[cardSize].widthPixel + minMarginX;
     }
-    const cardHeightWithMargin = CardSizes[cardSize].heightPixel + cardMinMarginY;
+    const cardHeightWithMargin = CardSizes[cardSize].heightPixel + minMarginY;
+
+    console.log("cardWidthWithMargin", cardWidthWithMargin, "cardHeightWithMargin", cardHeightWithMargin, "columnSize", columnSize);
     return { gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin };
 }
 
@@ -85,7 +95,7 @@ const Collections = () => {
     const [sortBy, setSortBy] = useState(SortSelectOptions[0]);
 
     // for Card size selection
-    const [cardSize, setCardSize] = useState(SizeSelectOptions[1]);
+    const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
 
     // for drawer
     const [open, setOpen] = useState(false);
@@ -95,9 +105,10 @@ const Collections = () => {
 
     return (
         <Box id="collections-main-page"
-            sx={{ padding: "0px", mx: `${pageMX}px`, 
-            display: 'flex', flexDirection: 'column',
-        }}
+            sx={{
+                padding: "0px", mx: `${pageMX}px`,
+                display: 'flex', flexDirection: 'column',
+            }}
         >
 
             <TopBox />
