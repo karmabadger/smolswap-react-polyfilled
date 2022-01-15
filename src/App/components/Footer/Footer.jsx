@@ -70,66 +70,67 @@ const Footer = ({ themeType, setThemeType }) => {
         setThemeType(event.target.checked ? 'dark' : 'light');
     };
 
-    return (<Box id="footer-box"
-        sx={{ mx: "24px", my: "32px" }}
-    >
-        <Divider />
-        <Box
-            sx={{
-                my: "54px",
-                display: "flex",
-                flexDirection: "row",
-            }}>
-
-            <Box sx={{
-                flexGrow: 0,
-                width: "50px",
-            }}>
-
-            </Box>
-
+    return (
+        <Box id="footer-box"
+            sx={{ mx: "24px", my: "32px" }}
+        >
+            <Divider />
             <Box
                 sx={{
-                    flexGrow: 3,
+                    my: "54px",
                     display: "flex",
                     flexDirection: "row",
-                    alignContent: "center",
-                    alignItems: "center",
-                    justifyContent: 'center',
-                    gap: "24px",
                 }}>
-                <Box>
-                    <IconButton aria-label="twitter-icon">
-                        <TwitterSvgIcon />
-                    </IconButton>
-                </Box>
-                <Box>
-                    <IconButton aria-label="discord-icon"
-                    >
-                        <DiscordSvgIcon />
-                    </IconButton>
-                </Box>
-                <Box>
-                    <IconButton aria-label="email-icon">
-                        <EmailSvgIcon />
-                    </IconButton>
-                </Box>
-            </Box>
 
-            <Box
-                sx={{
+                <Box sx={{
                     flexGrow: 0,
                     width: "50px",
                 }}>
-                <FormControlLabel
-                    control={<MaterialUISwitch sx={{ m: 1 }} checked={(themeType == "dark") ? true : false} />}
-                    label=""
-                    onChange={handleSwitchChange}
-                />
-            </Box>
 
+                </Box>
+
+                <Box
+                    sx={{
+                        flexGrow: 3,
+                        display: "flex",
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: 'center',
+                        gap: "24px",
+                    }}>
+                    <Box>
+                        <IconButton aria-label="twitter-icon">
+                            <TwitterSvgIcon />
+                        </IconButton>
+                    </Box>
+                    <Box>
+                        <IconButton aria-label="discord-icon"
+                        >
+                            <DiscordSvgIcon />
+                        </IconButton>
+                    </Box>
+                    <Box>
+                        <IconButton aria-label="email-icon">
+                            <EmailSvgIcon />
+                        </IconButton>
+                    </Box>
+                </Box>
+
+                <Box
+                    sx={{
+                        flexGrow: 0,
+                        width: "50px",
+                    }}>
+                    <FormControlLabel
+                        control={<MaterialUISwitch sx={{ m: 1 }} checked={(themeType == "dark") ? true : false} />}
+                        label=""
+                        onChange={handleSwitchChange}
+                    />
+                </Box>
+
+            </Box>
         </Box>
-    </Box>
     )
 }
 

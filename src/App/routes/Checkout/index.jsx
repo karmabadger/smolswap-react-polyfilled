@@ -42,128 +42,40 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+
 const Checkout = (props) => {
     return (
-        <Box className="checkout" id="checkout-page"
-            sx={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center'
-            }}>
-            <Box id="checkout-top"
+        <Box>
+            <Box className="checkout" id="checkout-page"
                 sx={{
-                    my: "48px", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "48px"
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    width: '100%',
                 }}>
-                <Typography variant='h3'>
-                    Checkout
-                </Typography>
-            </Box>
-
-            <Box
-                sx={{
-                    display: 'flex', flexDirection: 'row', alignItems: 'center', gap: "0px"
-                }}>
-
-                <Box id="checkout-settings"
+                <Box id="checkout-top"
                     sx={{
-                        my: 0, width: "500px", flexShrink: "1", flexGrow: "1", minWidth: "300px", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "48px"
+                        my: "48px", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "48px"
+                    }}>
+                    <Typography variant='h3'>
+                        Checkout
+                    </Typography>
+                </Box>
+
+                <Box
+                    sx={{
+                        display: 'flex', flexDirection: 'row', alignItems: 'center', gap: "0px"
                     }}>
 
-
-                    <Box
+                    <Box id="checkout-settings"
                         sx={{
-                            my: 0, width: "100%", display: 'flex', flexDirection: 'row',
+                            my: 0, width: "500px", flexShrink: "1", flexGrow: "1", minWidth: "300px", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "48px"
                         }}>
-                        <Box>
 
-                            <Typography
-                                sx={{
-                                    alignSelf: 'flex-start',
-                                }} variant='h4'>
-                                Settings
-                            </Typography>
-                        </Box>
 
-                    </Box>
-                    <Box sx={{
-                        my: 0, width: "100%", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "24px"
-                    }}>
-                        <Box sx={{
-                            backgroundColor: "background.paperDark",
-                            width: "100%"
-                        }}>
-                            <Accordion disableGutters elevation={0}
-                                sx={{
-                                    width: "100%",
-                                    backgroundColor: "background.paperDark",
-                                }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography sx={{ flexShrink: 0 }} variant="h5">
-                                        Mode:
-                                    </Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    fdsfdsfdsfds
-                                </AccordionDetails>
-                            </Accordion>
-                        </Box>
-                        <Box sx={{
-                            backgroundColor: "background.paperDark",
-                            width: "100%",
-                        }}>
-                            <Accordion disableGutters elevation={0}
-                                sx={{
-                                    width: "100%",
-                                    backgroundColor: "background.paperDark",
-                                }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography sx={{ flexShrink: 0 }} variant="h5">
-                                        In Case of Failure:
-                                    </Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    fdsfdsfdsfds
-                                </AccordionDetails>
-                            </Accordion>
-                        </Box>
-                        <Box sx={{
-                            backgroundColor: "background.paperDark",
-                            width: "100%",
-                        }}>
-                            <Accordion disableGutters elevation={0}
-                                sx={{
-                                    width: "100%",
-                                    backgroundColor: "background.paperDark",
-                                }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography sx={{ flexShrink: 0 }} variant="h5">
-                                        ERC1155 Specific Settings:
-                                    </Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    fdsfdsfdsfds
-                                </AccordionDetails>
-                            </Accordion>
-                        </Box>
-                    </Box>
-
-                    <Box
-                        sx={{
-                            width: "100%",
-                        }}>
                         <Box
                             sx={{
-                                my: 0, display: 'flex', flexDirection: 'row',
+                                my: 0, width: "100%", display: 'flex', flexDirection: 'row',
                             }}>
                             <Box>
 
@@ -171,29 +83,237 @@ const Checkout = (props) => {
                                     sx={{
                                         alignSelf: 'flex-start',
                                     }} variant='h4'>
-                                    Review and Checkout
+                                    Settings
                                 </Typography>
                             </Box>
 
                         </Box>
-                        <Box>
-
+                        <Box sx={{
+                            my: 0, width: "100%", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "24px"
+                        }}>
+                            <Box sx={{
+                                backgroundColor: "background.paperDark",
+                                width: "100%"
+                            }}>
+                                <Accordion disableGutters elevation={0}
+                                    sx={{
+                                        width: "100%",
+                                        backgroundColor: "background.paperDark",
+                                    }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography sx={{ flexShrink: 0 }} variant="h5">
+                                            Mode:
+                                        </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Box sx={{
+                                            paddingLeft: "10px"
+                                        }}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup
+                                                    aria-label="mode-settings"
+                                                    defaultValue="normal"
+                                                    name="radio-buttons-group"
+                                                >
+                                                    <FormControlLabel value="normal" control={<Radio />} label="Normal" />
+                                                    <FormControlLabel value="sweep" control={<Radio />} label="Sweep Mode" />
+                                                </RadioGroup>
+                                            </FormControl>
+                                        </Box>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Box>
+                            <Box sx={{
+                                backgroundColor: "background.paperDark",
+                                width: "100%",
+                            }}>
+                                <Accordion disableGutters elevation={0}
+                                    sx={{
+                                        width: "100%",
+                                        backgroundColor: "background.paperDark",
+                                    }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography sx={{ flexShrink: 0 }} variant="h5">
+                                            In Case of Failure:
+                                        </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Box sx={{
+                                            paddingLeft: "10px"
+                                        }}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup
+                                                    aria-label="failure-settings"
+                                                    defaultValue="skip"
+                                                    name="radio-buttons-group"
+                                                >
+                                                    <FormControlLabel value="skip" control={<Radio />} label="Skip and continue" />
+                                                    <FormControlLabel value="revert" control={<Radio />} label="Revert transaction" />
+                                                </RadioGroup>
+                                            </FormControl>
+                                        </Box>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Box>
+                            <Box sx={{
+                                backgroundColor: "background.paperDark",
+                                width: "100%",
+                            }}>
+                                <Accordion disableGutters elevation={0}
+                                    sx={{
+                                        width: "100%",
+                                        backgroundColor: "background.paperDark",
+                                    }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography sx={{ flexShrink: 0 }} variant="h5">
+                                            ERC1155 Specific Settings:
+                                        </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Box sx={{
+                                            paddingLeft: "10px"
+                                        }}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup
+                                                    aria-label="erc1155-settings"
+                                                    defaultValue="skip"
+                                                    name="radio-buttons-group"
+                                                >
+                                                    <FormControlLabel value="skip" control={<Radio />} label="Skip and continue" />
+                                                    <FormControlLabel value="revert" control={<Radio />} label="Revert transaction" />
+                                                </RadioGroup>
+                                            </FormControl>
+                                        </Box>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Box>
                         </Box>
 
-                        <Box sx={{
-                            my: 0, display: 'flex', flexDirection: 'row',
-                        }}>
-                            <Button
+                        <Box
+                            sx={{
+                                width: "100%",
+                            }}>
+                            <Box
+                                sx={{
+                                    my: 0, display: 'flex', flexDirection: 'row',
+                                }}>
+                                <Box>
+
+                                    <Typography
+                                        sx={{
+                                            alignSelf: 'flex-start',
+                                        }} variant='h4'>
+                                        Review and Checkout
+                                    </Typography>
+                                </Box>
+
+                            </Box>
+                            <Box
                                 sx={{
                                     width: "100%",
-                                }}
-                                variant="contained">Contained</Button>
+                                    display: 'flex', flexDirection: 'column', gap: "24px",
+                                    my: "32px"
+                                }}>
+                                <Box
+                                    sx={{
+                                        width: "100%",
+                                        display: 'flex', flexDirection: 'column', gap: "12px",
+                                        // marginTop: "32px"
+                                    }}>
+                                    <Typography variant='h6'>
+                                        Number of selected items:
+                                    </Typography>
+                                    <Typography variant='h6' color="primary">
+                                        4 out of 5
+                                    </Typography>
+                                    <Typography variant='caption' color="text.secondary" sx={{
+                                        fontStyle: 'italic',
+                                    }}>
+                                        You can edit your item selection below, doin so will update these totals.
+                                    </Typography>
+                                </Box>
+
+                                <Box
+                                    sx={{
+                                        width: "100%",
+                                        display: 'flex', flexDirection: 'column', gap: "12px",
+                                        marginTop: "0px"
+                                    }}>
+                                    <Typography variant='h6'>
+                                        Maximum total price:
+                                    </Typography>
+                                    <Typography variant='h6' color="primary">
+                                        12, 000, 000 $MAGIC
+                                    </Typography>
+                                </Box>
+                            </Box>
+
+                            <Box sx={{
+                                my: "0px", display: 'flex', flexDirection: 'row',
+                            }}>
+                                <Button
+                                    sx={{
+                                        width: "100%",
+                                    }}
+                                    variant="contained" >Pay 12, 000, 000 $MAGIC</Button>
+                            </Box>
                         </Box>
+
                     </Box>
+                </Box>
+
+            </Box>
+
+            <Box
+                sx={{
+                    mx: "24px", my: "48px",
+                }}>
+                <Divider />
+            </Box>
+
+
+            <Box
+                sx={{
+                    mx: "24px",
+                }}
+                id="selection-section">
+                <Box sx={{
+                    width: "100%",
+                    display: 'flex', flexDirection: 'column', gap: "24px",
+                }}>
+                    <Typography variant="h4">
+                        Selected Items
+                    </Typography>
+                    <Typography variant="body1">
+                        Tap to select and deselect items. Changing your selection will update the total price above.
+                    </Typography>
+                </Box>
+
+                <Box sx={{
+                    my: "32px",
+                }}>
+                    <Typography variant="h5">
+                        4 out of 5 items selected
+                    </Typography>
+                </Box>
+
+                <Box id="selection-stack">
 
                 </Box>
             </Box>
-        </Box >
+        </Box>
     )
 }
 

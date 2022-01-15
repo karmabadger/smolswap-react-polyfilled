@@ -40,8 +40,8 @@ const theme = (themeType) => {
                 },
                 text: { hint: 'rgba(0, 0, 0, 0.38)' },
                 background: {
-                    paper: '#E5E5E5',
-                    default: '#E5E5E5',
+                    paper: '#FFF',
+                    default: '#FFF',
                     paperDark: '#FAFAFA',
                 },
             },
