@@ -48,6 +48,18 @@ function MUIApp({ themeType, setThemeType }) {
     //     console.log(theme, inputTheme);
     // }
 
+    const testnetChainInfo = {
+        type: 'testnet',
+        chainId: '0x4',
+        name: 'rinkeby',
+    }
+
+    const mainnetChainInfo = {
+        type: 'mainnet',
+        chainId: '0x1',
+        name: 'arb1',
+    }
+
     return (
         <div className="MUIApp">
             <CssBaseline />
@@ -64,6 +76,7 @@ function MUIApp({ themeType, setThemeType }) {
                 <Route path="/testnet"  >
                     <Route exact path="" element={<Navigate to="/testnet/collection/smolbrains" replace />} />
                     <Route path="collection"  >
+
                         <Route path=":collectionName" element={<Collections network={"rinkeby"} />} />
                     </Route>
                     <Route path="checkout" element={<Checkout network={"rinkeby"} />} />
