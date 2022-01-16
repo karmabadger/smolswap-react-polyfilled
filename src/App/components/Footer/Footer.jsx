@@ -66,7 +66,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const Footer = ({ themeType, setThemeType }) => {
 
     const handleSwitchChange = (event) => {
-        console.log("handleSwitchChange", event.target.checked);
+        // console.log("handleSwitchChange", event.target.checked);
         setThemeType(event.target.checked ? 'dark' : 'light');
     };
 
@@ -77,7 +77,7 @@ const Footer = ({ themeType, setThemeType }) => {
             <Divider />
             <Box
                 sx={{
-                    my: "54px",
+                    my: "38px",
                     display: "flex",
                     flexDirection: "row",
                 }}>

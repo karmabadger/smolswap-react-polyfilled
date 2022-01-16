@@ -18,9 +18,12 @@ import Divider from '@mui/material/Divider';
 import { Routes, Route, Link, Navigate } from "react-router-dom";
 import Collections from './routes/Collections'
 import Checkout from './routes/Checkout'
+import NotFound from './routes/NotFound'
 
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer';
+
+import { Outlet } from 'react-router';
 
 
 function MUIApp({ themeType, setThemeType }) {
@@ -56,7 +59,16 @@ function MUIApp({ themeType, setThemeType }) {
                     <Route path=":collectionName" element={<Collections />} />
                 </Route>
                 <Route path="/checkout" element={<Checkout />} />
-                {/* <Route path="/*" element={} /> */}
+                <Route path="/*" element={<NotFound />} />
+
+                <Route path="/testnet"  >
+                    <Route exact path="" element={<Navigate to="/testnet/collection/smolbrains" replace />} />
+                    <Route path="collection"  >
+                        <Route path=":collectionName" element={<Collections network={"rinkeby"} />} />
+                    </Route>
+                    <Route path="checkout" element={<Checkout network={"rinkeby"} />} />
+                    <Route path="*" element={<NotFound network={"rinkeby"} />} />
+                </Route>
             </Routes>
 
             <Footer themeType={themeType} setThemeType={setThemeType} />

@@ -57,7 +57,7 @@ const StyledPopper = styled(Popper)(({ theme }) => ({
     zIndex: theme.zIndex.modal
 }));
 
-export default function () {
+function SearchBar() {
 
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -141,3 +141,5 @@ export default function () {
         </Search>
     )
 }
+
+export default SearchBar;

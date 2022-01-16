@@ -53,7 +53,7 @@ const gridScrollBarWidth = 16.8;
 
 function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
 
-    console.log("calculateGridSize", windowWidth, cardSize, drawerOn, CardSizes[cardSize].widthPixel);
+    // console.log("calculateGridSize", windowWidth, cardSize, drawerOn, CardSizes[cardSize].widthPixel);
 
     const minMarginX = CardSizes[cardSize].minMarginX;
     const minMarginY = CardSizes[cardSize].minMarginY;
@@ -65,7 +65,7 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
     } else {
         gridWidth -= drawerMinWidth;
     }
-    console.log("gridWidth", gridWidth, cardSize, (CardSizes[cardSize].widthPixel + minMarginX));
+    // console.log("gridWidth", gridWidth, cardSize, (CardSizes[cardSize].widthPixel + minMarginX));
 
     let columnSize = Math.floor(gridWidth / (CardSizes[cardSize].widthPixel + minMarginX));
     let cardWidthWithMargin = (columnSize !== 0) ? gridWidth / columnSize : CardSizes[cardSize].widthPixel;
@@ -77,13 +77,13 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
     }
     const cardHeightWithMargin = CardSizes[cardSize].heightPixel + minMarginY;
 
-    console.log("cardWidthWithMargin", cardWidthWithMargin, "cardHeightWithMargin", cardHeightWithMargin, "columnSize", columnSize);
+    // console.log("cardWidthWithMargin", cardWidthWithMargin, "cardHeightWithMargin", cardHeightWithMargin, "columnSize", columnSize);
     return { gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin };
 }
 
 
 
-const Collections = () => {
+const Collections = ({ network }) => {
     const theme = useTheme();
 
     const { width } = useWindowDimensions();

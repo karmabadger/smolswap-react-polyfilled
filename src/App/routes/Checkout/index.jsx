@@ -41,11 +41,16 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 
-const Checkout = (props) => {
+import CartSelectionCardsList from './CartSelectionCardsList/CartSelectionCardsList';
+
+const Checkout = ({ network }) => {
+
     return (
         <Box>
             <Box className="checkout" id="checkout-page"
@@ -108,10 +113,12 @@ const Checkout = (props) => {
                                         <Typography sx={{ flexShrink: 0 }} variant="h5">
                                             Mode:
                                         </Typography>
+
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Box sx={{
-                                            paddingLeft: "10px"
+                                            paddingLeft: "10px",
+                                            marginBottom: "16px"
                                         }}>
                                             <FormControl component="fieldset">
                                                 <RadioGroup
@@ -123,7 +130,33 @@ const Checkout = (props) => {
                                                     <FormControlLabel value="sweep" control={<Radio />} label="Sweep Mode" />
                                                 </RadioGroup>
                                             </FormControl>
+
                                         </Box>
+                                        <TextField
+                                            label="Max Successful Orders"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            value={100}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
+
+                                        <TextField
+                                            label="Max Failures"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            value={100}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
                                     </AccordionDetails>
                                 </Accordion>
                             </Box>
@@ -192,7 +225,7 @@ const Checkout = (props) => {
                                                     name="radio-buttons-group"
                                                 >
                                                     <FormControlLabel value="skip" control={<Radio />} label="Skip and continue" />
-                                                    <FormControlLabel value="revert" control={<Radio />} label="Revert transaction" />
+                                                    <FormControlLabel value="buy-all-listed" control={<Radio />} label="Buy All Listed" />
                                                 </RadioGroup>
                                             </FormControl>
                                         </Box>
@@ -287,6 +320,7 @@ const Checkout = (props) => {
             <Box
                 sx={{
                     mx: "24px",
+                    marginBottom: "48px",
                 }}
                 id="selection-section">
                 <Box sx={{
@@ -296,21 +330,60 @@ const Checkout = (props) => {
                     <Typography variant="h4">
                         Selected Items
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" color="text.secondary">
                         Tap to select and deselect items. Changing your selection will update the total price above.
                     </Typography>
                 </Box>
 
                 <Box sx={{
-                    my: "32px",
+                    marginTop: "32px",
+                    marginBottom: "12px",
                 }}>
-                    <Typography variant="h5">
+                    <Typography variant="h5" color="primary">
                         4 out of 5 items selected
                     </Typography>
+
                 </Box>
 
-                <Box id="selection-stack">
+                <Box sx={{
+                    marginTop: "12px",
+                    marginBottom: "24px",
+                    display: 'flex', flexDirection: 'row', gap: "24px",
+                }}>
+                    <Box
+                        sx={{
+                            display: 'flex', flexDirection: 'column',
+                            justifyContent: 'center', alignItems: 'center',
+                        }}>
+                        <Typography variant="h5" color="primary">
+                            Select All
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Checkbox
+                            edge="start"
+                            // defaultChecked={true}
+                            checked={true}
+                            tabIndex={-1}
+                            disableRipple
+                            // inputProps={{ "aria-labelledby": labelId }}
+                            sx={{
+                                height: "100%",
+                            }}
+                        />
+                    </Box>
 
+                </Box>
+
+                <Box id="selection-stack"
+                    sx={{
+                        width: "100%",
+
+                        display: 'flex', flexDirection: 'column', gap: "4px",
+                    }}>
+
+
+                    <CartSelectionCardsList />
                 </Box>
             </Box>
         </Box>
