@@ -13,10 +13,17 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import Typography from "@mui/material/Typography";
 
+import { makeStyles } from '@mui/styles';
 
-
-// import { Link } from "react-router-dom";
 import Link from '@mui/material/Link';
+
+
+
+const useStyles = makeStyles({
+    paper: {
+        background: "black"
+    }
+});
 
 const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
@@ -29,8 +36,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, matchesDownMD, }) => {
     const theme = useTheme();
+    const classes = useStyles();
 
     return (<Drawer
+        classes={{ paper: classes.paper }}
         sx={{
             width: drawerWidth,
             flexShrink: 0,
@@ -39,9 +48,9 @@ const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, mat
                 boxSizing: "border-box"
             }
         }}
-        variant="persistent"
         anchor="left"
         open={open}
+        onClose={handleDrawerClose}
     >
         <DrawerHeader>
             <IconButton onClick={handleDrawerClose}>

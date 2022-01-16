@@ -15,7 +15,7 @@ import CartContext from './components/context/CartContext/CartContext'
 // import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 
-import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Collections from './routes/Collections'
 import Checkout from './routes/Checkout'
 import NotFound from './routes/NotFound'
@@ -23,8 +23,10 @@ import NotFound from './routes/NotFound'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer';
 
-import { Outlet } from 'react-router';
+import NetworkContext from './components/context/NetworkContext/NetworkContext'
+import NetworkContextProvider from './components/context/NetworkContext/NetworkContextProvider'
 
+import { testnetInfo, mainnetInfo } from './configs/network/network.js'
 
 function MUIApp({ themeType, setThemeType }) {
 
@@ -34,38 +36,13 @@ function MUIApp({ themeType, setThemeType }) {
 
     const cartContextObj = useContext(CartContext);
 
-    // const handleConnectWallet = async () => {
-    //     const newSigner = await handleConnect();
-    //     setSigner(newSigner);
-    // }
-
-    // const printSigner = () => {
-    //     console.log(signer);
-    //     console.log(cartContextObj);
-    // }
-
-    // const printTheme = () => {
-    //     console.log(theme, inputTheme);
-    // }
-
-    const testnetChainInfo = {
-        type: 'testnet',
-        chainId: '0x4',
-        name: 'rinkeby',
-    }
-
-    const mainnetChainInfo = {
-        type: 'mainnet',
-        chainId: '0x1',
-        name: 'arb1',
-    }
-
     return (
         <div className="MUIApp">
             <CssBaseline />
             <Navbar />
             <Toolbar />
             <Routes>
+
                 <Route exact path="/" element={<Navigate to="/collection/smolbrains" replace />} />
                 <Route path="/collection"  >
                     <Route path=":collectionName" element={<Collections />} />
@@ -74,13 +51,16 @@ function MUIApp({ themeType, setThemeType }) {
                 <Route path="/*" element={<NotFound />} />
 
                 <Route path="/testnet"  >
-                    <Route exact path="" element={<Navigate to="/testnet/collection/smolbrains" replace />} />
-                    <Route path="collection"  >
+                    <NetworkContextProvider>
 
-                        <Route path=":collectionName" element={<Collections network={"rinkeby"} />} />
-                    </Route>
-                    <Route path="checkout" element={<Checkout network={"rinkeby"} />} />
-                    <Route path="*" element={<NotFound network={"rinkeby"} />} />
+                        <Route exact path="" element={<Navigate to="/testnet/collection/smolbrains" replace />} />
+                        <Route path="collection"  >
+
+                            <Route path=":collectionName" element={<Collections network={"rinkeby"} />} />
+                        </Route>
+                        <Route path="checkout" element={<Checkout network={"rinkeby"} />} />
+                        <Route path="*" element={<NotFound network={"rinkeby"} />} />
+                    </NetworkContextProvider>
                 </Route>
             </Routes>
 
