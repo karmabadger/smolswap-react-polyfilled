@@ -30,37 +30,9 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import CartSelectionCard from "./CartSelectionCards/CartSelectionCards";
 
-const useStyles = makeStyles({
-    root: {
-        height: 216,
-        flexGrow: 1,
-        maxWidth: 400
-    }
-});
-
-const grid = 8;
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: "none",
-    padding: 0,
-    margin: `0 0 0 0`,
-
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : "grey",
-
-    // styles we need to apply on draggables
-    ...draggableStyle
-});
-
-const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-    padding: grid,
-    // width: 250
-});
-
 
 export default function CheckboxListSecondary() {
+    const theme = useTheme();
     const [checkedList, setCheckedList] = useState([true, true, true, true, true, true, true, true, true, true, true, true]);
 
     const checkAll = (arr, value) => {
@@ -75,6 +47,24 @@ export default function CheckboxListSecondary() {
     const handleToggle = (index) => () => {
         setCheckedList(checkedList.map((item, i) => i === index ? !item : item));
     };
+
+
+    const getItemStyle = (isDragging, draggableStyle) => ({
+        // some basic styles to make the items look a bit nicer
+        userSelect: "none",
+        padding: 0,
+        margin: `0 0 0 0`,
+
+        // change background colour if dragging
+        background: isDragging ? theme.palette.secondary.main : "grey",
+
+        // styles we need to apply on draggables
+        ...draggableStyle
+    });
+
+    const getListStyle = (isDraggingOver) => ({
+        background: isDraggingOver ? theme.palette.primary.main : "lightgrey",
+    });
 
     return (
         <DragDropContext
@@ -107,6 +97,7 @@ export default function CheckboxListSecondary() {
                                                     <ListItem key={index}
                                                         sx={{
                                                             px: "0px",
+                                                            py: "2px",
                                                             height: "100%",
                                                             display: "flex",
                                                             flexDirection: "row",
