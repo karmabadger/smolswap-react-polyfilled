@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import MailIcon from "@mui/icons-material/Mail";
@@ -16,6 +18,15 @@ import Typography from "@mui/material/Typography";
 import { makeStyles } from '@mui/styles';
 
 import Link from '@mui/material/Link';
+
+import useNetwork from "hooks/useNetwork";
+
+import { useQuery, gql } from '@apollo/client';
+
+import { testnetInfo, mainnetInfo } from "configs/network/network.js";
+
+
+import { getCollections } from "api/graphql/queries/queries.js";
 
 
 
@@ -37,6 +48,31 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, matchesDownMD, }) => {
     const theme = useTheme();
     const classes = useStyles();
+
+    const [network, setNetwork] = useNetwork();
+
+    // const [collections, setCollections] = useState([]);
+    let collections = [];
+    const res = useQuery(getCollections())
+    // if (res.data) {
+    //     setCollections(res.data.collections);
+    // }
+
+
+    // useEffect(() => {
+    //     const res = useQuery(getCollections())
+    //     if (res.data) {
+    //         setCollections(res.data.collections)
+    //     }
+    // }, [collections])
+    const baseRoute = network.type === "testnet" ? testnetInfo.baseRoute : mainnetInfo.baseRoute;
+
+    if (res.data) {
+        collections = res.data.collections;
+        console.log("baseRoute", baseRoute, `${baseRoute}collection/${((collections[0].name).toLowerCase()).replace(" ", "-")}`);
+    }
+    console.log("res", res);
+
 
     return (<Drawer
         classes={{ paper: classes.paper }}
@@ -62,14 +98,14 @@ const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, mat
             </IconButton>
         </DrawerHeader>
         <List>
-            {["Extra Life", "Keys", "Legions", "Legions Genesis"].map((text, index) => (
+            {collections.map((collection, index) => (
                 <ListItem
                     button
                     sx={{ px: "24px" }}
-                    key={text}>
-                    <Link href="/#" underline="none" color="text.primary">
+                    key={index}>
+                    <Link href={`${baseRoute}collection/${((collection.name).toLowerCase()).replace(" ", "-")}`} underline="none" color="text.primary">
                         <Typography variant="h6">
-                            {text}
+                            {collection.name}
                         </Typography>
                     </Link>
                 </ListItem>

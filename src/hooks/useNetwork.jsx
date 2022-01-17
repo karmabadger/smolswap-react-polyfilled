@@ -1,17 +1,14 @@
+import { useContext, useEffect } from 'react';
 
-
-import { useState, useEffect } from 'react';
-
-import NetworkContext from '../App/context/NetworkContext/NetworkContext';
-
-export default function useLocalStorage(key, defaultValue) {
-    const [value, setValue] = useState(
-        getLocalStorageOrDefault(key, defaultValue)
-    );
+import NetworkContext from '../App/components/context/NetworkContext/NetworkContext';
+import { testnetInfo, mainnetInfo } from '../configs/network/network.js';
+function useNetwork(networkName) {
+    const { network, setNetwork } = useContext(NetworkContext);
 
     useEffect(() => {
-        window.localStorage.setItem(key, JSON.stringify(value));
-    }, [key, value]);
-
-    return [value, setValue];
+        setNetwork(networkName === 'testnet' || networkName === 'rinkeby' ? testnetInfo : mainnetInfo);
+    }, []);
+    return [network, setNetwork];
 }
+
+export default useNetwork;

@@ -27,7 +27,7 @@ import ClickAwayListener from '@mui/base/ClickAwayListener';
 // import useWindowScroll from "@/hooks/useWindowScroll";
 // import useWindowDimensions from "@/hooks/useWindowDimensions";
 
-import smol from "../../../../../../../__mock_data__/img/smol.png";
+import smol from "__mock_data__/img/smol.png";
 
 // const StyledModal = styled(ModalUnstyled)`
 //   position: fixed;

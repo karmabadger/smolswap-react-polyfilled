@@ -38,7 +38,7 @@ const SearchBar = ({ searchList, setSearchList }) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             setSearchList(searchList.concat(e.target.value));
-            console.log('enter', e.target.value);
+            // console.log('enter', e.target.value);
         }
     };
 

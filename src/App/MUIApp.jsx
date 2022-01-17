@@ -23,18 +23,12 @@ import NotFound from './routes/NotFound'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer';
 
-import NetworkContext from './components/context/NetworkContext/NetworkContext'
-import NetworkContextProvider from './components/context/NetworkContext/NetworkContextProvider'
-
-import { testnetInfo, mainnetInfo } from './configs/network/network.js'
 
 function MUIApp({ themeType, setThemeType }) {
 
-    // const { signer, setSigner } = useContext(WalletContext);
 
-    const theme = useTheme()
 
-    const cartContextObj = useContext(CartContext);
+    // const cartContextObj = useContext(CartContext);
 
     return (
         <div className="MUIApp">
@@ -50,17 +44,13 @@ function MUIApp({ themeType, setThemeType }) {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/*" element={<NotFound />} />
 
-                <Route path="/testnet"  >
-                    <NetworkContextProvider>
-
-                        <Route exact path="" element={<Navigate to="/testnet/collection/smolbrains" replace />} />
-                        <Route path="collection"  >
-
-                            <Route path=":collectionName" element={<Collections network={"rinkeby"} />} />
-                        </Route>
-                        <Route path="checkout" element={<Checkout network={"rinkeby"} />} />
-                        <Route path="*" element={<NotFound network={"rinkeby"} />} />
-                    </NetworkContextProvider>
+                <Route path="/testnet/"  >
+                    <Route exact path="" element={<Navigate to="/testnet/collection/smolbrains" replace />} />
+                    <Route path="collection"  >
+                        <Route path=":collectionName" element={<Collections networkName={"rinkeby"} />} />
+                    </Route>
+                    <Route path="checkout" element={<Checkout networkName={"rinkeby"} />} />
+                    <Route path="*" element={<NotFound networkName={"rinkeby"} />} />
                 </Route>
             </Routes>
 

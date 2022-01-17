@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import { useTheme } from '@mui/styles';
 import Toolbar from '@mui/material/Toolbar';
@@ -43,6 +43,11 @@ import useWindowDimensions from "../../../hooks/useWindowDimensions";
 
 import useLocalStorage from '../../../hooks/useLocalStorage';
 
+import useNetwork from '../../../hooks/useNetwork';
+import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
+
+import NetworkContext from 'App/components/context/NetworkContext/NetworkContext';
+
 const drawerWidth = 330;
 const drawerMinWidth = 38;
 const pageMX = 24;
@@ -51,12 +56,11 @@ const gridScrollBarWidth = 16.8;
 // const cardMinMarginX = 5;
 // const cardMinMarginY = 14;
 
-function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
+function calculateGridSize(windowWidth, cardSize, ercType = "ERC721", drawerOn = false) {
 
-    // console.log("calculateGridSize", windowWidth, cardSize, drawerOn, CardSizes[cardSize].widthPixel);
-
-    const minMarginX = CardSizes[cardSize].minMarginX;
-    const minMarginY = CardSizes[cardSize].minMarginY;
+    // console.log("CardSizes", CardSizes[cardSize]);
+    const minMarginX = CardSizes[cardSize][ercType].minMarginX;
+    const minMarginY = CardSizes[cardSize][ercType].minMarginY;
 
     let gridWidth = windowWidth - pageMX - pageMX - gridMLeft - gridScrollBarWidth;
 
@@ -67,15 +71,15 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
     }
     // console.log("gridWidth", gridWidth, cardSize, (CardSizes[cardSize].widthPixel + minMarginX));
 
-    let columnSize = Math.floor(gridWidth / (CardSizes[cardSize].widthPixel + minMarginX));
-    let cardWidthWithMargin = (columnSize !== 0) ? gridWidth / columnSize : CardSizes[cardSize].widthPixel;
-    if (cardWidthWithMargin < CardSizes[cardSize].widthPixel + minMarginX) {
-        cardWidthWithMargin = CardSizes[cardSize].widthPixel;
+    let columnSize = Math.floor(gridWidth / (CardSizes[cardSize][ercType].widthPixel + minMarginX));
+    let cardWidthWithMargin = (columnSize !== 0) ? gridWidth / columnSize : CardSizes[cardSize][ercType].widthPixel;
+    if (cardWidthWithMargin < CardSizes[cardSize][ercType].widthPixel + minMarginX) {
+        cardWidthWithMargin = CardSizes[cardSize][ercType].widthPixel;
         columnSize = 1;
     } else {
-        cardWidthWithMargin = CardSizes[cardSize].widthPixel + minMarginX;
+        cardWidthWithMargin = CardSizes[cardSize][ercType].widthPixel + minMarginX;
     }
-    const cardHeightWithMargin = CardSizes[cardSize].heightPixel + minMarginY;
+    const cardHeightWithMargin = CardSizes[cardSize][ercType].heightPixel + minMarginY;
 
     // console.log("cardWidthWithMargin", cardWidthWithMargin, "cardHeightWithMargin", cardHeightWithMargin, "columnSize", columnSize);
     return { gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin };
@@ -83,7 +87,23 @@ function calculateGridSize(windowWidth, cardSize, drawerOn = false) {
 
 
 
-const Collections = ({ network }) => {
+const Collections = ({ networkName }) => {
+
+    // let networkObj = (networkName === "testnet" || networkName === "rinkeby") ? testnetInfo : mainnetInfo;
+
+    const [network, setNetwork] = useNetwork(networkName);
+
+    // useEffect(() => {
+    //     if (networkName === "testnet" || networkName === "rinkeby") {
+    //         setNetwork(testnetInfo);
+    //     } else {
+    //         setNetwork(mainnetInfo);
+    //     }
+    // }, [networkName]);
+
+    // console.log("network", network);
+
+
     const theme = useTheme();
 
     const { width } = useWindowDimensions();
@@ -97,10 +117,15 @@ const Collections = ({ network }) => {
     // for Card size selection
     const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
 
+    // for ERC type selection
+    // 0 - ERC721, 1 - ERC1155
+    const [ercType, setErcType] = useState("ERC1155");
+    // console.log('ercType', ercType);
+
     // for drawer
     const [open, setOpen] = useState(false);
 
-    const { gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin } = calculateGridSize(width, cardSize, open);
+    const { gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin } = calculateGridSize(width, cardSize, ercType, open);
     // console.log('gridWidth: ', gridWidth, 'columnSize: ', columnSize, "width: ", width, "cardWidthWithMargin: ", cardWidthWithMargin, "cardHeightWithMargin: ", cardHeightWithMargin);
 
     return (
@@ -154,7 +179,7 @@ const Collections = ({ network }) => {
                         }
                     </Box>
                     <Box id="collection-grid-main-box">
-                        <CardGrid gridWidth={gridWidth} columnSize={columnSize} cardWidthWithMargin={cardWidthWithMargin} cardHeightWithMargin={cardHeightWithMargin} cardSize={cardSize} />
+                        <CardGrid gridWidth={gridWidth} columnSize={columnSize} cardWidthWithMargin={cardWidthWithMargin} cardHeightWithMargin={cardHeightWithMargin} cardSize={cardSize} ercType={ercType} />
                     </Box>
                 </Box>
             </Box>

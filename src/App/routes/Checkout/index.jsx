@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTheme } from '@mui/styles';
 import Toolbar from '@mui/material/Toolbar';
@@ -51,7 +51,19 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import CartSelectionCardsList from './CartSelectionCardsList/CartSelectionCardsList';
 
-const Checkout = ({ network }) => {
+import useNetwork from '../../../hooks/useNetwork';
+import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
+
+const Checkout = ({ networkName }) => {
+    const [network, setNetwork] = useNetwork(networkName);
+
+    // useEffect(() => {
+    //     if (networkName === "testnet" || networkName === "rinkeby") {
+    //         setNetwork(testnetInfo);
+    //     } else {
+    //         setNetwork(mainnetInfo);
+    //     }
+    // }, [networkName]);
 
     return (
         <Box>
