@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -29,6 +30,35 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import CartSelectionCard from "./CartSelectionCards/CartSelectionCards";
 
+const useStyles = makeStyles({
+    root: {
+        height: 216,
+        flexGrow: 1,
+        maxWidth: 400
+    }
+});
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+    padding: 0,
+    margin: `0 0 0 0`,
+
+    // change background colour if dragging
+    background: isDragging ? "lightgreen" : "grey",
+
+    // styles we need to apply on draggables
+    ...draggableStyle
+});
+
+const getListStyle = (isDraggingOver) => ({
+    background: isDraggingOver ? "lightblue" : "lightgrey",
+    padding: grid,
+    // width: 250
+});
+
 
 export default function CheckboxListSecondary() {
     const [checkedList, setCheckedList] = useState([true, true, true, true, true, true, true, true, true, true, true, true]);
@@ -51,75 +81,99 @@ export default function CheckboxListSecondary() {
         // onDragEnd={result => onDragEnd(result)}
         >
             <List dense sx={{ width: "100%", bgcolor: "background.paper" }}>
-                {/* <Droppable draggableId="1" index={0}> */}
-                    {[true, true, true, true, true, true, true, true, true, true, true, true].map((value, index) => {
-                        const labelId = `checkbox-list-secondary-label-${value}`;
-                        return (
-                            // <Draggable droppableId="1" key={index}>
-                            <ListItem key={index}
-                                sx={{
-                                    px: "0px",
-                                    height: "100%",
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    // alignItems: "stretch",
-                                }}>
 
-                                <Box
+                <Droppable droppableId="droppable" >
+                    {(provided, snapshot) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            style={getListStyle(snapshot.isDraggingOver)}
+                        >
+                            {
+                                checkedList.map((value, index) => {
+                                    const labelId = `checkbox-list-secondary-label-${value}`;
+                                    return (
+                                        <Draggable draggableId={index.toString()} index={index} key={index}>
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    style={getItemStyle(
+                                                        snapshot.isDragging,
+                                                        provided.draggableProps.style
+                                                    )}
+                                                >
+                                                    <ListItem key={index}
+                                                        sx={{
+                                                            px: "0px",
+                                                            height: "100%",
+                                                            display: "flex",
+                                                            flexDirection: "row",
+                                                            // alignItems: "stretch",
+                                                        }}>
 
-                                    id="checkbox-flexer"
-                                    sx={{
-                                        height: "100%",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center"
+                                                        <Box
 
-                                    }}>
+                                                            id="checkbox-flexer"
+                                                            sx={{
+                                                                height: "100%",
+                                                                display: "flex",
+                                                                flexDirection: "column",
+                                                                justifyContent: "center"
+
+                                                            }}>
 
 
-                                    <Box
-                                        id="checkbox-container"
-                                        sx={{
-                                            height: "100%",
-                                            flexGrow: "1"
-                                        }}
-                                        onClick={handleToggle(index)}
-                                    >
-                                        <ListItemButton
-                                            sx={{
-                                                height: "84px",
-                                                px: "0px",
-                                            }}>
+                                                            <Box
+                                                                id="checkbox-container"
+                                                                sx={{
+                                                                    height: "100%",
+                                                                    flexGrow: "1"
+                                                                }}
+                                                                onClick={handleToggle(index)}
+                                                            >
+                                                                <ListItemButton
+                                                                    sx={{
+                                                                        height: "84px",
+                                                                        px: "0px",
+                                                                    }}>
 
-                                            <ListItemIcon
-                                                sx={{
-                                                    paddingLeft: "16px",
-                                                    paddingRight: "16px",
-                                                    minWidth: 0,
-                                                    height: "100%",
-                                                }}
-                                            >
-                                                <Checkbox
-                                                    edge="start"
-                                                    // defaultChecked={true}
-                                                    checked={checkedList[index]}
-                                                    tabIndex={-1}
-                                                    disableRipple
-                                                    inputProps={{ "aria-labelledby": labelId }}
-                                                    sx={{
-                                                        height: "100%",
-                                                    }}
-                                                />
-                                            </ListItemIcon>
-                                        </ListItemButton>
-                                    </Box>
-                                </Box>
-                                <CartSelectionCard handleToggle={handleToggle} value={value} />
-                            </ListItem>
-                            // </Draggable>
-                        );
-                    })}
-                {/* </Droppable> */}
+                                                                    <ListItemIcon
+                                                                        sx={{
+                                                                            paddingLeft: "16px",
+                                                                            paddingRight: "16px",
+                                                                            minWidth: 0,
+                                                                            height: "100%",
+                                                                        }}
+                                                                    >
+                                                                        <Checkbox
+                                                                            edge="start"
+                                                                            // defaultChecked={true}
+                                                                            checked={checkedList[index]}
+                                                                            tabIndex={-1}
+                                                                            disableRipple
+                                                                            inputProps={{ "aria-labelledby": labelId }}
+                                                                            sx={{
+                                                                                height: "100%",
+                                                                            }}
+                                                                        />
+                                                                    </ListItemIcon>
+                                                                </ListItemButton>
+                                                            </Box>
+                                                        </Box>
+                                                        <CartSelectionCard handleToggle={handleToggle} value={value} />
+                                                    </ListItem>
+                                                </div>
+                                            )}
+
+                                        </Draggable>
+                                    );
+                                })
+                            }
+                        </div>
+                    )}
+                </Droppable>
             </List >
         </DragDropContext>
     );

@@ -69,9 +69,9 @@ const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, mat
 
     if (res.data) {
         collections = res.data.collections;
-        console.log("baseRoute", baseRoute, `${baseRoute}collection/${((collections[0].name).toLowerCase()).replace(" ", "-")}`);
+        // console.log("baseRoute", baseRoute, `${baseRoute}collection/${((collections[0].name).toLowerCase()).replace(" ", "-")}`);
     }
-    console.log("res", res);
+    // console.log("res", res);
 
 
     return (<Drawer
