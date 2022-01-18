@@ -31,13 +31,18 @@ import Checkbox from '@mui/material/Checkbox';
 
 import Button from '@mui/material/Button';
 
+import { testnetInfo, mainnetInfo } from 'configs/network/network.js';
+import { useQuery, gql } from '@apollo/client';
+import { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_INFO, GET_COLLECTION_LISTINGS } from "api/graphql/queries/queries.js";
+import useFindCollection from "hooks/useFindCollection";
 
 import PropertySection from './PropertySection/PropertySection';
 
 
-function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen }) {
+function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen, attributesList, setAttributesList, attributesChecked, setAttributesChecked }) {
     // const theme = useTheme();
 
+    console.log("attributesd", attributesList);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -49,26 +54,21 @@ function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen }) {
     };
 
 
-    const sections = [
-        'Property', 'Property', 'Property', 'Property', 'Property', 'Property',
-    ];
+    // const attributesList = ["hello", "hello", "hello"]
+    // for (const [key, value] of Object.entries(attributes)) {
+    //     attributesList.push(value);
+    // }
 
     return (
         <Box
             sx={{
-                // position: 'relative',
-                // zIndex: 5,
             }}>
             <Collapse sx={{
                 m: "0px",
-                // position: 'relative',
-                // zIndex: 5,
             }}
                 orientation="horizontal" in={open} collapsedSize={drawerMinWidth}>
                 <Box sx={{
                     m: 0, height: "100%",
-                    // position: 'relative',
-                    // zIndex: 5,
                 }}
                 >
                     <Box
@@ -90,8 +90,9 @@ function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen }) {
                                         sx={{
                                             // marginBottom: "16px",
                                         }}>
-                                        {sections.map((section, index) => (
-                                            <PropertySection key={index} section={section} />
+                                        {attributesList.map((attribute, index) => (
+                                            <PropertySection key={index} attribute={attribute} attributeIndex={index} attributesList={attributesList} setAttributesList={setAttributesList} attributesChecked={attributesChecked}
+                                                setAttributesChecked={setAttributesChecked} />
                                         ))}
                                     </Box>
                                     <Divider />

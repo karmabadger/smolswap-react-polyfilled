@@ -6,10 +6,10 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Box from '@mui/material/Box';
 
 import useNetwork from '../../../hooks/useNetwork';
-import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
+// import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 
 const NotFound = ({ networkName }) => {
-    const [network, setNetwork] = useNetwork(networkName);
+    // const [network, setNetwork] = useNetwork(networkName);
 
     // useEffect(() => {
     //     if (networkName === "testnet" || networkName === "rinkeby") {

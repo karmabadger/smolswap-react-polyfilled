@@ -55,3 +55,22 @@ fetch("https://api.thegraph.com/subgraphs/name/wyze/treasure-marketplace", {
     "mode": "cors",
     "credentials": "omit"
 });
+
+
+fetch("https://api.thegraph.com/subgraphs/name/wyze/treasure-marketplace", {
+    "headers": {
+        "accept": "*/*",
+        "accept-language": "en-US,en;q=0.9",
+        "content-type": "application/json",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "cross-site",
+        "sec-gpc": "1"
+    },
+    "referrer": "https://marketplace.treasure.lol/",
+    "referrerPolicy": "strict-origin-when-cross-origin",
+    "body": "{\"query\":\"query getCollectionInfo($id: ID!) {\\n  collection(id: $id) {\\n    id\\n    name\\n    standard\\n    attributes {\\n      name\\n      percentage\\n      value\\n    }\\n  }\\n}\",\"variables\":{\"id\":\"0x6325439389e0797ab35752b4f43a14c004f22a9c\"},\"operationName\":\"getCollectionInfo\"}",
+    "method": "POST",
+    "mode": "cors",
+    "credentials": "omit"
+});

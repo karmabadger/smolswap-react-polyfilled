@@ -22,13 +22,13 @@ import Link from '@mui/material/Link';
 import useNetwork from "hooks/useNetwork";
 
 import { useQuery, gql } from '@apollo/client';
-
 import { testnetInfo, mainnetInfo } from "configs/network/network.js";
+import { GET_COLLECTIONS, GET_COLLECTION } from "api/graphql/queries/queries.js";
 
-
-import { getCollections } from "api/graphql/queries/queries.js";
-
-
+import {
+    collectionNameToPath,
+    collectionPathToName
+} from "utils/data/collectionData.js";
 
 const useStyles = makeStyles({
     paper: {
@@ -45,33 +45,15 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "flex-end"
 }));
 
-const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, matchesDownMD, }) => {
+const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, matchesDownMD, collections }) => {
     const theme = useTheme();
     const classes = useStyles();
 
-    const [network, setNetwork] = useNetwork();
+    const networkInfo = useNetwork();
 
-    // const [collections, setCollections] = useState([]);
-    let collections = [];
-    const res = useQuery(getCollections())
-    // if (res.data) {
-    //     setCollections(res.data.collections);
-    // }
+    const baseRoute = networkInfo.baseRoute;
 
-
-    // useEffect(() => {
-    //     const res = useQuery(getCollections())
-    //     if (res.data) {
-    //         setCollections(res.data.collections)
-    //     }
-    // }, [collections])
-    const baseRoute = network.type === "testnet" ? testnetInfo.baseRoute : mainnetInfo.baseRoute;
-
-    if (res.data) {
-        collections = res.data.collections;
-        // console.log("baseRoute", baseRoute, `${baseRoute}collection/${((collections[0].name).toLowerCase()).replace(" ", "-")}`);
-    }
-    // console.log("res", res);
+    // console.log(collections);
 
 
     return (<Drawer
@@ -103,7 +85,7 @@ const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, mat
                     button
                     sx={{ px: "24px" }}
                     key={index}>
-                    <Link href={`${baseRoute}collection/${((collection.name).toLowerCase()).replace(" ", "-")}`} underline="none" color="text.primary">
+                    <Link href={`${baseRoute}collection/${collectionNameToPath(collection.name)}`} underline="none" color="text.primary">
                         <Typography variant="h6">
                             {collection.name}
                         </Typography>

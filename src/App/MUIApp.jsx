@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState, useContext, useEffects } from 'react'
 
 
 import { createTheme, styled, useTheme, alpha } from '@mui/material/styles';
@@ -9,8 +9,8 @@ import Box from '@mui/material/Box';
 
 // import { handleConnect } from '../utils/wallet/web3wallet'
 
-import WalletContext from './components/context/WalletContext/WalletContext'
-import CartContext from './components/context/CartContext/CartContext'
+// import WalletContext from './components/context/WalletContext/WalletContext'
+// import CartContext from './components/context/CartContext/CartContext'
 
 // import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
@@ -23,41 +23,105 @@ import NotFound from './routes/NotFound'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer';
 
+import CollectionsContextProvider from 'App/components/context/CollectionsContext/CollectionsContextProvider';
+
+import { useQuery, gql } from '@apollo/client';
+import { testnetInfo, mainnetInfo } from "configs/network/network.js";
+import { GET_COLLECTIONS, GET_COLLECTION } from "api/graphql/queries/queries.js";
+
+import { collectionNameToPath } from 'utils/data/collectionData.js'
+
+
+function CollectionsLoadedApp({ collections, themeType, setThemeType }) {
+    const collectionsByNameObj = {}
+
+    collections.forEach(collection => {
+        collectionsByNameObj[collectionNameToPath(collection.name)] = collection;
+    });
+
+    const collectionsByAddressObj = {}
+
+    collections.forEach(collection => {
+        collectionsByAddressObj[collection.address] = collection;
+    });
+
+    // console.log("collectionsByNameObj", collectionsByNameObj);
+
+    const [collectionsByPath, setCollectionsByPath] = useState(collectionsByNameObj);
+    const [collectionsByAddress, setCollectionsByAddress] = useState(collectionsByAddressObj);
+
+    return (
+        <CollectionsContextProvider
+            collectionsByPath={collectionsByPath}
+            setCollectionsByPath={setCollectionsByPath}
+            collectionsByAddress={collectionsByAddress}
+            setCollectionsByAddress={setCollectionsByAddress}
+
+            childrenEl={
+                <div className="MUIApp">
+                    <CssBaseline />
+                    <Navbar collections={collections} />
+                    <Toolbar />
+                    <Routes>
+
+                        <Route exact path="/" element={<Navigate to="/collection/smol-brains" replace />} />
+                        <Route path="/collection"  >
+                            <Route path=":collectionName" element={<Collections collections={collections} />} />
+                        </Route>
+                        <Route path="/checkout" element={<Checkout collections={collections} />} />
+                        <Route path="/*" element={<NotFound />} />
+
+                        <Route path="/testnet/">
+                            <Route exact path="" element={<Navigate to="/testnet/collection/smol-brains" replace />} />
+                            <Route path="collection"  >
+                                <Route path=":collectionName" element={<Collections networkName={"rinkeby"} collections={collections} />} />
+                            </Route>
+                            <Route path="checkout" element={<Checkout networkName={"rinkeby"} collections={collections} />} />
+                            <Route path="*" element={<NotFound networkName={"rinkeby"} />} />
+                        </Route>
+                    </Routes>
+
+                    <Footer themeType={themeType} setThemeType={setThemeType} />
+
+                </div >
+            } />
+    )
+}
 
 function MUIApp({ themeType, setThemeType }) {
 
+    let collections = [];
 
 
-    // const cartContextObj = useContext(CartContext);
+    const res = useQuery(GET_COLLECTIONS)
 
-    return (
-        <div className="MUIApp">
-            <CssBaseline />
-            <Navbar />
-            <Toolbar />
-            <Routes>
+    if (res.loading) {
+        if (collections.length > 0) {
+            console.log("collections", collections);
+            return (<CollectionsLoadedApp collections={res.data.collections} themeType={themeType} setThemeType={setThemeType} />)
+        }
 
-                <Route exact path="/" element={<Navigate to="/collection/smolbrains" replace />} />
-                <Route path="/collection"  >
-                    <Route path=":collectionName" element={<Collections />} />
-                </Route>
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/*" element={<NotFound />} />
-
-                <Route path="/testnet/"  >
-                    <Route exact path="" element={<Navigate to="/testnet/collection/smolbrains" replace />} />
-                    <Route path="collection"  >
-                        <Route path=":collectionName" element={<Collections networkName={"rinkeby"} />} />
-                    </Route>
-                    <Route path="checkout" element={<Checkout networkName={"rinkeby"} />} />
-                    <Route path="*" element={<NotFound networkName={"rinkeby"} />} />
-                </Route>
-            </Routes>
-
-            <Footer themeType={themeType} setThemeType={setThemeType} />
-
-        </div >
-    )
+        return (
+            <div className="MUIApp">
+                <CssBaseline />
+                <Navbar collections={collections} />
+                <Toolbar />
+                <div>
+                    loading...
+                </div>
+                <Footer themeType={themeType} setThemeType={setThemeType} />
+            </div>
+        )
+    } else if (res.error) {
+        console.log("error", res.error);
+        return (<div>Error</div>)
+    }
+    else {
+        if (res.data.collections) {
+            collections = res.data.collections;
+            return (<CollectionsLoadedApp collections={res.data.collections} themeType={themeType} setThemeType={setThemeType} />)
+        }
+    }
 }
 
 export default MUIApp

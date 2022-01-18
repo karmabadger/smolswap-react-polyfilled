@@ -29,32 +29,28 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 
+// import { DECIMALS, strETHToWei, strWeiToETH } from 'utils/erc/erc20utils.js'
 
 
-const PropertySection = ({ section }) => {
-    const propertiesList = [
-        ["green", 13.75],
-        ["gray", 13.86],
-        ["red", 14.15],
-        ["orange", 14.25],
-        ["cyan", 14.49],
-        ["yellow", 14.7],
-        ["purple", 14.85],
-        ["pink", 15.1],
-    ]
+const PropertySection = ({ attribute, attributeIndex, attributesList, setAttributesList, attributesChecked, setAttributesChecked }) => {
+    // console.log("attributesList", attributesList, attribute, index);
+    const section = attribute.name;
 
-    const [propertiesCheckedList, setPropertiesCheckedList] = useState(
-        (new Array(propertiesList.length).fill(false)));
+    const propertiesList = attribute.list;
+
+    // const [propertiesCheckedList, setPropertiesCheckedList] = useState(
+    //     (new Array(attributesList.length).fill(false)));
 
 
     const handleChange = (choiceIndex) => {
         return (event) => {
-            setPropertiesCheckedList(propertiesCheckedList.map((property, index) => {
-                if (index === choiceIndex) {
-                    return event.target.checked;
+            setAttributesChecked({
+                ...attributesChecked,
+                [attributeIndex]: {
+                    ...attributesChecked[attributeIndex],
+                    [choiceIndex]: event.target.checked
                 }
-                return property;
-            }));
+            });
         };
     }
 
@@ -81,9 +77,9 @@ const PropertySection = ({ section }) => {
                             <FormControlLabel
                                 key={index}
                                 control={
-                                    <Checkbox checked={propertiesCheckedList[index]} size='small' onChange={handleChange(index)} name={property[0]} />
+                                    <Checkbox checked={attributesChecked[attributeIndex][index]} size='small' onChange={handleChange(index)} name={property[0]} />
                                 }
-                                label={<Typography variant="body2" color="text.secondary">{`${property[0]} (${property[1]}%)`}</Typography>}
+                                label={<Typography variant="body2" color="text.secondary">{`${property.value} (${(parseFloat(property.percentage) * 100).toFixed(2)}%)`}</Typography>}
                             />
                         ))}
 

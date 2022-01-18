@@ -55,15 +55,6 @@ import useNetwork from '../../../hooks/useNetwork';
 import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 
 const Checkout = ({ networkName }) => {
-    const [network, setNetwork] = useNetwork(networkName);
-
-    // useEffect(() => {
-    //     if (networkName === "testnet" || networkName === "rinkeby") {
-    //         setNetwork(testnetInfo);
-    //     } else {
-    //         setNetwork(mainnetInfo);
-    //     }
-    // }, [networkName]);
 
     return (
         <Box>

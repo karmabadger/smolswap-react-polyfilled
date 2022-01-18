@@ -1,0 +1,12 @@
+collection(id: $id) {
+        floorPrice
+        totalListings
+        totalVolume
+        listings(where: {status: Active}) {
+        token {
+            floorPrice
+            name
+        }
+        }
+        }
+        }

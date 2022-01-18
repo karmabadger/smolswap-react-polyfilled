@@ -4,7 +4,7 @@ const testnetInfo = {
     name: 'rinkeby',
     baseRoute: '/testnet',
     theGraph: {
-        url: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-dao',
+        url: 'https://api.thegraph.com/subgraphs/name/wyze/treasure-marketplace',
     }
 }
 

@@ -69,7 +69,7 @@ function SearchBar() {
     const handleClick = (event) => {
         setOpen(true);
         setAnchorEl(event.currentTarget);
-        console.log("width", ref.current.offsetWidth);
+        // console.log("width", ref.current.offsetWidth);
     };
 
     const handleOnClickAway = (e) => {

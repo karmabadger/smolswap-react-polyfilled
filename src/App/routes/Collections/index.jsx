@@ -1,6 +1,8 @@
 
 import { useState, useEffect, useContext } from 'react';
 
+import { useParams } from 'react-router-dom'
+
 import { useTheme } from '@mui/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -44,17 +46,25 @@ import useWindowDimensions from "../../../hooks/useWindowDimensions";
 import useLocalStorage from '../../../hooks/useLocalStorage';
 
 import useNetwork from '../../../hooks/useNetwork';
-import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 
 import NetworkContext from 'App/components/context/NetworkContext/NetworkContext';
+
+import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
+import { useQuery, gql } from '@apollo/client';
+import { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_INFO, GET_COLLECTION_LISTINGS } from "api/graphql/queries/queries.js";
+
+import {
+    collectionNameToPath,
+    collectionPathToName
+} from 'utils/data/collectionData.js'
+
+import useFindCollection from 'hooks/useFindCollection';
 
 const drawerWidth = 330;
 const drawerMinWidth = 38;
 const pageMX = 24;
 const gridMLeft = 32;
 const gridScrollBarWidth = 16.8;
-// const cardMinMarginX = 5;
-// const cardMinMarginY = 14;
 
 function calculateGridSize(windowWidth, cardSize, ercType = "ERC721", drawerOn = false) {
 
@@ -86,30 +96,166 @@ function calculateGridSize(windowWidth, cardSize, ercType = "ERC721", drawerOn =
 }
 
 
+function FindCollection({ }) {
 
-const Collections = ({ networkName }) => {
+    const networkInfo = useNetwork();
+    // console.log("QueriedCollection", network);
 
-    // let networkObj = (networkName === "testnet" || networkName === "rinkeby") ? testnetInfo : mainnetInfo;
+    const { collectionsByPath, collectiionsByAddress, getCollectionByName } = useFindCollection();
+    const { collectionName } = useParams();
 
-    const [network, setNetwork] = useNetwork(networkName);
+    const collection = getCollectionByName(collectionName);
 
-    // useEffect(() => {
-    //     if (networkName === "testnet" || networkName === "rinkeby") {
-    //         setNetwork(testnetInfo);
-    //     } else {
-    //         setNetwork(mainnetInfo);
-    //     }
-    // }, [networkName]);
+    if (!collection) {
+        return (
+            <div>
+                <Typography variant="h4" gutterBottom>
+                    Collection not found
+                </Typography>
+            </div>
+        );
+    }
 
-    // console.log("network", network);
+    return (
+        <QueriedCollection collection={collection} />
+    )
+}
+
+function QueriedCollection({ }) {
+
+    // const networkInfo = useNetwork();
+    // console.log("QueriedCollection", network);
+
+    const { collectionsByPath, collectiionsByAddress, getCollectionByName } = useFindCollection();
+    const { collectionName } = useParams();
+
+    const collection = getCollectionByName(collectionName);
+    // console.log("collectionName", collectionName, getCollectionByName(collectionName));
 
 
+    const res = useQuery(GET_COLLECTION_STATS, {
+        variables: {
+            id: collection.address
+        }
+    })
+
+
+    if (!res.loading) {
+        // console.log("rescollection", res);
+        // console.log("resFetchMore", res.fetchMore);
+        if (res.fetchMore) {
+            // console.log("res2", res2);
+            // const res2 = res.fetchMore({
+            //     variables: {
+            //         id: '0x6325439389e0797ab35752b4f43a14c004f22a9c',
+            //         cursor: res.data.collection.listings.pageInfo.endCursor
+            //     },
+            // });
+        }
+    }
+
+
+    // get the properties of the collection
+    const { data, loading, fetchMore, error } = useQuery(GET_COLLECTION_INFO, {
+        variables: {
+            id: collection.address
+        }
+    })
+
+    const collectionInfo = (data) ? data.collection : null;
+    console.log("info", collectionInfo)
+
+    const attributes = {};
+    const attributesList = []
+
+    if (collectionInfo) {
+
+        return (
+            <CollectionsWithAttributes
+                collection={collection}
+                collectionInfo={collectionInfo}
+            // attributes={attributes}
+            ></CollectionsWithAttributes>
+        )
+    }
+
+
+    return (
+        <Collections
+            collection={collection}
+            collectionInfo={collectionInfo}
+            attributes={attributes}
+            attributesList={attributesList}
+        ></Collections>
+    )
+}
+
+
+const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
+    const attributes = {};
+    const attributesList = [];
+
+    console.log(collectionInfo.attributes)
+    for (let i = 0; i < collectionInfo.attributes.length; i++) {
+        const attribute = collectionInfo.attributes[i];
+
+        const attributeObj = {
+            id: i,
+            name: attribute.name,
+            percentage: attribute.percentage,
+            value: attribute.value,
+            checked: false,
+        }
+
+        if (attributes[attribute.name]) {
+            attributes[attribute.name]['list'].push(
+                attributeObj
+            );
+        } else {
+            attributes[attribute.name] = {
+                name: attribute.name,
+                list: [attributeObj]
+            }
+        }
+    }
+
+    Object.entries(attributes).forEach(([key, value]) => {
+        attributesList.push(value);
+    });
+    const [attributesObj, setAttributesObj] = useState(attributes);
+    const [attributesListObj, setAttributesListObj] = useState(attributesList);
+
+    console.log("attributesObj", attributesObj)
+    console.log("attributesListObj", attributesListObj)
+    return (
+        <Collections
+            collection={collection}
+            collectionInfo={collectionInfo}
+            attributes={attributesObj}
+            setAttributes={setAttributesObj}
+            attributesList={attributesListObj}
+            setAttributesList={setAttributesListObj}
+        ></Collections>
+    )
+}
+
+
+const Collections = ({ collection, collectionInfo, attributes, setAttributes, attributesList, setAttributesList }) => {
     const theme = useTheme();
 
     const { width } = useWindowDimensions();
 
     // for search bar and chips
     const [searchList, setSearchList] = useState([]);
+
+    // properties of the collection
+    const arrChecked = [];
+    for (let i = 0; i < attributesList.length; i++) {
+        for (let j = 0; j < attributesList[i].list.length; j++) {
+            arrChecked.push(attributesList[i].list[j].checked);
+        }
+    }
+    const [attributesChecked, setAttributesChecked] = useState(arrChecked);
 
     // for sort by selectoion
     const [sortBy, setSortBy] = useState(SortSelectOptions[0]);
@@ -136,12 +282,24 @@ const Collections = ({ networkName }) => {
             }}
         >
 
-            <TopBox />
-            <Divider ></Divider>
+            <TopBox collection={collection} />
+
+            <Divider />
 
             <Box id="collection-main-box" sx={{ marginTop: "32px", mx: "0px", display: "flex", flexDirection: "row" }}>
 
-                <PropertiesDrawer drawerWidth={drawerWidth} drawerMinWidth={drawerMinWidth} open={open} setOpen={setOpen} />
+                <PropertiesDrawer drawerWidth={drawerWidth} drawerMinWidth={drawerMinWidth}
+                    open={open}
+                    setOpen={setOpen}
+                    collection={collection}
+                    collectionInfo={collectionInfo}
+                    // attributes={attributes}
+                    // setAttributes={setAttributes}
+                    attributesList={attributesList}
+                    setAttributesList={setAttributesList}
+                    attributesChecked={attributesChecked}
+                    setAttributesChecked={setAttributesChecked}
+                />
 
                 <Box id="collection-main-right-box" sx={{ flexGrow: "1", marginLeft: `${gridMLeft}px`, }}>
                     <Box id="collection-grid-top-box" sx={{ display: "flex", flexDirection: "row", alignContent: "stretch", flexWrap: "wrap", gap: "24px" }}>
@@ -188,4 +346,4 @@ const Collections = ({ networkName }) => {
 }
 
 
-export default Collections
+export default FindCollection;

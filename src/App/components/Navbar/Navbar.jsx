@@ -36,11 +36,10 @@ const AppBar = styled(MuiAppBar, {
 
 
 
-export default function Topbar() {
+export default function Navbar({ collections }) {
     const theme = useTheme();
     const matchesDownMD = useMediaQuery(theme.breakpoints.down('md'));
     const matchesDownSM = useMediaQuery(theme.breakpoints.down('sm'));
-    // console.log("matches down MD", matchesDownMD, "matches down SM", matchesDownSM);
 
     const [open, setOpen] = useState(false);
 
@@ -73,7 +72,7 @@ export default function Topbar() {
 
             </AppBar >
 
-            <NavbarDrawer handleDrawerClose={handleDrawerClose} open={open} drawerWidth={drawerWidth} matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} />
+            <NavbarDrawer handleDrawerClose={handleDrawerClose} open={open} drawerWidth={drawerWidth} matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} collections={collections} />
         </div>
     );
 

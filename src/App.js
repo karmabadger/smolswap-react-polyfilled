@@ -23,9 +23,13 @@ import useLocalStorage from './hooks/useLocalStorage';
 
 import NetworkContextProvider from './App/components/context/NetworkContext/NetworkContextProvider'
 
+import CollectionsContextProvider from 'App/components/context/CollectionsContext/CollectionsContextProvider';
+
 import { mainnetInfo } from './configs/network/network.js'
 
 import useNetwork from 'hooks/useNetwork';
+
+import { useLocation } from 'react-router-dom';
 
 // const client = new ApolloClient({
 //   uri: mainnetInfo.theGraph.url,
@@ -33,21 +37,23 @@ import useNetwork from 'hooks/useNetwork';
 // });
 
 function App() {
-  const [signer, setSigner] = useState(null);
-  const [themeType, setThemeType] = useLocalStorage('themeType', 'light');
   const [network, setNetwork] = useState(mainnetInfo);
+  const [themeType, setThemeType] = useLocalStorage('themeType', 'light');
+
+  // const [collectionsByName, setCollectionsByName] = useState({});
+  // const [collectionsByAddress, setCollectionsByAddress] = useState({});
 
   return (
     <ThemeProvider theme={theme(themeType)}>
       <div className="App">
-        <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
-          childrenEl={
-            <CartContextProvider childrenEl={
-              <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
-                <AppWithApollo themeType={themeType} setThemeType={setThemeType} />
-              } />
-            } />
+        <CartContextProvider childrenEl={
+          <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
+            <AppWithApollo
+              themeType={themeType}
+              setThemeType={setThemeType}
+            />
           } />
+        } />
       </div>
     </ThemeProvider>
   )
@@ -55,14 +61,16 @@ function App() {
 
 
 const AppWithApollo = ({ themeType, setThemeType }) => {
-  const [network, setNetwork] = useNetwork();
+  const networkInfo = useNetwork();
 
-  // console.log('network', network.theGraph.url);
+  console.log('networkInfo', networkInfo);
 
   const client = new ApolloClient({
-    uri: network.theGraph.url,
+    uri: networkInfo.theGraph.url,
     cache: new InMemoryCache()
   });
+
+  console.log('network', useLocation().pathname.split('/')[1]);
 
   // client.query({
   //   query: gql`
@@ -78,9 +86,21 @@ const AppWithApollo = ({ themeType, setThemeType }) => {
 
   return (
     <ApolloProvider client={client} >
-      <MUIApp themeType={themeType} setThemeType={setThemeType} />
+      <AppWithWallet />
     </ApolloProvider >
   );
+}
+
+const AppWithWallet = ({ themeType, setThemeType }) => {
+  const [signer, setSigner] = useState(null);
+  // const [themeType, setThemeType] = useLocalStorage('themeType', 'light');
+
+  return (
+    <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
+      childrenEl={
+        <MUIApp themeType={themeType} setThemeType={setThemeType} />
+      } />
+  )
 }
 
 export default App;

@@ -43,7 +43,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 function VirtualizedList({ widthValue }) {
-    console.log('widthValue: ', widthValue);
+    // console.log('widthValue: ', widthValue);
     const theme = useTheme();
     return (
         <StyledBox
