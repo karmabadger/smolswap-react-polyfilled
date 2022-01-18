@@ -41,6 +41,7 @@ const PropertySection = ({ attribute, attributeIndex, attributesList, setAttribu
     // const [propertiesCheckedList, setPropertiesCheckedList] = useState(
     //     (new Array(attributesList.length).fill(false)));
 
+    // console.log("checked", attributesChecked[attributeIndex]);
 
     const handleChange = (choiceIndex) => {
         return (event) => {
@@ -72,16 +73,21 @@ const PropertySection = ({ attribute, attributeIndex, attributesList, setAttribu
                 <FormControl sx={{ m: 0 }} component="fieldset" variant="standard">
                     <FormGroup>
 
-                        {propertiesList.map((property, index) => (
+                        {propertiesList.map((property, index) => {
 
-                            <FormControlLabel
-                                key={index}
-                                control={
-                                    <Checkbox checked={attributesChecked[attributeIndex][index]} size='small' onChange={handleChange(index)} name={property[0]} />
-                                }
-                                label={<Typography variant="body2" color="text.secondary">{`${property.value} (${(parseFloat(property.percentage) * 100).toFixed(2)}%)`}</Typography>}
-                            />
-                        ))}
+                            const checked = (attributesChecked[attributeIndex][index] == null) ? false : attributesChecked[attributeIndex][index];
+                            return (
+
+                                <FormControlLabel
+                                    key={index}
+                                    control={
+                                        <Checkbox checked={checked} size='small' onChange={handleChange(index)} name={property[0]} />
+                                    }
+                                    label={<Typography variant="body2" color="text.secondary">{`${property.value} (${(parseFloat(property.percentage) * 100).toFixed(2)}%)`}</Typography>}
+                                />
+                            )
+                        }
+                        )}
 
                     </FormGroup>
                 </FormControl>

@@ -132,7 +132,6 @@ function QueriedCollection({ }) {
     const collection = getCollectionByName(collectionName);
     // console.log("collectionName", collectionName, getCollectionByName(collectionName));
 
-
     const res = useQuery(GET_COLLECTION_STATS, {
         variables: {
             id: collection.address
@@ -162,13 +161,13 @@ function QueriedCollection({ }) {
         }
     })
 
-    const collectionInfo = (data) ? data.collection : null;
-    console.log("info", collectionInfo)
+    const collectionInfo = (data) ? data.collection : {};
+    // console.log("info", collectionInfo)
 
     const attributes = {};
     const attributesList = []
 
-    if (collectionInfo) {
+    if (collectionInfo.attributes) {
 
         return (
             <CollectionsWithAttributes
@@ -195,7 +194,7 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
     const attributes = {};
     const attributesList = [];
 
-    console.log(collectionInfo.attributes)
+    // console.log(collectionInfo.attributes)
     for (let i = 0; i < collectionInfo.attributes.length; i++) {
         const attribute = collectionInfo.attributes[i];
 
@@ -225,7 +224,7 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
     const [attributesObj, setAttributesObj] = useState(attributes);
     const [attributesListObj, setAttributesListObj] = useState(attributesList);
 
-    console.log("attributesObj", attributesObj)
+    // console.log("attributesObj", attributesObj)
     console.log("attributesListObj", attributesListObj)
     return (
         <Collections
