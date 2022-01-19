@@ -42,7 +42,7 @@ import PropertySection from './PropertySection/PropertySection';
 function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen, attributesList, setAttributesList, attributesChecked, setAttributesChecked }) {
     // const theme = useTheme();
 
-    console.log("attributesd", attributesList, attributesChecked);
+    // console.log("attributesd", attributesList, attributesChecked);
 
     const handleDrawerOpen = () => {
         setOpen(true);

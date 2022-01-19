@@ -22,13 +22,16 @@ import Box from "@mui/material/Box";
 
 import useWindowDimensions from "../../../../../../hooks/useWindowDimensions.jsx";
 
-import smol from "../../../../../../__mock_data__/img/smol.png";
+// import smol from "../../../../../../__mock_data__/img/smol.png";
 
 import ERC721Modal from "./Modals/ERC721Modal";
 
 import { strWeiToETH } from 'utils/erc/erc20utils.js';
 
-export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
+
+import useCart from "hooks/useCart";
+
+export default function ImgMediaCard({ item }) {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -42,6 +45,69 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
         setOpen(false);
         console.log("handleClickAway");
     };
+
+    // console.log("ImgMediaCard item: ", item);
+    const cart = useCart();
+
+
+    console.log("item: ", item);
+    const OrderData = {
+        collectionAddress: item.id,
+        tokenId: item.token.tokenId,
+        expires: item.expires,
+        pricePerItem: item.pricePerItem,
+        quantity: 1,
+        owner: item.user.id
+    }
+
+    const added = cart.cartContextObj.checkIfItemInCart(OrderData);
+    const [addedState, setAddedState] = useState(added);
+
+
+    // useEffect(() => {
+    //     setAddedState(added);
+    // }, [added]);
+
+    // const added = cart.cartContextObj.collections.mapping[item.id].itemsMapping[item.token.tokenId]
+
+    // console.log("added: ", added);
+
+    const handleAddToCart = (event) => {
+
+        if (!added) {
+            const OrderData = {
+                collectionAddress: item.id,
+                tokenId: item.token.tokenId,
+                expires: item.expires,
+                pricePerItem: item.pricePerItem,
+                quantity: 1,
+                owner: item.user.id
+            }
+
+            cart.cartContextObj.addItem(OrderData);
+            console.log("added after", cart.cartContextObj.checkIfItemInCart(OrderData))
+
+            setAddedState(true);
+        }
+    }
+
+    const handleRemoveFromCart = (event) => {
+
+        if (added) {
+            const OrderData = {
+                collectionAddress: item.id,
+                tokenId: item.token.tokenId,
+                expires: item.expires,
+                pricePerItem: item.pricePerItem,
+                quantity: 1,
+                owner: item.user.id
+            }
+
+            cart.cartContextObj.removeItem(OrderData);
+
+            setAddedState(false);
+        }
+    }
 
 
     const urlpath = item.token.metadata.image.split("/");
@@ -134,20 +200,37 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
                     >
                         Buy Now
                     </Button>
-                    <IconButton
-                        sx={{
-                            py: "0px",
-                            px: "0px",
-                            marginLeft: "8px"
-                        }}
-                        aria-label="add-to-cart"
-                    >
-                        {
-                            added ? <RemoveShoppingCartIcon size="small" onClick={handleRemove} fontSize="inherit" color="primary" /> : <AddShoppingCartIcon size="large" onClick={handleAdd} fontSize="inherit" color="primary" />
-                        }
-                    </IconButton>
+                    <IconButtonComponent
+                        added={addedState}
+                        handleAddToCart={handleAddToCart}
+                        handleRemoveFromCart={handleRemoveFromCart}
+                    />
                 </Box>
             </CardContent>
         </Card>
     );
+}
+
+
+const IconButtonComponent = ({ added, handleRemoveFromCart, handleAddToCart }) => {
+
+    return (
+        <IconButton
+            onClick={(added) ?
+                handleRemoveFromCart
+                :
+                handleAddToCart
+            }
+            sx={{
+                py: "0px",
+                px: "0px",
+                marginLeft: "8px"
+            }}
+            aria-label="add-to-cart"
+        >
+            {
+                added ? <RemoveShoppingCartIcon size="small" fontSize="inherit" color="primary" /> : <AddShoppingCartIcon size="large" fontSize="inherit" color="primary" />
+            }
+        </IconButton>
+    )
 }

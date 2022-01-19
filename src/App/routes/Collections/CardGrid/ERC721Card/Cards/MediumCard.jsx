@@ -15,7 +15,7 @@ import ClickAwayListener from '@mui/base/ClickAwayListener';
 import Box from "@mui/material/Box";
 
 import { strWeiToETH } from 'utils/erc/erc20utils.js';
-import smol from "__mock_data__/img/smol.png";
+// import smol from "__mock_data__/img/smol.png";
 
 import ERC721Modal from "./Modals/ERC721Modal";
 

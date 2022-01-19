@@ -60,6 +60,8 @@ import {
 
 import useFindCollection from 'hooks/useFindCollection';
 
+import useCart from 'hooks/useCart';
+
 const drawerWidth = 330;
 const drawerMinWidth = 38;
 const pageMX = 24;
@@ -298,8 +300,8 @@ const Collections = ({
         }
     }
     // console.log("sortBy", sortBy);
-    console.log("ercType", ercType);
-    console.log("collectionInfo", collectionInfo);
+    // console.log("ercType", ercType);
+    // console.log("collectionInfo", collectionInfo);
     const sortByObj = SortSelectOptionsObj[sortBy];
 
     const { data, error, loading } = useQuery(GET_COLLECTION_LISTINGS, {
@@ -347,6 +349,10 @@ const Collections = ({
 
     const { gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin } = calculateGridSize(width, cardSize, ercType, open);
     // console.log('gridWidth: ', gridWidth, 'columnSize: ', columnSize, "width: ", width, "cardWidthWithMargin: ", cardWidthWithMargin, "cardHeightWithMargin: ", cardHeightWithMargin);
+
+
+    const cart = useCart();
+    console.log("cart", cart);
 
     return (
         <Box id="collections-main-page"
@@ -411,21 +417,34 @@ const Collections = ({
                         }
                     </Box>
                     <Box id="collection-grid-main-box">
-                        <CardGrid
-                            gridWidth={gridWidth}
-                            columnSize={columnSize}
-                            cardWidthWithMargin={cardWidthWithMargin}
-                            cardHeightWithMargin={cardHeightWithMargin}
-                            cardSize={cardSize}
-                            ercType={ercType}
 
-                            hasNextPage={hasNextPageFn}
-                            listings={listings}
-                            loadNextPage={loadNextPage}
-                            isNextPageLoading={lazyRes.loading}
-                            lazyRes={lazyRes}
-                            sortBy={sortBy}
-                        />
+                        {
+                            (listings.length !== 0) ?
+                                (
+
+                                    <CardGrid
+                                        gridWidth={gridWidth}
+                                        columnSize={columnSize}
+                                        cardWidthWithMargin={cardWidthWithMargin}
+                                        cardHeightWithMargin={cardHeightWithMargin}
+                                        cardSize={cardSize}
+                                        ercType={ercType}
+
+                                        hasNextPage={hasNextPageFn}
+                                        listings={listings}
+                                        loadNextPage={loadNextPage}
+                                        isNextPageLoading={lazyRes.loading}
+                                        lazyRes={lazyRes}
+                                        sortBy={sortBy}
+                                    />
+                                )
+                                :
+                                (
+                                    <Typography>
+                                        No listings found
+                                    </Typography>
+                                )
+                        }
                     </Box>
                 </Box>
             </Box>

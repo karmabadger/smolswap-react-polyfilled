@@ -36,49 +36,64 @@ const settings = {
         refundInInputAsset: false,
     },
     mode: "sweep",
-    "maxTotalPrice": 0,
-    "minSpendAmount": 0,
-    "maxSuccess": 0,
-    "maxFail": 0,
-    "ERC1155Settings": {
-        "insufficientQuantity": {
-            "action": "skip",
+    maxTotalPrice: 0,
+
+    // add x percent to the price of the item to get the max price per item by default
+    maxPricePerItemDefaultIncreasePercent: 0,
+    minSpendAmount: 0,
+    maxSuccess: 0,
+    maxFail: 0,
+    ERC1155Settings: {
+        insufficientQuantity: {
+            action: "skip",
         }
     },
-    "failure": {
-        "action": "skip",
+    failure: {
+        action: "skip",
     },
-    "allFailure": {
-        "action": "skip",
+    allFailure: {
+        action: "skip",
     },
 }
 
 const cartContextObj = {
     itemList: [],
     collections: {
-        "mapping": {},
-        addItem: (itemState) => {
+        mapping: {},
+        addItem: function (itemState) {
             // if not in collections, add it
-            if (!this.collections.mapping[itemState.collectionAddress]) {
-                this.collections.mapping[itemState.collectionAddress] = {
+            if (!this.mapping[itemState.collectionAddress]) {
+                this.mapping[itemState.collectionAddress] = {
                     name: '',
-                    items: [],
+                    itemsMapping: {},
                 }
             }
-            this.collections.mapping[itemState.collectionAddress].items.push(itemState);
+
+            // if not in itemsMapping, add it
+            if (!this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId]) {
+                this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId] = []
+            }
+            this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].push(itemState);
         },
-        removeItem: (itemState) => {
-            this.collections.mapping[itemState.collectionAddress].items.splice(this.collections.mapping[itemState.collectionAddress].items.indexOf(itemState), 1);
+        removeItem: function (itemState) {
+            this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].splice(this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].indexOf(itemState), 1);
+
+            // this.collections.mapping[itemState.collectionAddress].items.splice(this.collections.mapping[itemState.collectionAddress].items.indexOf(itemState), 1);
 
             // if no more items in collection, remove it
-            if (this.collections.mapping[itemState.collectionAddress].items.length === 0) {
-                delete this.collections.mapping[itemState.collectionAddress];
+            if (this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].length === 0) {
+                delete this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId];
             }
+
+            // if (this.collections.mapping[itemState.collectionAddress].items.length === 0) {
+            //     delete this.collections.mapping[itemState.collectionAddress];
+            // }
         }
     },
     settings: settings,
-    addItem: (itemState) => {
-        console.log("add:", itemState);
+    addItem: function (itemState) {
+
+        itemState.maxPricePerItem = itemState.pricePerItem + (itemState.pricePerItem * this.settings.maxPricePerItemDefaultIncreasePercent / 100);
 
         // add to collections
         this.collections.addItem(itemState);
@@ -86,8 +101,9 @@ const cartContextObj = {
         // add to itemList
         this.itemList.push(itemState);
 
+        console.log("add:", itemState, this.itemList);
     },
-    removeItem: (itemState) => {
+    removeItem: function (itemState) {
         console.log("remove:", itemState);
 
         // remove from collections
@@ -96,15 +112,36 @@ const cartContextObj = {
         // remove from itemList
         this.itemList.splice(this.itemList.indexOf(itemState), 1);
     },
+    checkIfItemInCart: function (itemState) {
+        console.log("checkIfItemInCart:", itemState);
+        if (this.collections.mapping[itemState.collectionAddress]) {
+            const found = this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId];
+            if (found) {
+                if (found.length > 0) {
+                    for (let i = 0; i < found.length; i++) {
+                        if (found[i].owner === itemState.owner) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }
 
 
 // functional design patterns cause it's 2022 bb!
 // ok ok just splice...
-const CartContext = createContext();
+const CartContext = createContext({
+    // settings: settings,
+    // cart: cartContextObj,
+});
 
 export default CartContext;
 
 export {
+    settings,
     cartContextObj,
 }
