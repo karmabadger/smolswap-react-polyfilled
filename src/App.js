@@ -36,41 +36,20 @@ import { useLocation } from 'react-router-dom';
 //   cache: new InMemoryCache()
 // });
 
-function App() {
-  const [network, setNetwork] = useState(mainnetInfo);
-  const [themeType, setThemeType] = useLocalStorage('themeType', 'light');
-
-  // const [collectionsByName, setCollectionsByName] = useState({});
-  // const [collectionsByAddress, setCollectionsByAddress] = useState({});
-
-  return (
-    <ThemeProvider theme={theme(themeType)}>
-      <div className="App">
-        <CartContextProvider childrenEl={
-          <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
-            <AppWithApollo
-              themeType={themeType}
-              setThemeType={setThemeType}
-            />
-          } />
-        } />
-      </div>
-    </ThemeProvider>
-  )
-}
 
 
-const AppWithApollo = ({ themeType, setThemeType }) => {
+
+const AppWithApollo = () => {
   const networkInfo = useNetwork();
 
-  console.log('networkInfo', networkInfo);
+  // console.log('networkInfo', networkInfo);
 
   const client = new ApolloClient({
     uri: networkInfo.theGraph.url,
     cache: new InMemoryCache()
   });
 
-  console.log('network', useLocation().pathname.split('/')[1]);
+  // console.log('network', useLocation().pathname.split('/')[1]);
 
   // client.query({
   //   query: gql`
@@ -86,9 +65,38 @@ const AppWithApollo = ({ themeType, setThemeType }) => {
 
   return (
     <ApolloProvider client={client} >
-      <AppWithWallet />
+      <App />
     </ApolloProvider >
   );
+}
+
+
+function App() {
+  const [network, setNetwork] = useState(mainnetInfo);
+  const [themeType, setThemeType] = useLocalStorage('themeType', 'light');
+  const [signer, setSigner] = useState(null);
+  const networkInfo = useNetwork();
+
+  // const client = new ApolloClient({
+  //   uri: networkInfo.theGraph.url,
+  //   cache: new InMemoryCache()
+  // });
+  return (
+    // <ApolloProvider client={client} >
+      <ThemeProvider theme={theme(themeType)}>
+        <div className="App">
+          <CartContextProvider childrenEl={
+            <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
+              <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
+                childrenEl={
+                  <MUIApp themeType={themeType} setThemeType={setThemeType} />
+                } />
+            } />
+          } />
+        </div>
+      </ThemeProvider>
+    // </ApolloProvider >
+  )
 }
 
 const AppWithWallet = ({ themeType, setThemeType }) => {
@@ -103,4 +111,4 @@ const AppWithWallet = ({ themeType, setThemeType }) => {
   )
 }
 
-export default App;
+export default AppWithApollo;

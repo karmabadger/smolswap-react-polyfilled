@@ -42,7 +42,7 @@ import PropertySection from './PropertySection/PropertySection';
 function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen, attributesList, setAttributesList, attributesChecked, setAttributesChecked }) {
     // const theme = useTheme();
 
-    // console.log("attributesd", attributesList);
+    console.log("attributesd", attributesList, attributesChecked);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -52,6 +52,18 @@ function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen, attribut
         console.log("handleDrawerClose", open);
         setOpen(false);
     };
+
+    const clearAll = () => {
+        const allFalse = []
+
+        for (let i = 0; i < attributesList.length; i++) {
+            allFalse.push([]);
+            for (let j = 0; j < attributesList[i].list.length; j++) {
+                allFalse[i].push(false);
+            }
+        }
+        setAttributesChecked(allFalse);
+    }
 
 
     // const attributesList = ["hello", "hello", "hello"]
@@ -108,7 +120,10 @@ function PropertiesDrawer({ drawerWidth, drawerMinWidth, open, setOpen, attribut
                                         <Button size="large"
                                             sx={{
                                                 width: "90%",
-                                            }} variant="contained">Clear All</Button>
+                                            }}
+                                            variant="contained"
+                                            onClick={clearAll}>
+                                            Clear All</Button>
                                     </Box>
                                 </Box>
                             ) : (

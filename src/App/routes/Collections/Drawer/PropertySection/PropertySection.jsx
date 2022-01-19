@@ -45,13 +45,12 @@ const PropertySection = ({ attribute, attributeIndex, attributesList, setAttribu
 
     const handleChange = (choiceIndex) => {
         return (event) => {
-            setAttributesChecked({
-                ...attributesChecked,
-                [attributeIndex]: {
-                    ...attributesChecked[attributeIndex],
-                    [choiceIndex]: event.target.checked
-                }
-            });
+
+            const allFalse = [...attributesChecked];
+            allFalse[attributeIndex][choiceIndex] = event.target.checked;
+
+            console.log("allFalse", allFalse);
+            setAttributesChecked(allFalse);
         };
     }
 
