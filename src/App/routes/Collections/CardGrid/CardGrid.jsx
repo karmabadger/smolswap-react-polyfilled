@@ -66,7 +66,7 @@ const CardGrid = ({
     };
 
     const Cell = ({ columnIndex, rowIndex, style }) => {
-        if (!isItemLoaded(index)) {
+        if (!isItemLoaded(columnIndex, rowIndex)) {
             const content = "Loading...";
             return <div style={style}>{content}</div>;
         }
