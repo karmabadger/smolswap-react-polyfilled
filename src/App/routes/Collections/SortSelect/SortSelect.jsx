@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-import SortSelectOptions from './SortSelectOptions';
+import { SortSelectOptions, SortSelectOptionsObj } from './SortSelectOptions';
 
 export function SortSelect({ sortBy, setSortBy }) {
 
@@ -13,11 +13,14 @@ export function SortSelect({ sortBy, setSortBy }) {
         setSortBy(event.target.value);
     };
 
+    // console.log("sortByIn", sortBy);
+
     return (
         <Box sx={{ width: "100%" }}>
             <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
                 <Select
+                    defaultChecked={sortBy}
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={sortBy}

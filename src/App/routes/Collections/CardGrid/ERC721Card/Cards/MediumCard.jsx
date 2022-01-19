@@ -14,13 +14,12 @@ import ClickAwayListener from '@mui/base/ClickAwayListener';
 
 import Box from "@mui/material/Box";
 
-// import useWindowDimensions from "hooks/useWindowDimensions.jsx";
-
+import { strWeiToETH } from 'utils/erc/erc20utils.js';
 import smol from "__mock_data__/img/smol.png";
 
 import ERC721Modal from "./Modals/ERC721Modal";
 
-export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
+export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -35,14 +34,30 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
         console.log("handleClickAway");
     };
 
-    const id = open ? 'simple-popper' : undefined;
+    const urlpath = item.token.metadata.image.split("/");
+    let imgLink = "https://treasure-marketplace.mypinata.cloud/ipfs";
+
+    for (let i = 0; i < urlpath.length; i++) {
+        if (urlpath[i] === "ipfs" || urlpath[i] === "ipfs:" || urlpath[i] === "") {
+            continue;
+        } else if (urlpath[i] === "https:" || urlpath[i] === "http:") {
+            imgLink = item.token.metadata.image;
+            break;
+        }
+        else {
+            imgLink += "/" + urlpath[i];
+        }
+    }
+
+    const id = open ? 'simple-popper' : 'not-open';
     return (
         <Card sx={{ maxWidth: 256 }}>
             <CardMedia
                 component="img"
                 alt="smol"
                 // height="360"
-                image={smol}
+                // image={smol}
+                image={imgLink}
                 onClick={handleOpen}
             />
 
@@ -51,7 +66,7 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
 
                     <ClickAwayListener onClickAway={handleClickAway}>
                         <Box sx={{ position: 'relative' }}>
-                            <ERC721Modal open={open} handleClose={handleClose} anchorEl={anchorEl} id={id} />
+                            <ERC721Modal open={open} handleClose={handleClose} anchorEl={anchorEl} id={id} item={item} />
                         </Box>
                     </ClickAwayListener>
                 )
@@ -73,10 +88,10 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
                         m: "0px"
                     }}
                 >
-                    Smol Brain #243243
+                    {item.token.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    4314 $MAGIC
+                    {`${strWeiToETH(item.pricePerItem)} $MAGIC`}
                 </Typography>
 
                 <Box

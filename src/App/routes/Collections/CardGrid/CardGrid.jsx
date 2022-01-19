@@ -97,7 +97,7 @@ const CardGrid = ({
                 {({ onItemsRendered, ref }) => (
                     <Grid
                         style={{ width: '100%' }}
-                        onItemsRendered={onItemsRendered}
+                        // onItemsRendered={onItemsRendered}
                         ref={ref}
 
                         itemCount={count}

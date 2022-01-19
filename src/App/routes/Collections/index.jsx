@@ -38,7 +38,7 @@ import SearchBar from './SearchBar/SearchBar';
 import CardGrid from './CardGrid/CardGrid';
 import PropertiesDrawer from './Drawer/PropertiesDrawer';
 
-import SortSelectOptions from './SortSelect/SortSelectOptions';
+import { SortSelectOptions, SortSelectOptionsObj } from './SortSelect/SortSelectOptions';
 import { SizeSelectOptions, CardSizes } from './SizeSelect/SizeSelectOptions';
 
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
@@ -203,7 +203,7 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
             name: attribute.name,
             percentage: attribute.percentage,
             value: attribute.value,
-            checked: false,
+            // checked: false,
         }
 
         if (attributes[attribute.name]) {
@@ -225,7 +225,7 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
     const [attributesListObj, setAttributesListObj] = useState(attributesList);
 
     // console.log("attributesObj", attributesObj)
-    console.log("attributesListObj", attributesListObj)
+    // console.log("attributesListObj", attributesListObj)
     return (
         <Collections
             collection={collection}
@@ -238,6 +238,17 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
     )
 }
 
+
+function getArrChecked(arr) {
+    const arrChecked = [];
+    for (let i = 0; i < arr.length; i++) {
+        arrChecked.push([]);
+        for (let j = 0; j < arr[i].list.length; j++) {
+            arrChecked[i].push(false);
+        }
+    }
+    return arrChecked;
+}
 
 const Collections = ({
     collection, collectionInfo,
@@ -255,48 +266,62 @@ const Collections = ({
     const [searchList, setSearchList] = useState([]);
 
     // properties of the collection
-    const arrChecked = [];
-    for (let i = 0; i < attributesList.length; i++) {
-        for (let j = 0; j < attributesList[i].list.length; j++) {
-            arrChecked.push(attributesList[i].list[j].checked);
-        }
-    }
-    const [attributesChecked, setAttributesChecked] = useState(arrChecked);
+    // const arrChecked = [];
+    // for (let i = 0; i < attributesList.length; i++) {
+    //     for (let j = 0; j < attributesList[i].list.length; j++) {
+    //         arrChecked.push(false);
+    //     }
+    // }
+    const [attributesChecked, setAttributesChecked] = useState(getArrChecked(attributesList));
 
     // for sort by selectoion
-    const [sortBy, setSortBy] = useState(SortSelectOptions[0]);
+    const [sortBy, setSortBy] = useLocalStorage("sortBy", SortSelectOptions[0]);
 
     // for Card size selection
     const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
 
     // for ERC type selection
     // 0 - ERC721, 1 - ERC1155
-    const [ercType, setErcType] = useState("ERC1155");
+    const ercType = collectionInfo.standard
+    // const [ercType, setErcType] = useState("ERC721");
     // console.log('ercType', ercType);
 
     const [numberOfLoaded, setNumberOfLoaded] = useState(0);
     const [hasNextPage, setHasNextPage] = useState(true);
 
+    const attributesChosenList = [];
+    for (let i = 0; i < attributesList.length; i++) {
+        for (let j = 0; j < attributesList[i].list.length; j++) {
+            if (attributesChecked[i][j]) {
+                attributesChosenList.push(`${attributesList[i].list[j].name},${attributesList[i].list[j].value}`);
+            }
+        }
+    }
+    // console.log("sortBy", sortBy);
+    console.log("ercType", ercType);
+    console.log("collectionInfo", collectionInfo);
+    const sortByObj = SortSelectOptionsObj[sortBy];
+
     const { data, error, loading } = useQuery(GET_COLLECTION_LISTINGS, {
         variables: {
-            id: '0x6325439389e0797ab35752b4f43a14c004f22a9c',
-            isERC1155: false,
-            tokenName: '',
-            skipBy: numberOfLoaded + 1,
+            id: collection.address,
+            isERC1155: (ercType === "ERC1155"),
+            tokenName: (searchList.length > 0) ? searchList[0] : "",
+            skipBy: numberOfLoaded,
             first: batchSize,
-            filter: [],
-            orderBy: 'pricePerItem',
-            orderDirection: 'asc'
+            filter: attributesChosenList,
+            orderBy: sortByObj.name,
+            orderDirection: sortByObj.direction,
         },
     })
 
-    console.log("res", data);
+    // console.log("res", data);
 
     const listings = (data) ? data.collection.listings : [];
 
     const [getMore, lazyRes] = useLazyQuery(GET_COLLECTION_LISTINGS);
     const loadNextPage = () => {
-        getMore({
+        const result = getMore({
             variables: {
                 id: '0x6325439389e0797ab35752b4f43a14c004f22a9c',
                 isERC1155: false,
@@ -308,6 +333,8 @@ const Collections = ({
                 orderDirection: 'asc'
             },
         });
+        console.log("result", result);
+        setNumberOfLoaded(numberOfLoaded + batchSize);
     }
 
     const hasNextPageFn = () => {

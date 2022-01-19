@@ -39,7 +39,7 @@ const TopBox = ({ collection }) => {
         }} >
 
             <Box id="collection-name-info-box" sx={{ height: "56px", marginTop: "48px" }}>
-                <Typography variant="h3" align='center'>Smol Brains</Typography>
+                <Typography variant="h3" align='center'>{collection.name}</Typography>
             </Box>
 
             <Box id="collection-info-box" sx={{ height: "64px", display: 'flex', flexDirection: "row", marginBottom: "32px", gap: "30px" }}>
