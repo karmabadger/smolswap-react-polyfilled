@@ -1,8 +1,8 @@
-import CartContext, { cartContextObj } from "./CartContext";
+import CartContext, { cartContextObj, settings } from "./CartContext";
 
 const CartContextProvider = ({ childrenEl, }) => {
     return (
-        <CartContext.Provider value={{ cartContextObj }} children={childrenEl}></CartContext.Provider>
+        <CartContext.Provider value={{ cartContextObj, settings }} children={childrenEl}></CartContext.Provider>
     );
 };
 

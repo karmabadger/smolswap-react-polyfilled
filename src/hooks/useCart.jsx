@@ -1,17 +1,12 @@
 
 
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 
-import NetworkContext from '../App/context/NetworkContext/NetworkContext';
+import CartContext from 'App/components/context/CartContext/CartContext';
 
 function useCart() {
-    const { network, setNetwork } = useContext(NetworkContext);
-
-    // useEffect(() => {
-    //     window.localStorage.setItem(key, JSON.stringify(value));
-    // }, );
-
-    return [network, setNetwork];
+    const context = useContext(CartContext);
+    return context;
 }
 
 export default useCart;

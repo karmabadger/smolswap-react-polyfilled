@@ -97,7 +97,7 @@ function MUIApp({ themeType, setThemeType }) {
 
     if (res.loading) {
         if (collections.length > 0) {
-            console.log("collections", collections);
+            // console.log("collections", collections);
             return (<CollectionsLoadedApp collections={res.data.collections} themeType={themeType} setThemeType={setThemeType} />)
         }
 

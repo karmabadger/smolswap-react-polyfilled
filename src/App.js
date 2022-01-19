@@ -85,7 +85,7 @@ function App() {
     // <ApolloProvider client={client} >
       <ThemeProvider theme={theme(themeType)}>
         <div className="App">
-          <CartContextProvider childrenEl={
+          <CartContextProvider  childrenEl={
             <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
               <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
                 childrenEl={
