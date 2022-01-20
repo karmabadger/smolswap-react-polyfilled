@@ -113,16 +113,5 @@ function App() {
   )
 }
 
-const AppWithWallet = ({ themeType, setThemeType }) => {
-  const [signer, setSigner] = useState(null);
-  // const [themeType, setThemeType] = useLocalStorage('themeType', 'light');
-
-  return (
-    <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
-      childrenEl={
-        <MUIApp themeType={themeType} setThemeType={setThemeType} />
-      } />
-  )
-}
 
 export default AppWithApollo;

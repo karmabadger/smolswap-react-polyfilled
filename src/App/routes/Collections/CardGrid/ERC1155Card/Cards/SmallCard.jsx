@@ -34,7 +34,7 @@ import { getURL } from "utils/erc/metadataUtils.js";
 
 import { BigNumber } from 'ethers';
 
-export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
+export default function ImgMediaCard({ added, handleAdd, handleRemove, item, collection }) {
 
 
     const [open, setOpen] = useState(false);
@@ -46,11 +46,12 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
     }
     const handleClose = () => setOpen(false);
 
-    const handleClickAway = () => {
-        setOpen(false);
-        console.log("handleClickAway");
-    };
+    // const handleClickAway = () => {
+    //     setOpen(false);
+    //     console.log("handleClickAway");
+    // };
 
+    // console.log("collection: ", collection, "item: ", item);
     let numberListed = BigNumber.from(0);
     for (let i = 0; i < item.listings.length; i++) {
         numberListed = numberListed.add(BigNumber.from(item.listings[i].quantity));
@@ -69,14 +70,19 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
                 onClick={handleOpen}
             />
 
-            {
-                open && (
 
-                    <ClickAwayListener onClickAway={handleClickAway}>
-                        <Box sx={{ position: 'relative' }}>
-                            <ERC1155Modal open={open} handleClose={handleClose} anchorEl={anchorEl} id={id} />
-                        </Box>
-                    </ClickAwayListener>
+            {
+                collection && item &&
+                (
+                    <Box sx={{ position: 'relative' }}>
+                        <ERC1155Modal
+                            open={open}
+                            handleClose={handleClose}
+                            id={id}
+                            item={item}
+                            collection={collection}
+                        />
+                    </Box>
                 )
             }
 
