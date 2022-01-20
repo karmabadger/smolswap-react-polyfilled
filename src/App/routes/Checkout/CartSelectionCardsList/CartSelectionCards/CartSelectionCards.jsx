@@ -25,11 +25,38 @@ import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 
 import Checkbox from '@mui/material/Checkbox';
 
+
+import { strWeiToETH, strETHToWei } from "utils/erc/erc20utils";
 import smol from "./smol.png";
 
+import { getURL } from "utils/erc/metadataUtils.js";
 
-function CartSelectionCard({ handleToggle, value }) {
+
+import useCart from "hooks/useCart";
+
+function CartSelectionCard({ handleToggle, value, item, index, selectedList, setSelectedList }) {
     const theme = useTheme();
+
+    const cart = useCart();
+    const handleRemoveFromCart = () => {
+        console.log("remove from cart", item);
+        // remove from cart
+        cart.cartContextObj.removeItem(item);
+
+        const newSelectedList = [];
+        for (let i = 0; i < selectedList.length; i++) {
+            if (i !== index) {
+                newSelectedList.push(selectedList[i]);
+            }
+        }
+        setSelectedList(newSelectedList);
+    }
+
+    const handleMaxPricePerItemChange = (event) => {
+        console.log("max price per item change", typeof event.target.value, strETHToWei(event.target.value));
+
+        item.maxPricePerItem = strETHToWei(event.target.value);
+    }
 
     return (
         <Card sx={{
@@ -43,9 +70,8 @@ function CartSelectionCard({ handleToggle, value }) {
                         // height: "100%",
                         height: "84px"
                     }}
-                    image={smol}
+                    image={getURL(item.metadata.image)}
                     alt="img of NFT"
-                    onClick={handleToggle(value)}
                 />
             </Box>
             <Box sx={{
@@ -86,7 +112,7 @@ function CartSelectionCard({ handleToggle, value }) {
                                 variant="h6"
                                 noWrap
                             >
-                                Smol Brain #43252
+                                {item.name}
                             </Typography>
                             <Typography
                                 style={{
@@ -97,7 +123,7 @@ function CartSelectionCard({ handleToggle, value }) {
                                 // component="div"
                                 noWrap
                             >
-                                432532 $MAGIC
+                                {`${strWeiToETH(item.pricePerItem)} $MAGIC`}
                             </Typography>
                         </Box>
 
@@ -112,13 +138,14 @@ function CartSelectionCard({ handleToggle, value }) {
                                 label="Max Price Per Item"
                                 size="small"
                                 id="standard-size-normal"
-                                defaultValue="543543263"
+                                defaultValue={strWeiToETH(item.maxPricePerItem)}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                                 sx={{
                                     width: "100%",
                                 }}
+                                onChange={handleMaxPricePerItemChange}
                             />
 
                         </Box>
@@ -131,19 +158,39 @@ function CartSelectionCard({ handleToggle, value }) {
                                 height: "100%", display: "flex", flexDirection: "column", justifyContent: "center"
                             }}
                         >
-                            <TextField
-                                label="Quantity"
-                                size="small"
-                                id="standard-size-normal"
-                                defaultValue="1"
-                                // disabled
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                sx={{
-                                    width: "100%",
-                                }}
-                            />
+                            {
+                                item.standard === "ERC721" ?
+                                    (
+                                        <TextField
+                                            label="Quantity"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            defaultValue="1"
+                                            disabled
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
+                                    ) :
+                                    (
+                                        <TextField
+                                            label="Quantity"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            defaultValue="1"
+                                            // disabled
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
+                                    )
+                            }
 
                         </Box>
 
@@ -151,7 +198,9 @@ function CartSelectionCard({ handleToggle, value }) {
                             sx={{
                                 height: "100%", display: "flex", flexDirection: "column", justifyContent: "center"
                             }}>
-                            <IconButton color="primary" aria-label="add to shopping cart">
+                            <IconButton color="primary" aria-label="add to shopping cart"
+                                onClick={handleRemoveFromCart}
+                            >
                                 <RemoveShoppingCartIcon />
                             </IconButton>
                         </Box>

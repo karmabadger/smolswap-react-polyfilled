@@ -54,7 +54,49 @@ import CartSelectionCardsList from './CartSelectionCardsList/CartSelectionCardsL
 import useNetwork from '../../../hooks/useNetwork';
 import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 
-const Checkout = ({ networkName }) => {
+
+import useCart from 'hooks/useCart';
+
+function checkIfAllTrue(checkList) {
+    for (let i = 0; i < checkList.length; i++) {
+        if (!checkList[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getNumberOfTrue(checkList) {
+    let count = 0;
+    for (let i = 0; i < checkList.length; i++) {
+        if (checkList[i]) {
+            count++;
+        }
+    }
+    return count;
+}
+
+
+const Checkout = ({ }) => {
+
+    const cart = useCart();
+
+    const [selectedList, setSelectedList] = useState(Array(cart.cartContextObj.itemList.length).fill(true));
+
+    const allTrue = checkIfAllTrue(selectedList);
+    const numberOfTrue = getNumberOfTrue(selectedList);
+
+    const handleSelectAll = () => {
+        if (!allTrue) {
+            setSelectedList(selectedList.map(() => true));
+        }
+    }
+
+    const handleDeselectAll = () => {
+        setSelectedList(selectedList.map(() => false));
+    }
+
+    console.log("checkout", cart, selectedList, Array(cart.cartContextObj.itemList.length).fill(true), `${numberOfTrue} out of ${selectedList.length} items selected`);
 
     return (
         <Box>
@@ -116,7 +158,136 @@ const Checkout = ({ networkName }) => {
                                         id="panel1a-header"
                                     >
                                         <Typography sx={{ flexShrink: 0 }} variant="h5">
+                                            Input Asset:
+                                        </Typography>
+
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Box sx={{
+                                            paddingLeft: "10px",
+                                            marginBottom: "16px"
+                                        }}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup
+                                                    aria-label="mode-settings"
+                                                    defaultValue="normal"
+                                                    name="radio-buttons-group"
+                                                >
+                                                    <FormControlLabel value="normal" control={<Radio />} label="Normal" />
+                                                    <FormControlLabel value="sweep" control={<Radio />} label="Sweep Mode" />
+                                                </RadioGroup>
+                                            </FormControl>
+
+                                        </Box>
+                                        <TextField
+                                            label="Max Successful Orders"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            value={100}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
+
+                                        <TextField
+                                            label="Max Failures"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            value={100}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Box>
+                            <Box sx={{
+                                backgroundColor: "background.paperDark",
+                                width: "100%"
+                            }}
+                                aria-label="mode">
+                                <Accordion disableGutters elevation={0}
+                                    sx={{
+                                        width: "100%",
+                                        backgroundColor: "background.paperDark",
+                                    }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography sx={{ flexShrink: 0 }} variant="h5">
                                             Mode:
+                                        </Typography>
+
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Box sx={{
+                                            paddingLeft: "10px",
+                                            marginBottom: "16px"
+                                        }}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup
+                                                    aria-label="mode-settings"
+                                                    defaultValue="normal"
+                                                    name="radio-buttons-group"
+                                                >
+                                                    <FormControlLabel value="normal" control={<Radio />} label="Normal" />
+                                                    <FormControlLabel value="sweep" control={<Radio />} label="Sweep Mode" />
+                                                </RadioGroup>
+                                            </FormControl>
+
+                                        </Box>
+                                        <TextField
+                                            label="Max Successful Orders"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            value={100}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
+
+                                        <TextField
+                                            label="Max Failures"
+                                            size="small"
+                                            id="standard-size-normal"
+                                            value={100}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            sx={{
+                                                width: "100%",
+                                            }}
+                                        />
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Box>
+                            <Box sx={{
+                                backgroundColor: "background.paperDark",
+                                width: "100%"
+                            }}>
+                                <Accordion disableGutters elevation={0}
+                                    sx={{
+                                        width: "100%",
+                                        backgroundColor: "background.paperDark",
+                                    }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography sx={{ flexShrink: 0 }} variant="h5">
+                                            Defaults:
                                         </Typography>
 
                                     </AccordionSummary>
@@ -274,7 +445,7 @@ const Checkout = ({ networkName }) => {
                                         Number of selected items:
                                     </Typography>
                                     <Typography variant='h6' color="primary">
-                                        4 out of 5
+                                        {`${numberOfTrue} out of ${selectedList.length}`}
                                     </Typography>
                                     <Typography variant='caption' color="text.secondary" sx={{
                                         fontStyle: 'italic',
@@ -345,14 +516,15 @@ const Checkout = ({ networkName }) => {
                     marginBottom: "12px",
                 }}>
                     <Typography variant="h5" color="primary">
-                        4 out of 5 items selected
+                        {`${numberOfTrue} out of ${selectedList.length} items selected`}
                     </Typography>
 
                 </Box>
 
+
                 <Box sx={{
                     marginTop: "12px",
-                    marginBottom: "24px",
+                    marginBottom: "0px",
                     display: 'flex', flexDirection: 'row', gap: "24px",
                 }}>
                     <Box
@@ -360,6 +532,7 @@ const Checkout = ({ networkName }) => {
                             display: 'flex', flexDirection: 'column',
                             justifyContent: 'center', alignItems: 'center',
                         }}>
+
                         <Typography variant="h5" color="primary">
                             Select All
                         </Typography>
@@ -375,10 +548,45 @@ const Checkout = ({ networkName }) => {
                             sx={{
                                 height: "100%",
                             }}
+
+                            onClick={handleSelectAll}
                         />
                     </Box>
 
                 </Box>
+                <Box sx={{
+                    marginTop: "0px",
+                    marginBottom: "24px",
+                    display: 'flex', flexDirection: 'row', gap: "24px",
+                }}>
+                    <Box
+                        sx={{
+                            display: 'flex', flexDirection: 'column',
+                            justifyContent: 'center', alignItems: 'center',
+                        }}>
+
+                        <Typography variant="h5" color="primary">
+                            Deselect All
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Checkbox
+                            edge="start"
+                            // defaultChecked={true}
+                            checked={true}
+                            tabIndex={-1}
+                            disableRipple
+                            // inputProps={{ "aria-labelledby": labelId }}
+                            sx={{
+                                height: "100%",
+                            }}
+
+                            onClick={handleDeselectAll}
+                        />
+                    </Box>
+
+                </Box>
+
 
                 <Box id="selection-stack"
                     sx={{
@@ -388,7 +596,11 @@ const Checkout = ({ networkName }) => {
                     }}>
 
 
-                    <CartSelectionCardsList />
+                    <CartSelectionCardsList
+                        itemList={cart.cartContextObj.itemList}
+                        selectedList={selectedList}
+                        setSelectedList={setSelectedList}
+                    />
                 </Box>
             </Box>
         </Box>

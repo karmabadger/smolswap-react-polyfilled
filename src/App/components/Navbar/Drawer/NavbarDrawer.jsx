@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 
 import { makeStyles } from '@mui/styles';
 
-import Link from '@mui/material/Link';
+import { Link } from "react-router-dom";
 
 import useNetwork from "hooks/useNetwork";
 
@@ -85,7 +85,13 @@ const NavbarDrawer = ({ open, handleDrawerClose, drawerWidth, matchesDownSM, mat
                     button
                     sx={{ px: "24px" }}
                     key={index}>
-                    <Link href={`${baseRoute}collection/${collectionNameToPath(collection.name)}`} underline="none" color="text.primary">
+                    <Link
+                        to={`${baseRoute}collection/${collectionNameToPath(collection.name)}`}
+                        style={{
+                            textDecoration: "none",
+                            color: theme.palette.text.primary
+                        }}
+                    >
                         <Typography variant="h6">
                             {collection.name}
                         </Typography>

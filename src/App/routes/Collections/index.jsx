@@ -31,6 +31,10 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 
+import Button from '@mui/material/Button';
+
+import TextField from '@mui/material/TextField';
+
 import TopBox from './TopBox/TopBox';
 import SortSelect from './SortSelect/SortSelect';
 import SizeSelect from './SizeSelect/SizeSelect';
@@ -38,7 +42,7 @@ import SearchBar from './SearchBar/SearchBar';
 import CardGrid from './CardGrid/CardGrid';
 import PropertiesDrawer from './Drawer/PropertiesDrawer';
 
-import { SortSelectOptions, SortSelectOptionsObj } from './SortSelect/SortSelectOptions';
+import { SortSelectOptions, SortSelectOptionsObj, SortSelectOptionsERC1155, SortSelectOptionsERC1155Obj } from './SortSelect/SortSelectOptions';
 import { SizeSelectOptions, CardSizes } from './SizeSelect/SizeSelectOptions';
 
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
@@ -51,7 +55,7 @@ import NetworkContext from 'App/components/context/NetworkContext/NetworkContext
 
 import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 import { useQuery, gql, useLazyQuery } from '@apollo/client';
-import { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_INFO, GET_COLLECTION_LISTINGS } from "api/graphql/queries/queries.js";
+import { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_INFO, GET_COLLECTION_LISTINGS, GET_COLLECTION_LISTINGS_ERC1155 } from "api/graphql/queries/queries.js";
 
 import {
     collectionNameToPath,
@@ -132,28 +136,6 @@ function QueriedCollection({ }) {
     const { collectionName } = useParams();
 
     const collection = getCollectionByName(collectionName);
-    // console.log("collectionName", collectionName, getCollectionByName(collectionName));
-
-    // const res = useQuery(GET_COLLECTION_STATS, {
-    //     variables: {
-    //         id: collection.address
-    //     }
-    // })
-
-
-    // if (!res.loading) {
-    //     // console.log("rescollection", res);
-    //     // console.log("resFetchMore", res.fetchMore);
-    //     if (res.fetchMore) {
-    //         // console.log("res2", res2);
-    //         // const res2 = res.fetchMore({
-    //         //     variables: {
-    //         //         id: '0x6325439389e0797ab35752b4f43a14c004f22a9c',
-    //         //         cursor: res.data.collection.listings.pageInfo.endCursor
-    //         //     },
-    //         // });
-    //     }
-    // }
 
 
     // get the properties of the collection
@@ -181,14 +163,27 @@ function QueriedCollection({ }) {
     }
 
 
-    return (
-        <Collections
-            collection={collection}
-            collectionInfo={collectionInfo}
-            attributes={attributes}
-            attributesList={attributesList}
-        ></Collections>
-    )
+    console.log("collectionqueriesInfo", collectionInfo);
+    if (collectionInfo.standard === "ERC721") {
+        // console.log("collectionInfo1 is erc721", collectionInfo, collection)
+        return (
+            <CollectionsERC721
+                collection={collection}
+                collectionInfo={collectionInfo}
+                attributes={attributes}
+                attributesList={attributesList}
+            />
+        )
+    } else {
+        return (
+            <CollectionsERC1155
+                collection={collection}
+                collectionInfo={collectionInfo}
+                attributes={attributes}
+                attributesList={attributesList}
+            />
+        )
+    }
 }
 
 
@@ -228,16 +223,33 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
 
     // console.log("attributesObj", attributesObj)
     // console.log("attributesListObj", attributesListObj)
-    return (
-        <Collections
-            collection={collection}
-            collectionInfo={collectionInfo}
-            // attributes={attributesObj}
-            // setAttributes={setAttributesObj}
-            attributesList={attributesListObj}
-            setAttributesList={setAttributesListObj}
-        ></Collections>
-    )
+
+    console.log("collectionInfo", collectionInfo, collection)
+    if (collectionInfo.standard === "ERC721") {
+        // console.log("collectionInfo is erc721", collectionInfo, collection)
+        return (
+            <CollectionsERC721
+                collection={collection}
+                collectionInfo={collectionInfo}
+                // attributes={attributesObj}
+                // setAttributes={setAttributesObj}
+                attributesList={attributesListObj}
+                setAttributesList={setAttributesListObj}
+            />
+        )
+    } else {
+        return (
+            <CollectionsERC1155
+                collection={collection}
+                collectionInfo={collectionInfo}
+                // attributes={attributesObj}
+                // setAttributes={setAttributesObj}
+                attributesList={attributesListObj}
+                setAttributesList={setAttributesListObj}
+            />
+        )
+    }
+
 }
 
 
@@ -252,9 +264,9 @@ function getArrChecked(arr) {
     return arrChecked;
 }
 
-const Collections = ({
+const CollectionsERC721 = ({
     collection, collectionInfo,
-    attributes, setAttributes,
+    // attributes, setAttributes,
     attributesList, setAttributesList
 }) => {
 
@@ -262,18 +274,12 @@ const Collections = ({
 
     const { width } = useWindowDimensions();
 
-    const batchSize = 42;
+    const batchSize = 84;
 
     // for search bar and chips
     const [searchList, setSearchList] = useState([]);
 
     // properties of the collection
-    // const arrChecked = [];
-    // for (let i = 0; i < attributesList.length; i++) {
-    //     for (let j = 0; j < attributesList[i].list.length; j++) {
-    //         arrChecked.push(false);
-    //     }
-    // }
     const [attributesChecked, setAttributesChecked] = useState(getArrChecked(attributesList));
 
     // for sort by selectoion
@@ -284,7 +290,7 @@ const Collections = ({
 
     // for ERC type selection
     // 0 - ERC721, 1 - ERC1155
-    const ercType = collectionInfo.standard
+    const ercType = "ERC721";
     // const [ercType, setErcType] = useState("ERC721");
     // console.log('ercType', ercType);
 
@@ -309,31 +315,42 @@ const Collections = ({
             id: collection.address,
             isERC1155: (ercType === "ERC1155"),
             tokenName: (searchList.length > 0) ? searchList[0] : "",
-            skipBy: numberOfLoaded,
+            skipBy: 0,
             first: batchSize,
             filter: attributesChosenList,
             orderBy: sortByObj.name,
             orderDirection: sortByObj.direction,
         },
+        // pollInterval: 4000,
     })
 
-    // console.log("res", data);
 
-    const listings = (data) ? data.collection.listings : [];
+    let listings = [];
+    if (data) {
+        if (data.collection) {
+            if (data.collection.listings) {
+                listings = data.collection.listings;
+            }
+        }
+    }
+
+    console.log("reserc721", data, listings);
 
     const [getMore, lazyRes] = useLazyQuery(GET_COLLECTION_LISTINGS);
     const loadNextPage = () => {
+        console.log("loadNextPage");
         const result = getMore({
             variables: {
-                id: '0x6325439389e0797ab35752b4f43a14c004f22a9c',
-                isERC1155: false,
-                tokenName: '',
-                skipBy: 0,
+                id: collection.address,
+                isERC1155: (ercType === "ERC1155"),
+                tokenName: (searchList.length > 0) ? searchList[0] : "",
+                skipBy: numberOfLoaded,
                 first: batchSize,
-                filter: [],
-                orderBy: 'pricePerItem',
-                orderDirection: 'asc'
+                filter: attributesChosenList,
+                orderBy: sortByObj.name,
+                orderDirection: sortByObj.direction,
             },
+            pollInterval: 4000,
         });
         console.log("result", result);
         setNumberOfLoaded(numberOfLoaded + batchSize);
@@ -351,8 +368,8 @@ const Collections = ({
     // console.log('gridWidth: ', gridWidth, 'columnSize: ', columnSize, "width: ", width, "cardWidthWithMargin: ", cardWidthWithMargin, "cardHeightWithMargin: ", cardHeightWithMargin);
 
 
-    const cart = useCart();
-    console.log("cart", cart);
+    // const cart = useCart();
+    // console.log("cart", cart);
 
     return (
         <Box id="collections-main-page"
@@ -436,6 +453,289 @@ const Collections = ({
                                         isNextPageLoading={lazyRes.loading}
                                         lazyRes={lazyRes}
                                         sortBy={sortBy}
+
+                                        viewERC1155={"listings"}
+                                    />
+                                )
+                                :
+                                (
+                                    <Typography>
+                                        No listings found
+                                    </Typography>
+                                )
+                        }
+                    </Box>
+
+                    <Box
+                        sx={{
+                            marginTop: "36px",
+                            display: "flex",
+                            flexDirection: "row",
+                            // backgroundColor: "red"
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                flexGrow: "0",
+                            }}
+                        >
+                            <Button>
+                                Previous
+                            </Button>
+                        </Box>
+                        <Box
+                            sx={{
+                                flexGrow: "5",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Box
+                                sx={{
+
+                                }}
+                            >
+                                <TextField
+                                    id="outlined-number"
+                                    // label="Number"
+                                    type="number"
+                                    size='small'
+                                    variant="standard"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+
+                                    sx={{
+                                        minWidth: "60px",
+                                        maxWidth: "60px",
+                                    }}
+                                />
+
+                                <Button>
+                                    Go To Page
+                                </Button>
+                            </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                flexGrow: "0",
+                            }}
+                        >
+                            <Button>
+                                Next
+                            </Button>
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+        </Box >
+    )
+}
+
+const CollectionsERC1155 = ({
+    collection, collectionInfo,
+    // attributes, setAttributes,
+    attributesList, setAttributesList
+}) => {
+
+    const theme = useTheme();
+
+    const { width } = useWindowDimensions();
+
+    const batchSize = 100;
+
+    // for search bar and chips
+    const [searchList, setSearchList] = useState([]);
+
+    // properties of the collection
+    const [attributesChecked, setAttributesChecked] = useState(getArrChecked(attributesList));
+
+    // for sort by selectoion
+    const [sortBy, setSortBy] = useLocalStorage("sortBy", SortSelectOptions[0]);
+
+    // for erc1155 view
+    const [viewERC1155, setViewERC1155] = useLocalStorage("viewERC1155", "tokens");
+
+    // for Card size selection
+    const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
+
+    // for ERC type selection
+    // 0 - ERC721, 1 - ERC1155
+    const ercType = "ERC1155";
+    console.log("ercType1555", SortSelectOptionsERC1155, collectionInfo, collection,);
+    // const [ercType, setErcType] = useState("ERC721");
+    // console.log('ercType', ercType);
+
+    const [numberOfLoaded, setNumberOfLoaded] = useState(0);
+    const [hasNextPage, setHasNextPage] = useState(true);
+
+    const attributesChosenList = [];
+    for (let i = 0; i < attributesList.length; i++) {
+        for (let j = 0; j < attributesList[i].list.length; j++) {
+            if (attributesChecked[i][j]) {
+                attributesChosenList.push(`${attributesList[i].list[j].name},${attributesList[i].list[j].value}`);
+            }
+        }
+    }
+    // console.log("sortBy", sortBy);
+    // console.log("ercType", ercType);
+    // console.log("collectionInfo", collectionInfo);
+    // console.log("sortby", SortSelectOptionsERC1155[0], SortSelectOptionsERC1155Obj[sortBy]);
+    const sortByObj = SortSelectOptionsObj[sortBy];
+    // console.log("sortByObj", sortByObj, sortBy);
+
+    const { data, error, loading } = useQuery(GET_COLLECTION_LISTINGS_ERC1155, {
+        variables: {
+            id: collection.address,
+            isERC1155: viewERC1155 === "tokens",
+            tokenName: (searchList.length > 0) ? searchList[0] : "",
+            skipBy: 0,
+            first: batchSize,
+            filter: attributesChosenList,
+            orderBy: sortByObj.name,
+            orderDirection: sortByObj.direction,
+        },
+        // pollInterval: 4000,
+    })
+
+    // console.log("data", data);
+    let listings = [];
+    if (data) {
+        if (data.collection) {
+
+            if (viewERC1155 == "tokens") {
+                listings = data.collection.tokens;
+                listings = listings.filter((item) => {
+                    return (item.listings && item.listings.length > 0)
+                })
+            } else {
+                listings = data.collection.listings;
+                listings = listings.filter((item) => {
+                    return (item.listings && item.listings.length > 0)
+                })
+            }
+        }
+    }
+
+    console.log("reserc1155", data, listings);
+
+    const [getMore, lazyRes] = useLazyQuery(GET_COLLECTION_LISTINGS_ERC1155);
+    const loadNextPage = () => {
+        console.log("loadNextPage");
+        const result = getMore({
+            variables: {
+                id: collection.address,
+                isERC1155: (ercType === "ERC1155"),
+                tokenName: (searchList.length > 0) ? searchList[0] : "",
+                skipBy: numberOfLoaded,
+                first: batchSize,
+                filter: attributesChosenList,
+                orderBy: sortByObj.name,
+                orderDirection: sortByObj.direction,
+            },
+            pollInterval: 4000,
+        });
+        console.log("result", result);
+        setNumberOfLoaded(numberOfLoaded + batchSize);
+    }
+
+    const hasNextPageFn = () => {
+        return hasNextPage;
+    }
+
+
+    // for drawer
+    const [open, setOpen] = useState(false);
+
+    const { gridWidth, columnSize, cardWidthWithMargin, cardHeightWithMargin } = calculateGridSize(width, cardSize, ercType, open);
+    // console.log('gridWidth: ', gridWidth, 'columnSize: ', columnSize, "width: ", width, "cardWidthWithMargin: ", cardWidthWithMargin, "cardHeightWithMargin: ", cardHeightWithMargin);
+
+
+    return (
+        <Box id="collections-main-page"
+            sx={{
+                padding: "0px", mx: `${pageMX}px`,
+                display: 'flex', flexDirection: 'column',
+            }}
+        >
+
+            <TopBox collection={collection} />
+
+            <Divider />
+
+            <Box id="collection-main-box" sx={{ marginTop: "32px", mx: "0px", display: "flex", flexDirection: "row" }}>
+
+                <PropertiesDrawer drawerWidth={drawerWidth} drawerMinWidth={drawerMinWidth}
+                    open={open}
+                    setOpen={setOpen}
+                    collection={collection}
+                    collectionInfo={collectionInfo}
+                    // attributes={attributes}
+                    // setAttributes={setAttributes}
+                    attributesList={attributesList}
+                    setAttributesList={setAttributesList}
+                    attributesChecked={attributesChecked}
+                    setAttributesChecked={setAttributesChecked}
+                />
+
+                <Box id="collection-main-right-box" sx={{ flexGrow: "1", marginLeft: `${gridMLeft}px`, }}>
+                    <Box id="collection-grid-top-box" sx={{ display: "flex", flexDirection: "row", alignContent: "stretch", flexWrap: "wrap", gap: "24px" }}>
+                        <Box id="collection-search-box" sx={{ minWidth: "200px", flexGrow: "10" }}>
+                            <SearchBar searchList={searchList} setSearchList={setSearchList} />
+                        </Box>
+
+                        <Box id="collection-sort-box" sx={{ width: "220px", minWidth: "100px", flexGrow: "3" }}>
+                            <SortSelect sortBy={sortBy} setSortBy={setSortBy} ercType={ercType} />
+                        </Box>
+
+                        <Box id="collection-size-box" sx={{ width: "80px", minWidth: "60px", flexGrow: "1" }}>
+                            <SizeSelect cardSize={cardSize} setCardSize={setCardSize} />
+                        </Box>
+                    </Box>
+                    <Box id="grid-info" sx={{ my: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                        <Box id="results-text">
+                            <Typography variant="body2" color={theme.palette.text.secondary}>
+                                1234 results
+                            </Typography>
+                        </Box>
+                        {
+                            searchList && searchList.length !== 0 &&
+                            (
+
+                                <Box id="search-chips-box" sx={{ display: "flex", flexDirection: "row", gap: "8px" }}>
+                                    {searchList.map((item, index) => {
+                                        return (
+                                            <Chip key={index} label={item} color="secondary" onDelete={() => { setSearchList(searchList.filter((value) => { return (value !== item) })) }} />
+                                        )
+                                    })
+                                    }
+                                </Box>
+                            )
+                        }
+                    </Box>
+                    <Box id="collection-grid-main-box">
+
+                        {
+                            (listings.length > 0) ?
+                                (
+
+                                    <CardGrid
+                                        gridWidth={gridWidth}
+                                        columnSize={columnSize}
+                                        cardWidthWithMargin={cardWidthWithMargin}
+                                        cardHeightWithMargin={cardHeightWithMargin}
+                                        cardSize={cardSize}
+                                        ercType={ercType}
+
+                                        hasNextPage={hasNextPageFn}
+                                        listings={listings}
+                                        loadNextPage={loadNextPage}
+                                        isNextPageLoading={lazyRes.loading}
+                                        lazyRes={lazyRes}
+                                        sortBy={sortBy}
+
+                                        viewERC1155={viewERC1155}
                                     />
                                 )
                                 :

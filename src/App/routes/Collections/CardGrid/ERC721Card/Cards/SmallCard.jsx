@@ -49,62 +49,32 @@ export default function ImgMediaCard({ item }) {
     // console.log("ImgMediaCard item: ", item);
     const cart = useCart();
 
-
-    console.log("item: ", item);
+    // console.log("item: ", item);
     const OrderData = {
+        name: item.token.name,
         collectionAddress: item.id,
         tokenId: item.token.tokenId,
+        metadata: item.token.metadata,
         expires: item.expires,
         pricePerItem: item.pricePerItem,
         quantity: 1,
-        owner: item.user.id
+        owner: item.user.id,
+        standard: "ERC721"
     }
 
     const added = cart.cartContextObj.checkIfItemInCart(OrderData);
     const [addedState, setAddedState] = useState(added);
 
-
-    // useEffect(() => {
-    //     setAddedState(added);
-    // }, [added]);
-
-    // const added = cart.cartContextObj.collections.mapping[item.id].itemsMapping[item.token.tokenId]
-
-    // console.log("added: ", added);
-
     const handleAddToCart = (event) => {
-
         if (!added) {
-            const OrderData = {
-                collectionAddress: item.id,
-                tokenId: item.token.tokenId,
-                expires: item.expires,
-                pricePerItem: item.pricePerItem,
-                quantity: 1,
-                owner: item.user.id
-            }
-
             cart.cartContextObj.addItem(OrderData);
-            console.log("added after", cart.cartContextObj.checkIfItemInCart(OrderData))
-
             setAddedState(true);
         }
     }
 
     const handleRemoveFromCart = (event) => {
-
         if (added) {
-            const OrderData = {
-                collectionAddress: item.id,
-                tokenId: item.token.tokenId,
-                expires: item.expires,
-                pricePerItem: item.pricePerItem,
-                quantity: 1,
-                owner: item.user.id
-            }
-
             cart.cartContextObj.removeItem(OrderData);
-
             setAddedState(false);
         }
     }
@@ -127,10 +97,10 @@ export default function ImgMediaCard({ item }) {
 
     const id = open ? 'simple-popper' : 'not-open';
     return (
-        <Card sx={{ maxWidth: 128 }}>
+        <Card sx={{ maxWidth: 128, minHeight: 128 }}>
             <CardMedia
                 component="img"
-                alt="smol"
+                alt={item.token.name}
                 // height="360"
                 // image={smol}
                 image={imgLink}
@@ -200,37 +170,34 @@ export default function ImgMediaCard({ item }) {
                     >
                         Buy Now
                     </Button>
-                    <IconButtonComponent
-                        added={addedState}
-                        handleAddToCart={handleAddToCart}
-                        handleRemoveFromCart={handleRemoveFromCart}
-                    />
+                    {
+                        (addedState) ?
+                            <IconButton
+                                onClick={handleRemoveFromCart}
+                                sx={{
+                                    py: "0px",
+                                    px: "0px",
+                                    marginLeft: "8px"
+                                }}
+                                aria-label="add-to-cart"
+                            >
+                                <RemoveShoppingCartIcon size="small" fontSize="inherit" color="primary" />
+                            </IconButton >
+                            :
+                            <IconButton
+                                onClick={handleAddToCart}
+                                sx={{
+                                    py: "0px",
+                                    px: "0px",
+                                    marginLeft: "8px"
+                                }}
+                                aria-label="add-to-cart"
+                            >
+                                <AddShoppingCartIcon size="large" fontSize="inherit" color="primary" />
+                            </IconButton>
+                    }
                 </Box>
             </CardContent>
         </Card>
     );
-}
-
-
-const IconButtonComponent = ({ added, handleRemoveFromCart, handleAddToCart }) => {
-
-    return (
-        <IconButton
-            onClick={(added) ?
-                handleRemoveFromCart
-                :
-                handleAddToCart
-            }
-            sx={{
-                py: "0px",
-                px: "0px",
-                marginLeft: "8px"
-            }}
-            aria-label="add-to-cart"
-        >
-            {
-                added ? <RemoveShoppingCartIcon size="small" fontSize="inherit" color="primary" /> : <AddShoppingCartIcon size="large" fontSize="inherit" color="primary" />
-            }
-        </IconButton>
-    )
 }

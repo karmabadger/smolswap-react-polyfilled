@@ -5,29 +5,29 @@ import SmallCard from './Cards/SmallCard';
 
 import { SizeSelectOptions, CardSizes } from '../../SizeSelect/SizeSelectOptions';
 
-const ERC1155Card = ({ cardSize }) => {
+const ERC1155Card = ({ cardSize, item }) => {
     if (cardSize === "SM") {
         return (
             <Box>
-                <SmallCard />
+                <SmallCard item={item} />
             </Box>
         )
     } else if (cardSize === "MD") {
         return (
             <Box>
-                <MediumCard />
+                <MediumCard item={item} />
             </Box>
         )
     } else if (cardSize === "LG") {
         return (
             <Box>
-                <MediumCard />
+                <MediumCard item={item} />
             </Box>
         )
     }
     return (
         <Box>
-            <MediumCard />
+            <MediumCard item={item} />
         </Box>
     )
 }

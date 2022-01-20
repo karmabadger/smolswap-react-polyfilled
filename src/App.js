@@ -44,9 +44,23 @@ const AppWithApollo = () => {
 
   // console.log('networkInfo', networkInfo);
 
+  const cache = new InMemoryCache({
+    // typePolicies: {
+    //   Query: {
+    //     collection: {
+    //       token: {
+    //         name: {
+    //           merge: true,
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
+  });
+
   const client = new ApolloClient({
     uri: networkInfo.theGraph.url,
-    cache: new InMemoryCache()
+    cache: cache,
   });
 
   // console.log('network', useLocation().pathname.split('/')[1]);
@@ -83,18 +97,18 @@ function App() {
   // });
   return (
     // <ApolloProvider client={client} >
-      <ThemeProvider theme={theme(themeType)}>
-        <div className="App">
-          <CartContextProvider  childrenEl={
-            <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
-              <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
-                childrenEl={
-                  <MUIApp themeType={themeType} setThemeType={setThemeType} />
-                } />
-            } />
+    <ThemeProvider theme={theme(themeType)}>
+      <div className="App">
+        <CartContextProvider childrenEl={
+          <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
+            <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
+              childrenEl={
+                <MUIApp themeType={themeType} setThemeType={setThemeType} />
+              } />
           } />
-        </div>
-      </ThemeProvider>
+        } />
+      </div>
+    </ThemeProvider>
     // </ApolloProvider >
   )
 }

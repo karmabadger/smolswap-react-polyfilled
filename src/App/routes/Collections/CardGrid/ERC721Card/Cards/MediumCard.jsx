@@ -19,7 +19,9 @@ import { strWeiToETH } from 'utils/erc/erc20utils.js';
 
 import ERC721Modal from "./Modals/ERC721Modal";
 
-export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
+import useCart from "hooks/useCart";
+
+export default function ImgMediaCard({ item }) {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -33,6 +35,40 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
         setOpen(false);
         console.log("handleClickAway");
     };
+
+
+    // console.log("ImgMediaCard item: ", item);
+    const cart = useCart();
+
+    // console.log("item: ", item);
+    const OrderData = {
+        name: item.token.name,
+        collectionAddress: item.id,
+        tokenId: item.token.tokenId,
+        metadata: item.token.metadata,
+        expires: item.expires,
+        pricePerItem: item.pricePerItem,
+        quantity: 1,
+        owner: item.user.id,
+        standard: "ERC721"
+    }
+
+    const added = cart.cartContextObj.checkIfItemInCart(OrderData);
+    const [addedState, setAddedState] = useState(added);
+
+    const handleAddToCart = (event) => {
+        if (!added) {
+            cart.cartContextObj.addItem(OrderData);
+            setAddedState(true);
+        }
+    }
+
+    const handleRemoveFromCart = (event) => {
+        if (added) {
+            cart.cartContextObj.removeItem(OrderData);
+            setAddedState(false);
+        }
+    }
 
     const urlpath = item.token.metadata.image.split("/");
     let imgLink = "https://treasure-marketplace.mypinata.cloud/ipfs";
@@ -51,10 +87,10 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
 
     const id = open ? 'simple-popper' : 'not-open';
     return (
-        <Card sx={{ maxWidth: 256 }}>
+        <Card sx={{ maxWidth: 256, minHeight: 256 }}>
             <CardMedia
                 component="img"
-                alt="smol"
+                alt={item.token.name}
                 // height="360"
                 // image={smol}
                 image={imgLink}
@@ -127,18 +163,32 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
                         See details
                     </Button>
 
-                    <IconButton
-                        sx={{
-                            py: "0px",
-                            px: "0px",
-                            marginLeft: "10px"
-                        }}
-                        aria-label="add-to-cart"
-                    >
-                        {
-                            added ? <RemoveShoppingCartIcon size="large" onClick={handleRemove} fontSize="inherit" color="primary" /> : <AddShoppingCartIcon size="large" onClick={handleAdd} fontSize="inherit" color="primary" />
-                        }
-                    </IconButton>
+                    {
+                        addedState ?
+                            <IconButton
+                                sx={{
+                                    py: "0px",
+                                    px: "0px",
+                                    marginLeft: "10px"
+                                }}
+                                aria-label="add-to-cart"
+                                onClick={handleRemoveFromCart}
+                            >
+                                <RemoveShoppingCartIcon size="large" fontSize="inherit" color="primary" />
+                            </IconButton>
+                            :
+                            <IconButton
+                                sx={{
+                                    py: "0px",
+                                    px: "0px",
+                                    marginLeft: "10px"
+                                }}
+                                aria-label="add-to-cart"
+                                onClick={handleAddToCart}
+                            >
+                                <AddShoppingCartIcon size="large" fontSize="inherit" color="primary" />
+                            </IconButton>
+                    }
                 </Box>
             </CardContent>
         </Card>
