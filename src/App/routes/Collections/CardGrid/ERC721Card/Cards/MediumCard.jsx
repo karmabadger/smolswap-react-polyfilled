@@ -21,21 +21,22 @@ import ERC721Modal from "./Modals/ERC721Modal";
 
 import useCart from "hooks/useCart";
 
-export default function ImgMediaCard({ item }) {
+export default function MediumCard({ item, collection }) {
     const [open, setOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
+    // const [anchorEl, setAnchorEl] = useState(null);
 
     const handleOpen = (event) => {
         setOpen(true);
-        setAnchorEl(document.body);
+        // setAnchorEl(document.body);
     }
     const handleClose = () => setOpen(false);
 
-    const handleClickAway = () => {
-        setOpen(false);
-        console.log("handleClickAway");
-    };
+    // const handleClickAway = () => {
+    //     setOpen(false);
+    //     console.log("handleClickAway");
+    // };
 
+    console.log("collection: ", collection);
 
     // console.log("ImgMediaCard item: ", item);
     const cart = useCart();
@@ -98,16 +99,23 @@ export default function ImgMediaCard({ item }) {
             />
 
             {
-                open && (
+                collection && item &&
+                (
+                    <Box sx={{ position: 'relative' }}>
+                        <ERC721Modal
+                            open={open}
+                            handleClose={handleClose}
+                            id={id}
+                            item={item}
+                            collection={collection}
 
-                    <ClickAwayListener onClickAway={handleClickAway}>
-                        <Box sx={{ position: 'relative' }}>
-                            <ERC721Modal open={open} handleClose={handleClose} anchorEl={anchorEl} id={id} item={item} />
-                        </Box>
-                    </ClickAwayListener>
+                            addedState={addedState}
+                            handleAddToCart={handleAddToCart}
+                            handleRemoveFromCart={handleRemoveFromCart}
+                        />
+                    </Box>
                 )
             }
-
 
             <CardContent
                 style={{ paddingBottom: "21px" }}

@@ -10,13 +10,13 @@ import { StyledEngineProvider } from '@mui/material/styles';
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Router>
-      <StyledEngineProvider>
-        <App />
-      </StyledEngineProvider>
-    </Router>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <Router>
+    <StyledEngineProvider>
+      <App />
+    </StyledEngineProvider>
+  </Router>,
+  // </React.StrictMode>,
   document.getElementById('root')
 );
 

@@ -163,11 +163,11 @@ function QueriedCollection({ }) {
     }
 
 
-    console.log("collectionqueriesInfo", collectionInfo);
-    if (collectionInfo.standard === "ERC721") {
+    // console.log("collectionqueriesInfo", collectionInfo);
+    if (collectionInfo.standard === "ERC1155") {
         // console.log("collectionInfo1 is erc721", collectionInfo, collection)
         return (
-            <CollectionsERC721
+            <CollectionsERC1155
                 collection={collection}
                 collectionInfo={collectionInfo}
                 attributes={attributes}
@@ -176,7 +176,7 @@ function QueriedCollection({ }) {
         )
     } else {
         return (
-            <CollectionsERC1155
+            <CollectionsERC721
                 collection={collection}
                 collectionInfo={collectionInfo}
                 attributes={attributes}
@@ -224,11 +224,11 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
     // console.log("attributesObj", attributesObj)
     // console.log("attributesListObj", attributesListObj)
 
-    console.log("collectionInfo", collectionInfo, collection)
-    if (collectionInfo.standard === "ERC721") {
+    // console.log("collectionInfo", collectionInfo, collection)
+    if (collectionInfo.standard === "ERC1155") {
         // console.log("collectionInfo is erc721", collectionInfo, collection)
         return (
-            <CollectionsERC721
+            <CollectionsERC1155
                 collection={collection}
                 collectionInfo={collectionInfo}
                 // attributes={attributesObj}
@@ -239,7 +239,7 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
         )
     } else {
         return (
-            <CollectionsERC1155
+            <CollectionsERC721
                 collection={collection}
                 collectionInfo={collectionInfo}
                 // attributes={attributesObj}
@@ -274,7 +274,35 @@ const CollectionsERC721 = ({
 
     const { width } = useWindowDimensions();
 
-    const batchSize = 84;
+
+    // pagination
+    const batchSize = 100;
+    const [page, setPage] = useState(0);
+    const [inputFieldPageNumber, setInputFieldPageNumber] = useState(page + 1);
+    const onPageChange = (event) => {
+        console.log("newPage", event.target.value);
+        if (event.target.value > 0) {
+            setInputFieldPageNumber(event.target.value);
+        } else {
+            setInputFieldPageNumber(0);
+        }
+    };
+    const handleGoToPage = (event) => {
+        console.log("handleGoToPage", event.target.value);
+        setPage(event.target.value - 1);
+        setInputFieldPageNumber(event.target.value);
+    };
+
+    const handleClickNextPage = () => {
+        console.log("handleClickNextPage", page);
+        setPage(page + 1);
+        setInputFieldPageNumber(page + 2);
+    }
+
+    const handleClickPreviousPage = () => {
+        setPage(page - 1);
+        setInputFieldPageNumber(page);
+    }
 
     // for search bar and chips
     const [searchList, setSearchList] = useState([]);
@@ -315,7 +343,7 @@ const CollectionsERC721 = ({
             id: collection.address,
             isERC1155: (ercType === "ERC1155"),
             tokenName: (searchList.length > 0) ? searchList[0] : "",
-            skipBy: 0,
+            skipBy: (page * batchSize),
             first: batchSize,
             filter: attributesChosenList,
             orderBy: sortByObj.name,
@@ -334,7 +362,9 @@ const CollectionsERC721 = ({
         }
     }
 
-    console.log("reserc721", data, listings);
+    const pageActualSize = listings.length;
+
+    // console.log("reserc721", data, listings);
 
     const [getMore, lazyRes] = useLazyQuery(GET_COLLECTION_LISTINGS);
     const loadNextPage = () => {
@@ -350,7 +380,7 @@ const CollectionsERC721 = ({
                 orderBy: sortByObj.name,
                 orderDirection: sortByObj.direction,
             },
-            pollInterval: 4000,
+            // pollInterval: 4000,
         });
         console.log("result", result);
         setNumberOfLoaded(numberOfLoaded + batchSize);
@@ -413,10 +443,30 @@ const CollectionsERC721 = ({
                         </Box>
                     </Box>
                     <Box id="grid-info" sx={{ my: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                        <Box id="results-text">
-                            <Typography variant="body2" color={theme.palette.text.secondary}>
-                                1234 results
-                            </Typography>
+                        <Box id="results-text"
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                flexWrap: "wrap",
+                                gap: "8px",
+
+                            }}
+                        >
+                            <Box>
+                                <Typography variant="body2" color={theme.palette.text.secondary}>
+                                    {`${pageActualSize} results on page ${page + 1} out of X total results`}
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <Button
+                                    sx={{
+                                        py: 0,
+
+                                    }}>
+                                    Quick Add
+                                </Button>
+                            </Box>
                         </Box>
                         {
                             searchList && searchList.length !== 0 &&
@@ -455,13 +505,24 @@ const CollectionsERC721 = ({
                                         sortBy={sortBy}
 
                                         viewERC1155={"listings"}
+
+                                        collection={collection}
                                     />
                                 )
                                 :
                                 (
-                                    <Typography>
-                                        No listings found
-                                    </Typography>
+                                    (loading) ?
+                                        (
+                                            <Typography>
+                                                Loading...
+                                            </Typography>
+                                        )
+                                        :
+                                        (
+                                            <Typography>
+                                                No listings found
+                                            </Typography>
+                                        )
                                 )
                         }
                     </Box>
@@ -479,7 +540,10 @@ const CollectionsERC721 = ({
                                 flexGrow: "0",
                             }}
                         >
-                            <Button>
+                            <Button
+                                disabled={(page < 1)}
+                                onClick={handleClickPreviousPage}
+                            >
                                 Previous
                             </Button>
                         </Box>
@@ -499,12 +563,17 @@ const CollectionsERC721 = ({
                                 <TextField
                                     id="outlined-number"
                                     // label="Number"
+                                    // defaultValue={page + 1}
+                                    value={inputFieldPageNumber}
                                     type="number"
                                     size='small'
                                     variant="standard"
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
+                                    onChange={onPageChange}
+
+                                    helperText={`Page ${page + 1}`}
 
                                     sx={{
                                         minWidth: "60px",
@@ -512,7 +581,9 @@ const CollectionsERC721 = ({
                                     }}
                                 />
 
-                                <Button>
+                                <Button
+                                    onClick={handleGoToPage}
+                                >
                                     Go To Page
                                 </Button>
                             </Box>
@@ -522,11 +593,15 @@ const CollectionsERC721 = ({
                                 flexGrow: "0",
                             }}
                         >
-                            <Button>
+                            <Button
+                                onClick={handleClickNextPage}
+                                disabled={pageActualSize < batchSize}
+                            >
                                 Next
                             </Button>
                         </Box>
                     </Box>
+
                 </Box>
             </Box>
         </Box >
@@ -543,7 +618,34 @@ const CollectionsERC1155 = ({
 
     const { width } = useWindowDimensions();
 
+    // pagination
     const batchSize = 100;
+    const [page, setPage] = useState(0);
+    const [inputFieldPageNumber, setInputFieldPageNumber] = useState(page + 1);
+    const onPageChange = (event) => {
+        console.log("newPage", event.target.value);
+        if (event.target.value > 0) {
+            setInputFieldPageNumber(event.target.value);
+        } else {
+            setInputFieldPageNumber(0);
+        }
+    };
+    const handleGoToPage = (event) => {
+        console.log("handleGoToPage", event.target.value);
+        setPage(event.target.value - 1);
+        setInputFieldPageNumber(event.target.value);
+    };
+
+    const handleClickNextPage = () => {
+        console.log("handleClickNextPage", page);
+        setPage(page + 1);
+        setInputFieldPageNumber(page + 2);
+    }
+
+    const handleClickPreviousPage = () => {
+        setPage(page - 1);
+        setInputFieldPageNumber(page);
+    }
 
     // for search bar and chips
     const [searchList, setSearchList] = useState([]);
@@ -604,7 +706,7 @@ const CollectionsERC1155 = ({
     if (data) {
         if (data.collection) {
 
-            if (viewERC1155 == "tokens") {
+            if (viewERC1155 === "tokens") {
                 listings = data.collection.tokens;
                 listings = listings.filter((item) => {
                     return (item.listings && item.listings.length > 0)
@@ -617,6 +719,8 @@ const CollectionsERC1155 = ({
             }
         }
     }
+
+    const pageActualSize = listings.length;
 
     console.log("reserc1155", data, listings);
 
@@ -694,10 +798,24 @@ const CollectionsERC1155 = ({
                         </Box>
                     </Box>
                     <Box id="grid-info" sx={{ my: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                        <Box id="results-text">
-                            <Typography variant="body2" color={theme.palette.text.secondary}>
-                                1234 results
-                            </Typography>
+                        <Box id="results-text"
+                            sx={{
+                                display: "flex", flexDirection: "row", alignItems: "center",
+                            }}
+                        >
+                            <Box>
+                                <Typography variant="body2" color={theme.palette.text.secondary}>
+                                    {`${pageActualSize} results on page ${page + 1} out of X total results`}
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <Button
+                                    sx={{
+                                        py: 0,
+                                    }}>
+                                    Quick Add
+                                </Button>
+                            </Box>
                         </Box>
                         {
                             searchList && searchList.length !== 0 &&
@@ -736,16 +854,102 @@ const CollectionsERC1155 = ({
                                         sortBy={sortBy}
 
                                         viewERC1155={viewERC1155}
+                                        collection={collection}
                                     />
                                 )
                                 :
                                 (
-                                    <Typography>
-                                        No listings found
-                                    </Typography>
+                                    (loading) ?
+                                        (
+                                            <Typography>
+                                                Loading...
+                                            </Typography>
+                                        )
+                                        :
+                                        (
+                                            <Typography>
+                                                No listings found
+                                            </Typography>
+                                        )
                                 )
                         }
                     </Box>
+
+                    <Box
+                        sx={{
+                            marginTop: "36px",
+                            display: "flex",
+                            flexDirection: "row",
+                            // backgroundColor: "red"
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                flexGrow: "0",
+                            }}
+                        >
+                            <Button
+                                disabled={(page < 1)}
+                                onClick={handleClickPreviousPage}
+                            >
+                                Previous
+                            </Button>
+                        </Box>
+                        <Box
+                            sx={{
+                                flexGrow: "5",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Box
+                                sx={{
+
+                                }}
+                            >
+                                <TextField
+                                    id="outlined-number"
+                                    // label="Number"
+                                    // defaultValue={page + 1}
+                                    value={inputFieldPageNumber}
+                                    type="number"
+                                    size='small'
+                                    variant="standard"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    onChange={onPageChange}
+
+                                    helperText={`Page ${page + 1}`}
+
+                                    sx={{
+                                        minWidth: "60px",
+                                        maxWidth: "60px",
+                                    }}
+                                />
+
+                                <Button
+                                    onClick={handleGoToPage}
+                                >
+                                    Go To Page
+                                </Button>
+                            </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                flexGrow: "0",
+                            }}
+                        >
+                            <Button
+                                onClick={handleClickNextPage}
+                                disabled={pageActualSize < batchSize}
+                            >
+                                Next
+                            </Button>
+                        </Box>
+                    </Box>
+
                 </Box>
             </Box>
         </Box >

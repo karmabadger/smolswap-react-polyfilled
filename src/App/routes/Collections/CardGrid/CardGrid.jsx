@@ -25,6 +25,8 @@ const CardGrid = ({
     loadNextPage,
     sortBy,
     lazyRes,
+
+    collection,
 }) => {
     // const [count, setCount] = useState(20);
 
@@ -67,32 +69,36 @@ const CardGrid = ({
 
     // console.log("item count: ", item);
     const Cell = ({ columnIndex, rowIndex, style }) => {
-        if (!isItemLoaded(columnIndex, rowIndex)) {
-            const content = "Loading...";
-            return <div style={style}>{content}</div>;
-        }
+        // if (!isItemLoaded(rowIndex * columnSize + columnIndex)) {
+        //     console.log("itemloding", rowIndex * columnSize + columnIndex, count, rowIndex * columnSize + columnIndex < count);
+        //     const content = "Loading...";
+        //     return <div style={style}>{content}</div>;
+        // }
 
         const item = getItem(columnIndex, rowIndex);
         // console.log("item2: ", item, "ercType: ", ercType);
         if (ercType === "ERC721") {
 
             if (!item.token) {
-                const content = "Loading...";
+                // const content = "Loading...";
+                const content = "";
                 return <div style={style}>{content}</div>;
             }
             return (
                 <div style={style}>
-                    <ERC721Card cardSize={cardSize} item={item} />
+                    <ERC721Card cardSize={cardSize} item={item} collection={collection} />
                 </div>
             );
         } else {
+            // console.log("colleciont3: ", collection);
             if (!item.name) {
-                const content = "Loading...";
+                // const content = "Loading...";
+                const content = "";
                 return <div style={style}>{content}</div>;
             }
             return (
                 <div style={style}>
-                    <ERC1155Card cardSize={cardSize} item={item} />
+                    <ERC1155Card cardSize={cardSize} item={item} collection={collection} />
                 </div>
             );
         }

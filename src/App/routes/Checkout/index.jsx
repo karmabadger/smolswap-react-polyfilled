@@ -507,7 +507,7 @@ const Checkout = ({ }) => {
                         Selected Items
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
-                        Tap to select and deselect items. Changing your selection will update the total price above.
+                        Tap to select and deselect items. Changing your selection will update the total price above. The Order is the Order for which the Items will be purchased.
                     </Typography>
                 </Box>
 

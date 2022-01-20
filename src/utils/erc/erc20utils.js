@@ -49,4 +49,5 @@ function strWeiToETH(amountStr, precision = 2, decimals = DECIMALS) {
 
     return result;
 }
+
 export { DECIMALS, strETHToWei, strWeiToETH };

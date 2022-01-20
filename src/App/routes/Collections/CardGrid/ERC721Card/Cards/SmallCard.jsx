@@ -31,20 +31,20 @@ import { strWeiToETH } from 'utils/erc/erc20utils.js';
 
 import useCart from "hooks/useCart";
 
-export default function ImgMediaCard({ item }) {
+export default function SmallCard({ item, collection }) {
     const [open, setOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
+    // const [anchorEl, setAnchorEl] = useState(null);
 
     const handleOpen = (event) => {
         setOpen(true);
-        setAnchorEl(document.body);
+        // setAnchorEl(document.body);
     }
     const handleClose = () => setOpen(false);
 
-    const handleClickAway = () => {
-        setOpen(false);
-        console.log("handleClickAway");
-    };
+    // const handleClickAway = () => {
+    //     setOpen(false);
+    //     console.log("handleClickAway");
+    // };
 
     // console.log("ImgMediaCard item: ", item);
     const cart = useCart();
@@ -79,6 +79,8 @@ export default function ImgMediaCard({ item }) {
         }
     }
 
+    // console.log("collection: ", collection);
+
 
     const urlpath = item.token.metadata.image.split("/");
     let imgLink = "https://treasure-marketplace.mypinata.cloud/ipfs";
@@ -95,6 +97,7 @@ export default function ImgMediaCard({ item }) {
         }
     }
 
+    // console.log("wut")
     const id = open ? 'simple-popper' : 'not-open';
     return (
         <Card sx={{ maxWidth: 128, minHeight: 128 }}>
@@ -108,16 +111,23 @@ export default function ImgMediaCard({ item }) {
             />
 
             {
-                open && (
+                collection && item &&
+                (
+                    <Box sx={{ position: 'relative' }}>
+                        <ERC721Modal
+                            open={open}
+                            handleClose={handleClose}
+                            id={id}
+                            item={item}
+                            collection={collection}
 
-                    <ClickAwayListener onClickAway={handleClickAway}>
-                        <Box sx={{ position: 'relative' }}>
-                            <ERC721Modal open={open} handleClose={handleClose} anchorEl={anchorEl} id={id} item={item} />
-                        </Box>
-                    </ClickAwayListener>
+                            addedState={addedState}
+                            handleAddToCart={handleAddToCart}
+                            handleRemoveFromCart={handleRemoveFromCart}
+                        />
+                    </Box>
                 )
             }
-
 
             <CardContent
                 style={{ paddingBottom: "10px" }}

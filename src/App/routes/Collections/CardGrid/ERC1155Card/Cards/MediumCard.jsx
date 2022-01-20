@@ -20,7 +20,7 @@ import smol from "__mock_data__/img/smol.png";
 
 import ERC1155Modal from "./Modals/ERC1155Modal";
 
-export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
+export default function ImgMediaCard({ added, handleAdd, handleRemove, item, collection }) {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -47,16 +47,19 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
             />
 
             {
-                open && (
-
-                    <ClickAwayListener onClickAway={handleClickAway}>
-                        <Box sx={{ position: 'relative' }}>
-                            <ERC1155Modal open={open} handleClose={handleClose} anchorEl={anchorEl} id={id} />
-                        </Box>
-                    </ClickAwayListener>
+                collection && item &&
+                (
+                    <Box sx={{ position: 'relative' }}>
+                        <ERC1155Modal
+                            open={open}
+                            handleClose={handleClose}
+                            id={id}
+                            item={item}
+                            collection={collection}
+                        />
+                    </Box>
                 )
             }
-
 
             <CardContent
                 style={{ paddingBottom: "21px" }}
