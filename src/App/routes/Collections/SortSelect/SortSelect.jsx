@@ -7,7 +7,7 @@ import Select from '@mui/material/Select';
 
 import { SortSelectOptions, SortSelectOptionsObj } from './SortSelectOptions';
 
-export function SortSelect({ sortBy, setSortBy }) {
+export function SortSelect({ sortBy, setSortBy, ercType }) {
 
     const handleChange = (event) => {
         setSortBy(event.target.value);
@@ -29,11 +29,24 @@ export function SortSelect({ sortBy, setSortBy }) {
                 // size="small"
                 >
 
-                    {SortSelectOptions.map((option, index) => {
-                        return (
-                            <MenuItem key={index} value={option}>{option}</MenuItem>
-                        )
-                    })}
+                    {
+                        (ercType === "ERC1155") ?
+                            (
+                                SortSelectOptions.map((option, index) => {
+                                    return (
+                                        <MenuItem key={index} value={option}>{option}</MenuItem>
+                                    )
+                                })
+                            )
+                            :
+                            (
+                                SortSelectOptions.map((option, index) => {
+                                    return (
+                                        <MenuItem key={index} value={option}>{option}</MenuItem>
+                                    )
+                                })
+                            )
+                    }
                 </Select>
             </FormControl>
         </Box>

@@ -39,6 +39,7 @@ const CardSizes = {
         minMarginX: 2,
         maxMarginX: 5,
         minMarginY: 5,
+        batchSize: 84,
     },
     "MD": {
         ERC721: {
@@ -64,6 +65,7 @@ const CardSizes = {
         heightPixel: 406,
         minMarginX: 5,
         minMarginY: 14,
+        batchSize: 42,
     },
     "LG": {
         index: 3,

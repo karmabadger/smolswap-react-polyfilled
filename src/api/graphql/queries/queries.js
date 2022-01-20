@@ -88,6 +88,58 @@ query getCollectionListings($id: ID!, $orderDirection: OrderDirection!, $tokenNa
 }
 `
 
+const GET_COLLECTION_LISTINGS_ERC1155 = gql`
+query getCollectionListings($id: ID!, $orderDirection: OrderDirection!, $tokenName: String, $skipBy: Int!, $first: Int!, $orderBy: Listing_orderBy!, $isERC1155: Boolean!, $filter: [String!]) {
+  collection(id: $id) {
+    name
+    address
+    standard
+    tokens(
+      orderBy: floorPrice
+      orderDirection: $orderDirection
+      where: {name_contains: $tokenName}
+    ) @include(if: $isERC1155) {
+      id
+      name
+      tokenId
+      listings(where: {status: Active}, orderBy: pricePerItem) {
+        pricePerItem
+        quantity
+      }
+      metadata {
+        image
+        name
+        description
+      }
+    }
+    listings(
+      first: $first
+      skip: $skipBy
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: {status: Active, tokenName_contains: $tokenName, filters_contains: $filter}
+    ) @skip(if: $isERC1155) {
+      user {
+        id
+      }
+      expires
+      id
+      pricePerItem
+      token {
+        tokenId
+        metadata {
+          image
+          name
+          description
+        }
+        name
+      }
+      quantity
+    }
+  }
+}
+`
+
 // variables: { id: '0x6325439389e0797ab35752b4f43a14c004f22a9c' },
 const GET_COLLECTION_INFO = gql`
 query getCollectionInfo($id: ID!) {
@@ -170,4 +222,4 @@ fragment ListingFieldsWithToken on Listing {
 
 
 
-export { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_LISTINGS, GET_COLLECTION_INFO, GET_TOKEN_DETAILS };
+export { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_LISTINGS, GET_COLLECTION_LISTINGS_ERC1155, GET_COLLECTION_INFO, GET_TOKEN_DETAILS };

@@ -20,7 +20,7 @@ import smol from "__mock_data__/img/smol.png";
 
 import ERC1155Modal from "./Modals/ERC1155Modal";
 
-export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
+export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -37,10 +37,10 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
 
     const id = open ? 'simple-popper' : undefined;
     return (
-        <Card sx={{ maxWidth: 256 }}>
+        <Card sx={{ maxWidth: 256, minHeight: 256 }}>
             <CardMedia
                 component="img"
-                alt="smol"
+                alt={item.name}
                 // height="360"
                 image={smol}
                 onClick={handleOpen}

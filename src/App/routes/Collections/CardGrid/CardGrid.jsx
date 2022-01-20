@@ -17,6 +17,7 @@ const CardGrid = ({
     cardHeightWithMargin,
     cardSize,
     ercType,
+    viewERC1155,
 
     hasNextPage,
     listings,
@@ -52,8 +53,7 @@ const CardGrid = ({
 
     const loadMoreItems = isNextPageLoading ? () => { } : loadNextPage;
 
-    const isItemLoaded = (columnIndex, rowIndex) => {
-        const index = rowIndex * columnSize + columnIndex;
+    const isItemLoaded = (index) => {
         return (!hasNextPage || index < count)
     }
 
@@ -65,6 +65,7 @@ const CardGrid = ({
         return listings[index];
     };
 
+    // console.log("item count: ", item);
     const Cell = ({ columnIndex, rowIndex, style }) => {
         if (!isItemLoaded(columnIndex, rowIndex)) {
             const content = "Loading...";
@@ -72,46 +73,59 @@ const CardGrid = ({
         }
 
         const item = getItem(columnIndex, rowIndex);
-        return (
-            <div style={style}>
-                {
-                    (ercType === "ERC721") ?
-                        <ERC721Card cardSize={cardSize} item={item} />
-                        :
-                        <ERC1155Card cardSize={cardSize} item={item} />
-                }
-            </div>
-        );
+        // console.log("item2: ", item, "ercType: ", ercType);
+        if (ercType === "ERC721") {
+
+            if (!item.token) {
+                const content = "Loading...";
+                return <div style={style}>{content}</div>;
+            }
+            return (
+                <div style={style}>
+                    <ERC721Card cardSize={cardSize} item={item} />
+                </div>
+            );
+        } else {
+            if (!item.name) {
+                const content = "Loading...";
+                return <div style={style}>{content}</div>;
+            }
+            return (
+                <div style={style}>
+                    <ERC1155Card cardSize={cardSize} item={item} />
+                </div>
+            );
+        }
     }
 
 
 
     return (
         <Box sx={{ width: "100%" }}>
-            <InfiniteLoader
+            {/* <InfiniteLoader
                 ref={infiniteLoaderRef}
                 isItemLoaded={isItemLoaded}
                 itemCount={itemCount}
                 loadMoreItems={loadMoreItems}
             >
-                {({ onItemsRendered, ref }) => (
-                    <Grid
-                        style={{ width: '100%' }}
-                        // onItemsRendered={onItemsRendered}
-                        ref={ref}
+                {({ onItemsRendered, ref }) => ( */}
+            <Grid
+                style={{ width: '100%' }}
+                // onItemsRendered={onItemsRendered}
+                // ref={ref}
 
-                        itemCount={count}
-                        columnCount={columnSize}
-                        columnWidth={cardWidthWithMargin}
-                        height={1350}
-                        rowCount={rowCount}
-                        rowHeight={cardHeightWithMargin}
-                        width={gridWidth}
-                    >
-                        {Cell}
-                    </Grid>
-                )}
-            </InfiniteLoader>
+                itemCount={count}
+                columnCount={columnSize}
+                columnWidth={cardWidthWithMargin}
+                height={1350}
+                rowCount={rowCount}
+                rowHeight={cardHeightWithMargin}
+                width={gridWidth}
+            >
+                {Cell}
+            </Grid>
+            {/* )}
+            </InfiniteLoader> */}
         </Box>
     );
 }

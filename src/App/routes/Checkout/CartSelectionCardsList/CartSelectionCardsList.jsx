@@ -29,23 +29,56 @@ import Checkbox from '@mui/material/Checkbox';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import CartSelectionCard from "./CartSelectionCards/CartSelectionCards";
+import useCart from 'hooks/useCart';
 
-
-export default function CheckboxListSecondary() {
+export default function CheckboxListSecondary({ itemList, selectedList, setSelectedList }) {
     const theme = useTheme();
-    const [checkedList, setCheckedList] = useState([true, true, true, true, true, true, true, true, true, true, true, true]);
 
-    const checkAll = (arr, value) => {
-        for (let i = 0; i < arr.length; i++) {
-            if (arr[i] === !value) {
-                return false;
+    const cart = useCart();
+    // const [checkedList, setCheckedList] = useState([true, true, true, true, true, true, true, true, true, true, true, true]);
+
+    const handleDragEnd = (result) => {
+        console.log("drag end", result);
+
+        const { destination, source } = result;
+
+
+        if (destination) {
+            const droppedItem = itemList[source.index];
+            const newItemList = [];
+
+            const droppedSelectedItem = selectedList[source.index];
+            const newSelectedList = [];
+
+            let sourceIndex = 0;
+            for (let i = 0; i < itemList.length; i++) {
+                if (i === destination.index) {
+                    newItemList.push(droppedItem);
+                    newSelectedList.push(droppedSelectedItem);
+                } else {
+                    if (sourceIndex !== source.index) {
+                        newItemList.push(itemList[sourceIndex]);
+                        newSelectedList.push(selectedList[sourceIndex]);
+                        sourceIndex++;
+                    } else {
+                        sourceIndex++;
+                        newItemList.push(itemList[sourceIndex]);
+                        newSelectedList.push(selectedList[sourceIndex]);
+                        sourceIndex++;
+                    }
+                }
             }
+
+            console.log("new item list", newItemList);
+            console.log("new selected list", newSelectedList);
+
+            cart.cartContextObj.itemList = newItemList;
+            setSelectedList(newSelectedList);
         }
-        return true;
     }
 
     const handleToggle = (index) => () => {
-        setCheckedList(checkedList.map((item, i) => i === index ? !item : item));
+        setSelectedList(selectedList.map((item, i) => i === index ? !item : item));
     };
 
 
@@ -68,7 +101,7 @@ export default function CheckboxListSecondary() {
 
     return (
         <DragDropContext
-        // onDragEnd={result => onDragEnd(result)}
+            onDragEnd={result => handleDragEnd(result)}
         >
             <List dense sx={{ width: "100%", bgcolor: "background.paper" }}>
 
@@ -80,8 +113,8 @@ export default function CheckboxListSecondary() {
                             style={getListStyle(snapshot.isDraggingOver)}
                         >
                             {
-                                checkedList.map((value, index) => {
-                                    const labelId = `checkbox-list-secondary-label-${value}`;
+                                itemList.map((value, index) => {
+                                    // const labelId = `checkbox-list-secondary-label-${value}`;
                                     return (
                                         <Draggable draggableId={index.toString()} index={index} key={index}>
                                             {(provided, snapshot) => (
@@ -141,10 +174,10 @@ export default function CheckboxListSecondary() {
                                                                         <Checkbox
                                                                             edge="start"
                                                                             // defaultChecked={true}
-                                                                            checked={checkedList[index]}
+                                                                            checked={(selectedList[index]) ? selectedList[index] : false}
                                                                             tabIndex={-1}
                                                                             disableRipple
-                                                                            inputProps={{ "aria-labelledby": labelId }}
+                                                                            // inputProps={{ "aria-labelledby": labelId }}
                                                                             sx={{
                                                                                 height: "100%",
                                                                             }}
@@ -153,7 +186,14 @@ export default function CheckboxListSecondary() {
                                                                 </ListItemButton>
                                                             </Box>
                                                         </Box>
-                                                        <CartSelectionCard handleToggle={handleToggle} value={value} />
+                                                        <CartSelectionCard
+                                                            handleToggle={handleToggle}
+                                                            item={value}
+                                                            selectedList={selectedList}
+                                                            setSelectedList={setSelectedList}
+                                                            value={selectedList[index]}
+                                                            itemIndex={index}
+                                                        />
                                                     </ListItem>
                                                 </div>
                                             )}

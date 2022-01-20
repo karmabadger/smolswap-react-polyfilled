@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-
+import { BigNumber } from 'ethers';
 
 // const item = {
 //     collectionAddress: "0x0",
@@ -57,6 +57,7 @@ const settings = {
 }
 
 const cartContextObj = {
+    settings: settings,
     itemList: [],
     collections: {
         mapping: {},
@@ -76,13 +77,13 @@ const cartContextObj = {
             this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].push(itemState);
         },
         removeItem: function (itemState) {
-            this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].splice(this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].indexOf(itemState), 1);
+            this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].splice(this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].indexOf(itemState), 1);
 
             // this.collections.mapping[itemState.collectionAddress].items.splice(this.collections.mapping[itemState.collectionAddress].items.indexOf(itemState), 1);
 
             // if no more items in collection, remove it
-            if (this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].length === 0) {
-                delete this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId];
+            if (this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId].length === 0) {
+                delete this.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId];
             }
 
             // if (this.collections.mapping[itemState.collectionAddress].items.length === 0) {
@@ -90,10 +91,10 @@ const cartContextObj = {
             // }
         }
     },
-    settings: settings,
     addItem: function (itemState) {
 
-        itemState.maxPricePerItem = itemState.pricePerItem + (itemState.pricePerItem * this.settings.maxPricePerItemDefaultIncreasePercent / 100);
+        const BigNumberPricePerItem = BigNumber.from(itemState.pricePerItem);
+        itemState.maxPricePerItem = BigNumberPricePerItem.add(BigNumberPricePerItem.mul(this.settings.maxPricePerItemDefaultIncreasePercent / 100)).toString();
 
         // add to collections
         this.collections.addItem(itemState);
@@ -101,19 +102,19 @@ const cartContextObj = {
         // add to itemList
         this.itemList.push(itemState);
 
-        console.log("add:", itemState, this.itemList);
+        // console.log("add:", itemState, this.itemList);
     },
     removeItem: function (itemState) {
-        console.log("remove:", itemState);
 
         // remove from collections
         this.collections.removeItem(itemState);
 
         // remove from itemList
         this.itemList.splice(this.itemList.indexOf(itemState), 1);
+        // console.log("remove:", itemState, this.itemList);
     },
     checkIfItemInCart: function (itemState) {
-        console.log("checkIfItemInCart:", itemState);
+        // console.log("checkIfItemInCart:", itemState);
         if (this.collections.mapping[itemState.collectionAddress]) {
             const found = this.collections.mapping[itemState.collectionAddress].itemsMapping[itemState.tokenId];
             if (found) {
@@ -128,7 +129,8 @@ const cartContextObj = {
         }
 
         return false;
-    }
+    },
+
 }
 
 
@@ -136,7 +138,7 @@ const cartContextObj = {
 // ok ok just splice...
 const CartContext = createContext({
     // settings: settings,
-    // cart: cartContextObj,
+    cart: cartContextObj,
 });
 
 export default CartContext;

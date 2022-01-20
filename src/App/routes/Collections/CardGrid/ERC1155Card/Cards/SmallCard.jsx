@@ -27,7 +27,16 @@ import smol from "__mock_data__/img/smol.png";
 
 import ERC1155Modal from "./Modals/ERC1155Modal";
 
-export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
+import { strWeiToETH, strETHToWei } from 'utils/erc/erc20utils.js';
+
+import { getURL } from "utils/erc/metadataUtils.js";
+
+
+import { BigNumber } from 'ethers';
+
+export default function ImgMediaCard({ added, handleAdd, handleRemove, item }) {
+
+
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -42,14 +51,21 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
         console.log("handleClickAway");
     };
 
+    let numberListed = BigNumber.from(0);
+    for (let i = 0; i < item.listings.length; i++) {
+        numberListed = numberListed.add(BigNumber.from(item.listings[i].quantity));
+    }
+
+
+    // console.log("item 1155: ", item);
     const id = open ? 'simple-popper' : undefined;
     return (
-        <Card sx={{ maxWidth: 128 }}>
+        <Card sx={{ maxWidth: 128, minHeight: 128 }}>
             <CardMedia
                 component="img"
-                alt="smol"
+                alt={item.name}
                 // height="360"
-                image={smol}
+                image={getURL(item.metadata.image)}
                 onClick={handleOpen}
             />
 
@@ -88,7 +104,7 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
                             }}
                             noWrap
                         >
-                            Smol Brain #243243543543
+                            {item.name}
                         </Typography>
                     </Box>
 
@@ -105,7 +121,7 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
                             }}
                             noWrap
                             color="text.secondary">
-                            4314 $MAGIC
+                            {`${strWeiToETH(item.listings[0].pricePerItem)} $MAGIC`}
                         </Typography>
                     </Box>
                     <Box sx={{
@@ -113,7 +129,7 @@ export default function ImgMediaCard({ added, handleAdd, handleRemove }) {
                         my: "2px",
                     }}>
                         <Typography component="div" variant="smbody" noWrap color="text.secondary">
-                            432432 listed
+                            {`${numberListed} listed`}
                         </Typography>
                     </Box>
                 </Box>
