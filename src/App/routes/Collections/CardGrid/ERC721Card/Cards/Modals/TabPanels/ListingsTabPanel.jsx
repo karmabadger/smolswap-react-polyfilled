@@ -49,7 +49,7 @@ const ListingsTabPanel = ({ value, index, item, token }) => {
                             // width: "100px",
                         }}
                     >
-                        {`${strWeiToETH(listing.pricePerItem + 1, DECIMALS)}`}
+                        {`${strWeiToETH(listing.pricePerItem, DECIMALS)}`}
                     </Typography>
                 </Box>
                 <Typography
@@ -87,20 +87,6 @@ const ListingsTabPanel = ({ value, index, item, token }) => {
                 </Typography>
             </Box>
 
-            {/* <List dense>
-
-                <ListItem key={index}>
-                    <ListItemAvatar>
-                        <Avatar>
-                            <FolderIcon />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={`${value.attribute.name}: ${value.attribute.value}`}
-                        secondary={valuePercentage}
-                    />
-                </ListItem>
-            </List> */}
         </TabPanel>
     )
 }

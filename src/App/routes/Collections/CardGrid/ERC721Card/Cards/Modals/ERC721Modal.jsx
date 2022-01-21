@@ -105,7 +105,7 @@ const ERC721ModalCard = ({ id, item, collection, addedState, handleAddToCart, ha
 
     return (
         <Box>
-            <Card sx={{ width: "500px" }}>
+            <Card sx={{ width: "600px" }}>
                 <CardMedia component="img" alt="green iguana" image={getURL(item.token.metadata.image)} />
                 <CardContent
                     style={{ paddingBottom: "21px" }}
@@ -113,7 +113,11 @@ const ERC721ModalCard = ({ id, item, collection, addedState, handleAddToCart, ha
                         px: "16px"
                     }}
                 >
-                    <Typography variant="h4">{item.token.name}</Typography>
+                    <Typography variant="h4"
+                        sx={{
+                            m: "12px",
+                        }}
+                    >{item.token.name}</Typography>
                     <Box sx={{ width: "100%", my: "16px" }}>
                         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                             <Tabs
@@ -131,7 +135,7 @@ const ERC721ModalCard = ({ id, item, collection, addedState, handleAddToCart, ha
 
                         <ListingsTabPanel value={value} index={0} item={item} token={token} />
                         <AttributesTabPanel value={value} index={1} item={item} token={token} />
-                        <DetailsTabPanel value={value} index={2} item={item} token={token} />
+                        <DetailsTabPanel value={value} index={2} item={item} token={token} collection={collection} />
                         <ActivityTabPanel value={value} index={3} item={item} token={token} />
                         <RarityTabPanel value={value} index={4} item={item} token={token} />
                     </Box>

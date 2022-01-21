@@ -65,6 +65,10 @@ import {
 import useFindCollection from 'hooks/useFindCollection';
 
 import useCart from 'hooks/useCart';
+import useWallet from "hooks/useWallet";
+
+import QuickAddModal from './Modals/QuickAdd/QuickAddModal';
+import QuickCheckoutModal from './Modals/QuickCheckoutModal';
 
 const drawerWidth = 330;
 const drawerMinWidth = 38;
@@ -270,6 +274,9 @@ const CollectionsERC721 = ({
     attributesList, setAttributesList
 }) => {
 
+    const { signer, setSigner, web3Modal } = useWallet();
+
+    // console.log("wallet", wallet);
     const theme = useTheme();
 
     const { width } = useWindowDimensions();
@@ -315,6 +322,15 @@ const CollectionsERC721 = ({
 
     // for Card size selection
     const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
+
+
+    // modals
+
+    // quick add modal
+    const [openQuickAddModal, setOpenQuickAddModal] = useState(false);
+    const handleOpenQuickAddModal = () => { setOpenQuickAddModal(true) }
+    const handleCloseQuickAddModal = () => setOpenQuickAddModal(false);
+
 
     // for ERC type selection
     // 0 - ERC721, 1 - ERC1155
@@ -409,6 +425,11 @@ const CollectionsERC721 = ({
             }}
         >
 
+            <QuickAddModal
+                open={openQuickAddModal}
+                handleClose={handleCloseQuickAddModal}
+            />
+
             <TopBox collection={collection} />
 
             <Divider />
@@ -462,8 +483,10 @@ const CollectionsERC721 = ({
                                 <Button
                                     sx={{
                                         py: 0,
-
-                                    }}>
+                                    }}
+                                    disabled={!signer}
+                                    onClick={handleOpenQuickAddModal}
+                                >
                                     Quick Add
                                 </Button>
                             </Box>
@@ -661,6 +684,15 @@ const CollectionsERC1155 = ({
 
     // for Card size selection
     const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
+
+
+    // modals
+
+    // quick add modal
+    const [openQuickAddModal, setOpenQuickAddModal] = useState(false);
+    const handleOpen = () => { setOpenQuickAddModal(true) }
+    const handleClose = () => setOpenQuickAddModal(false);
+
 
     // for ERC type selection
     // 0 - ERC721, 1 - ERC1155

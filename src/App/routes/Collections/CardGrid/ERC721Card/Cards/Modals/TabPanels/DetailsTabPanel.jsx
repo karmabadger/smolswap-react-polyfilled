@@ -17,8 +17,9 @@ import IosShareIcon from '@mui/icons-material/IosShare';
 
 import IconButton from '@mui/material/IconButton';
 
-const DetailsTabPanel = ({ value, index, item, token }) => {
+const DetailsTabPanel = ({ value, index, item, token, collection }) => {
 
+    console.log("collection", collection);
     return (
         <TabPanel value={value} index={index}>
             <List dense>
@@ -37,7 +38,7 @@ const DetailsTabPanel = ({ value, index, item, token }) => {
                     </ListItemAvatar>
                     <ListItemText
                         primary="Owned by:"
-                        secondary={"0x0000000000000000000000000000000000"}
+                        secondary={token.owner.id}
                     />
                 </ListItem>
 
@@ -56,7 +57,7 @@ const DetailsTabPanel = ({ value, index, item, token }) => {
                     </ListItemAvatar>
                     <ListItemText
                         primary="Contract Address:"
-                        secondary={"0x0000000000000000000000000000000000"}
+                        secondary={collection.address}
                     />
                 </ListItem>
 
