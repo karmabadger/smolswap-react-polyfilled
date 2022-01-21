@@ -8,43 +8,71 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 
+import { Link } from "react-router-dom";
+
 import { styled, useTheme, alpha } from "@mui/material/styles";
 
 import { VariableSizeList } from 'react-window';
 
+import {
+    collectionNameToPath,
+    collectionPathToName
+} from "utils/data/collectionData.js";
+
+import useNetwork from 'hooks/useNetwork';
+
 const getItemSize = (index) => {
     return 46;
 };
-function renderRow(props) {
-    const { index, style } = props;
-
-    // const theme = useTheme();
-
-    return (
-        <ListItem
-            style={style}
-            sx={{
-                width: '478px',
-            }}
-            key={index} component="div" disablePadding>
-            <ListItemButton>
-                <ListItemText
-                    sx={{
-                        px: '32px',
-                    }}
-                    primary={`Item ${index + 1}`} />
-            </ListItemButton>
-        </ListItem>
-    );
-}
 
 const StyledBox = styled(Box)(({ theme }) => ({
     zIndex: theme.zIndex.modal
 }));
 
-function VirtualizedList({ widthValue }) {
-    // console.log('widthValue: ', widthValue);
-    const theme = useTheme();
+function VirtualizedList({ widthValue, results }) {
+    const theme = useTheme()
+
+    const networkInfo = useNetwork();
+    const baseRoute = networkInfo.baseRoute;
+
+
+    const getItem = (index) => {
+        return results[index];
+    };
+
+    function renderRow({ index, style }) {
+        const item = getItem(index);
+        return (
+            <ListItem
+                style={style}
+                sx={{
+                    width: '478px',
+                }}
+                key={index} component="div" disablePadding>
+                <ListItemButton>
+
+                    <Link
+                        to={`${baseRoute}collection/${collectionNameToPath(item.name)}`}
+                        style={{
+                            textDecoration: "none",
+                            color: theme.palette.text.primary
+                        }}
+                    >
+                        <ListItemText
+                            sx={{
+                                px: '32px',
+                            }}
+                            primary={item.name} />
+                        {/* <Typography variant="h6">
+                            {collection.name}
+                        </Typography> */}
+                    </Link>
+                </ListItemButton>
+            </ListItem>
+        );
+    }
+
+    const heightCalc = (results.length * 46) + (results.length * 2) + 2;
     return (
         <StyledBox
             style={{ margin: '0px' }}
@@ -55,12 +83,10 @@ function VirtualizedList({ widthValue }) {
             }}
         >
             <VariableSizeList
-                height={400}
+                height={heightCalc}
                 width={widthValue}
                 itemSize={getItemSize}
-                itemCount={200}
-
-            // overscanCount={5}
+                itemCount={results.length}
             >
                 {renderRow}
             </VariableSizeList>

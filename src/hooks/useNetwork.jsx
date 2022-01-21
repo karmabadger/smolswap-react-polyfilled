@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom';
 import { testnetInfo, mainnetInfo } from 'configs/network/network.js';
 function useNetwork(networkName) {
     const location = useLocation();
+
+    console.log("useNetwork:", location);
     if (location.pathname.split('/')[1] === 'testnet') {
         return testnetInfo;
     } else {

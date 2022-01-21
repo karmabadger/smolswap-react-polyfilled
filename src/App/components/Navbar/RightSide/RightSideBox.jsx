@@ -23,7 +23,6 @@ const ButtonSection = ({ matchesDownMD, }) => {
                 borderRadius: 1,
             }}>
                 <ConnectButton />
-                <SettingsButton />
             </Box>)
         } else {
             return (<Box sx={{

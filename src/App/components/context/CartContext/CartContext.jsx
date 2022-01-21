@@ -63,13 +63,6 @@ const cartContextObj = {
         mapping: {},
         addItem: function (itemState) {
 
-            // if item is erc721 and is already in cart, do nothing
-            if (itemState.standard === 'ERC721' && this.checkIfItemInCart(itemState)) {
-                return;
-            }
-
-            // if item is erc1155 and is already in cart, do nothing
-
             // if not in collections, add it
             if (!this.mapping[itemState.collectionAddress]) {
                 this.mapping[itemState.collectionAddress] = {
@@ -100,6 +93,12 @@ const cartContextObj = {
         }
     },
     addItem: function (itemState) {
+        // if item is erc721 and is already in cart, do nothing
+        if (itemState.standard === 'ERC721' && this.checkIfItemInCart(itemState)) {
+            return;
+        }
+
+        // if item is erc1155 and is already in cart, do nothing
 
         const BigNumberPricePerItem = BigNumber.from(itemState.pricePerItem);
         itemState.maxPricePerItem = BigNumberPricePerItem.add(BigNumberPricePerItem.mul(this.settings.maxPricePerItemDefaultIncreasePercent / 100)).toString();
