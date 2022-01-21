@@ -5,8 +5,10 @@ import Box from '@mui/material/Box';
 import ConnectButton from './Buttons/ConnectButton';
 import CheckoutButton from './Buttons/CheckoutButton';
 import CartButton from './Buttons/CartButton';
+import SettingsButton from './Buttons/SettingsButton';
 
 import WalletContext from '../../context/WalletContext/WalletContext';
+
 
 
 const ButtonSection = ({ matchesDownMD, }) => {
@@ -32,6 +34,7 @@ const ButtonSection = ({ matchesDownMD, }) => {
             }}>
                 <CartButton />
                 <CheckoutButton />
+                <SettingsButton />
             </Box>
             )
         }
@@ -46,6 +49,7 @@ const ButtonSection = ({ matchesDownMD, }) => {
             <ConnectButton />
             <CartButton />
             <CheckoutButton />
+            <SettingsButton />
         </Box>)
     }
 }

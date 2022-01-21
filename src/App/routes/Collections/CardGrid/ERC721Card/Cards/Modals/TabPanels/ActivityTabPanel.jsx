@@ -30,13 +30,12 @@ const ActivityTabPanel = ({ value, index, item, token }) => {
                     listings.map((listing, index) => {
 
                         const buyer = listing.buyer;
-                        const seller = listing.seller;
+                        const seller = listing.user;
                         const time = fromNow(DateTime.fromSeconds(Number(listing.blockTimestamp)));
 
-
-                        // console.log(time)
-
-                        if (buyer === null) {
+                        console.log("buyer", buyer, "seller", seller, "time", time);
+                        if (buyer !== null) {
+                            let buyerStr = `${buyer.id.substr(0, 6)}...${buyer.id.substr(buyer.id.length - 4)}`;
                             return (
                                 <ListItem
                                     key={index}
@@ -53,12 +52,14 @@ const ActivityTabPanel = ({ value, index, item, token }) => {
                                         </Avatar>
                                     </ListItemAvatar>
                                     <ListItemText
-                                        primary={`0x5C25...2E9d listed this item for ${strWeiToETH(listing.pricePerItem)} $MAGIC`}
+                                        primary={`${buyerStr} listed this item for ${strWeiToETH(listing.pricePerItem)} $MAGIC`}
                                         secondary={`${time} ago`}
                                     />
                                 </ListItem>
                             )
                         }
+
+                        let sellerStr = `${seller.id.substr(0, 6)}...${seller.id.substr(seller.id.length - 4)}`;
                         return (
                             <ListItem
                                 key={index}
@@ -75,7 +76,7 @@ const ActivityTabPanel = ({ value, index, item, token }) => {
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={`0x5C25...2E9d listed this item for ${strWeiToETH(listing.pricePerItem)} $MAGIC`}
+                                    primary={`${sellerStr} listed this item for ${strWeiToETH(listing.pricePerItem)} $MAGIC`}
                                     secondary={`${time} ago`}
                                 />
                             </ListItem>

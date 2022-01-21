@@ -98,7 +98,11 @@ function MUIApp({ themeType, setThemeType }) {
     if (res.loading) {
         if (collections.length > 0) {
             // console.log("collections", collections);
-            return (<CollectionsLoadedApp collections={res.data.collections} themeType={themeType} setThemeType={setThemeType} />)
+            collections = (res.data.collections).filter(collection => {
+                // console.log("collection", collection, collection.address != 0);
+                return collection.address != 0
+            });
+            return (<CollectionsLoadedApp collections={collections} themeType={themeType} setThemeType={setThemeType} />)
         }
 
         return (
@@ -118,8 +122,11 @@ function MUIApp({ themeType, setThemeType }) {
     }
     else {
         if (res.data.collections) {
-            collections = res.data.collections;
-            return (<CollectionsLoadedApp collections={res.data.collections} themeType={themeType} setThemeType={setThemeType} />)
+
+            collections = (res.data.collections).filter(collection => {
+                return collection.address != 0
+            });
+            return (<CollectionsLoadedApp collections={collections} themeType={themeType} setThemeType={setThemeType} />)
         }
     }
 }

@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useContext } from 'react';
 
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 
 import { useTheme } from '@mui/styles';
 import Toolbar from '@mui/material/Toolbar';
@@ -65,6 +65,10 @@ import {
 import useFindCollection from 'hooks/useFindCollection';
 
 import useCart from 'hooks/useCart';
+import useWallet from "hooks/useWallet";
+
+import QuickAddModal from './Modals/QuickAdd/QuickAddModal';
+import QuickCheckoutModal from './Modals/QuickCheckoutModal';
 
 const drawerWidth = 330;
 const drawerMinWidth = 38;
@@ -218,6 +222,20 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
     Object.entries(attributes).forEach(([key, value]) => {
         attributesList.push(value);
     });
+
+    function compareAttributePercentage(a, b) {
+        return parseFloat(a.percentage) - parseFloat(b.percentage)
+    }
+
+    // console.log("attributesList", attributesList, attributes)
+
+    // sort values in attributesList by percentage
+    for (let i = 0; i < attributesList.length; i++) {
+        attributesList[i].list.sort(compareAttributePercentage);
+    }
+    // console.log("attributesList2", attributesList, attributes)
+
+
     // const [attributesObj, setAttributesObj] = useState(attributes);
     const [attributesListObj, setAttributesListObj] = useState(attributesList);
 
@@ -253,16 +271,66 @@ const CollectionsWithAttributes = ({ collection, collectionInfo, }) => {
 }
 
 
-function getArrChecked(arr) {
+function getArrChecked(arr, truthObj) {
     const arrChecked = [];
     for (let i = 0; i < arr.length; i++) {
         arrChecked.push([]);
         for (let j = 0; j < arr[i].list.length; j++) {
-            arrChecked[i].push(false);
+            if (truthObj[arr[i].name]) {
+                if (truthObj[arr[i].name] === arr[i].list[j].value) {
+                    arrChecked[i].push(true);
+                } else {
+                    arrChecked[i].push(false);
+                }
+            } else {
+                arrChecked[i].push(false);
+            }
         }
     }
+    // console.log("getArrChecked", arr, truthObj, arrChecked)
     return arrChecked;
 }
+
+function arrCheckedToCheckedAttributesList(arrCheck, attributesList) {
+    const arrCheckedToCheckedAttributesList = [];
+
+    for (let i = 0; i < attributesList.length; i++) {
+        for (let j = 0; j < attributesList[i].list.length; j++) {
+            if (arrCheck[i][j]) {
+                arrCheckedToCheckedAttributesList.push([attributesList[i].name, attributesList[i].list[j].value]);
+            }
+        }
+    }
+    return arrCheckedToCheckedAttributesList;
+}
+
+function checkedAttributesListToURLParam(checkedAttributesList, searchList) {
+    let urlParam = "";
+
+    if (checkedAttributesList.length > 0) {
+        urlParam += "search=";
+        for (let i = 0; i < checkedAttributesList.length; i++) {
+            urlParam += checkedAttributesList[i][0] + "%3D" + checkedAttributesList[i][1];
+            if (i !== checkedAttributesList.length - 1) {
+                urlParam += "%26";
+            }
+        }
+    }
+
+    if (searchList.length > 0) {
+        urlParam += "&searchList=";
+        for (let i = 0; i < searchList.length; i++) {
+            urlParam += searchList[i];
+            if (i !== searchList.length - 1) {
+                urlParam += "%2C";
+            }
+        }
+    }
+    console.log("checkedAttributesList", checkedAttributesList)
+    return urlParam;
+}
+
+
 
 const CollectionsERC721 = ({
     collection, collectionInfo,
@@ -270,10 +338,39 @@ const CollectionsERC721 = ({
     attributesList, setAttributesList
 }) => {
 
+    const { signer, setSigner, web3Modal } = useWallet();
+
+    // console.log("wallet", wallet);
     const theme = useTheme();
 
     const { width } = useWindowDimensions();
 
+    const [searchParams] = useSearchParams();
+    const searchParam = searchParams.get('search');
+
+    let searchValue = [];
+
+    if (searchParam && searchParam.length > 0 && searchParam != "") {
+        searchValue = (searchParam.split('&')).map(item => {
+            return item.split('=')
+        });
+    }
+
+    let searchValueObj = {};
+    for (let i = 0; i < searchValue.length; i++) {
+        searchValueObj[searchValue[i][0]] = searchValue[i][1];
+    }
+
+
+    const searchListParam = searchParams.get('searchList');
+
+    let searchListValue = [];
+
+    if (searchListParam && searchListParam.length > 0 && searchListParam !== "") {
+        searchListValue = (searchListParam.split(','))
+    }
+
+    console.log("SearchParams", searchValue, searchListValue);
 
     // pagination
     const batchSize = 100;
@@ -305,16 +402,33 @@ const CollectionsERC721 = ({
     }
 
     // for search bar and chips
-    const [searchList, setSearchList] = useState([]);
+    const [searchList, setSearchList] = useState(searchListValue);
 
     // properties of the collection
-    const [attributesChecked, setAttributesChecked] = useState(getArrChecked(attributesList));
+    const [attributesChecked, setAttributesChecked] = useState(getArrChecked(attributesList, searchValueObj));
 
     // for sort by selectoion
     const [sortBy, setSortBy] = useLocalStorage("sortBy", SortSelectOptions[0]);
 
     // for Card size selection
     const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
+
+
+    useEffect(() => {
+        const checkedAttributesList = arrCheckedToCheckedAttributesList(attributesChecked, attributesList);
+        const urlParam = checkedAttributesListToURLParam(checkedAttributesList, searchList);
+        console.log("checkedAttributesList", checkedAttributesList, urlParam);
+        window.history.replaceState(window.history.state, "", "?" + urlParam);
+    }, [searchList, attributesChecked, attributesList]);
+
+
+    // modals
+
+    // quick add modal
+    const [openQuickAddModal, setOpenQuickAddModal] = useState(false);
+    const handleOpenQuickAddModal = () => { setOpenQuickAddModal(true) }
+    const handleCloseQuickAddModal = () => setOpenQuickAddModal(false);
+
 
     // for ERC type selection
     // 0 - ERC721, 1 - ERC1155
@@ -409,6 +523,11 @@ const CollectionsERC721 = ({
             }}
         >
 
+            <QuickAddModal
+                open={openQuickAddModal}
+                handleClose={handleCloseQuickAddModal}
+            />
+
             <TopBox collection={collection} />
 
             <Divider />
@@ -462,8 +581,10 @@ const CollectionsERC721 = ({
                                 <Button
                                     sx={{
                                         py: 0,
-
-                                    }}>
+                                    }}
+                                    disabled={!signer}
+                                    onClick={handleOpenQuickAddModal}
+                                >
                                     Quick Add
                                 </Button>
                             </Box>
@@ -661,6 +782,15 @@ const CollectionsERC1155 = ({
 
     // for Card size selection
     const [cardSize, setCardSize] = useLocalStorage('cardSize', SizeSelectOptions[1]);
+
+
+    // modals
+
+    // quick add modal
+    const [openQuickAddModal, setOpenQuickAddModal] = useState(false);
+    const handleOpen = () => { setOpenQuickAddModal(true) }
+    const handleClose = () => setOpenQuickAddModal(false);
+
 
     // for ERC type selection
     // 0 - ERC721, 1 - ERC1155

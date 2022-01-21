@@ -21,6 +21,7 @@ const ConnectButton = ({ connected }) => {
 
     return (
         <Button color="secondary"
+            size='small'
             variant={(signer == null) ? "contained" : "text"}
             onClick={handleConnect}
             sx={{ px: "8px", py: "11px", width: "113px", height: "42px", mx: "5px", my: "0px" }}

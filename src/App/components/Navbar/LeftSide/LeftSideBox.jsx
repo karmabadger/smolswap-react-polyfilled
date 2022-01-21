@@ -16,7 +16,7 @@ import Icon from '@mui/material/Icon';
 
 import { Link } from 'react-router-dom';
 
-const LeftSideBox = ({ matchesDownSM, matchesDownMD, }) => {
+const LeftSideBox = ({ matchesDownSM, matchesDownMD, collections }) => {
 
     const theme = useTheme();
     const navigate = useNavigate();
@@ -25,6 +25,7 @@ const LeftSideBox = ({ matchesDownSM, matchesDownMD, }) => {
     //     navigate("/");
     // }
 
+    // console.log("left", collections);
 
     if (matchesDownSM) {
         return (
@@ -37,7 +38,42 @@ const LeftSideBox = ({ matchesDownSM, matchesDownMD, }) => {
                     borderRadius: 1,
                 }}
             >
-                <SearchBar />
+                <Link
+                    to="/"
+                    style={{
+                        textDecoration: "none",
+                        color: theme.palette.text.primary,
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                    }}
+                >
+
+                    <Icon sx={{
+                        width: 'auto',
+
+                        // height: '80%',
+                        flexGrow: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                    }}>
+                        <Box
+                            sx={{
+                                height: '100%',
+                                minWidth: '0px',
+                                flexGrow: 1,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                borderRadius: 1,
+                            }}
+                        >
+
+                            <img src={logo} alt="logo" />
+                        </Box>
+                    </Icon>
+                </Link>
             </Box>
         )
     } else if (matchesDownMD) {
@@ -51,7 +87,42 @@ const LeftSideBox = ({ matchesDownSM, matchesDownMD, }) => {
                     borderRadius: 1,
                 }}
             >
-                <SearchBar />
+                <Link
+                    to="/"
+                    style={{
+                        textDecoration: "none",
+                        color: theme.palette.text.primary,
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                    }}
+                >
+
+                    <Icon sx={{
+                        width: 'auto',
+
+                        // height: '80%',
+                        flexGrow: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                    }}>
+                        <Box
+                            sx={{
+                                height: '100%',
+                                minWidth: '0px',
+                                flexGrow: 1,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                borderRadius: 1,
+                            }}
+                        >
+                            <img src={logo} alt="logo" />
+                        </Box>
+                    </Icon>
+                </Link>
+                <SearchBar collections={collections} />
             </Box>
         )
     }
@@ -112,7 +183,7 @@ const LeftSideBox = ({ matchesDownSM, matchesDownMD, }) => {
                     </Icon>
                 </Link>
             </Box>
-            <SearchBar />
+            <SearchBar collections={collections} />
         </Box>
     )
 }

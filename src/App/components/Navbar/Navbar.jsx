@@ -66,7 +66,11 @@ export default function Navbar({ collections }) {
                         <MenuIcon />
                     </IconButton>
 
-                    <LeftSideBox handleDrawerOpen={handleDrawerOpen} open={open} matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} />
+                    <LeftSideBox
+                        handleDrawerOpen={handleDrawerOpen} open={open}
+                        matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM}
+                        collections={collections}
+                    />
                     <RightSideBox matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} />
                 </Toolbar>
 
