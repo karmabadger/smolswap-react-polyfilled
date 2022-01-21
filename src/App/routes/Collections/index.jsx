@@ -55,7 +55,7 @@ import NetworkContext from 'App/components/context/NetworkContext/NetworkContext
 
 import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 import { useQuery, gql, useLazyQuery } from '@apollo/client';
-import { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_INFO, GET_COLLECTION_LISTINGS, GET_COLLECTION_LISTINGS_ERC1155 } from "api/graphql/queries/queries.js";
+import { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_INFO, GET_COLLECTION_LISTINGS, GET_COLLECTION_LISTINGS_COUNT, GET_COLLECTION_LISTINGS_ERC1155 } from "api/graphql/queries/queries.js";
 
 import {
     collectionNameToPath,
@@ -370,7 +370,7 @@ const CollectionsERC721 = ({
         searchListValue = (searchListParam.split(','))
     }
 
-    console.log("SearchParams", searchValue, searchListValue);
+    // console.log("SearchParams", searchValue, searchListValue);
 
     // pagination
     const batchSize = 100;
@@ -417,7 +417,7 @@ const CollectionsERC721 = ({
     useEffect(() => {
         const checkedAttributesList = arrCheckedToCheckedAttributesList(attributesChecked, attributesList);
         const urlParam = checkedAttributesListToURLParam(checkedAttributesList, searchList);
-        console.log("checkedAttributesList", checkedAttributesList, urlParam);
+        // console.log("checkedAttributesList", checkedAttributesList, urlParam);
         window.history.replaceState(window.history.state, "", "?" + urlParam);
     }, [searchList, attributesChecked, attributesList]);
 
@@ -467,6 +467,41 @@ const CollectionsERC721 = ({
     })
 
 
+    const countObj = useQuery(GET_COLLECTION_LISTINGS_COUNT, {
+        variables: {
+            id: collection.address,
+            isERC1155: (ercType === "ERC1155"),
+            tokenName: (searchList.length > 0) ? searchList[0] : "",
+            skipBy: (page * batchSize),
+            first: 1000,
+            filter: attributesChosenList,
+            orderBy: sortByObj.name,
+            orderDirection: sortByObj.direction,
+        },
+        // pollInterval: 4000,
+    })
+
+    const { data: countData, error: countError, loading: countLoading } = countObj;
+
+    console.log("countData", countObj);
+    let resultsCount = "X";
+    let pageCount = "X";
+
+    if (countData && countData.collection && countData.collection.listings) {
+        resultsCount = countData.collection.listings.length;
+
+        if (resultsCount === 1000) {
+            resultsCount = "999+";
+            pageCount = "9+";
+        } else {
+            pageCount = Math.ceil(resultsCount / batchSize);
+        }
+    }
+
+
+
+
+
     let listings = [];
     if (data) {
         if (data.collection) {
@@ -483,20 +518,20 @@ const CollectionsERC721 = ({
     const [getMore, lazyRes] = useLazyQuery(GET_COLLECTION_LISTINGS);
     const loadNextPage = () => {
         console.log("loadNextPage");
-        const result = getMore({
-            variables: {
-                id: collection.address,
-                isERC1155: (ercType === "ERC1155"),
-                tokenName: (searchList.length > 0) ? searchList[0] : "",
-                skipBy: numberOfLoaded,
-                first: batchSize,
-                filter: attributesChosenList,
-                orderBy: sortByObj.name,
-                orderDirection: sortByObj.direction,
-            },
-            // pollInterval: 4000,
-        });
-        console.log("result", result);
+        // const result = getMore({
+        //     variables: {
+        //         id: collection.address,
+        //         isERC1155: (ercType === "ERC1155"),
+        //         tokenName: (searchList.length > 0) ? searchList[0] : "",
+        //         skipBy: numberOfLoaded,
+        //         first: batchSize,
+        //         filter: attributesChosenList,
+        //         orderBy: sortByObj.name,
+        //         orderDirection: sortByObj.direction,
+        //     },
+        //     // pollInterval: 4000,
+        // });
+        // console.log("result", result);
         setNumberOfLoaded(numberOfLoaded + batchSize);
     }
 
@@ -526,6 +561,15 @@ const CollectionsERC721 = ({
             <QuickAddModal
                 open={openQuickAddModal}
                 handleClose={handleCloseQuickAddModal}
+
+                collection={collection}
+                listings={listings}
+                attributesChosenList={attributesChosenList}
+                searchList={searchList}
+                page={page}
+                batchSize={batchSize}
+                sortByObj={sortByObj}
+                ercType={ercType}
             />
 
             <TopBox collection={collection} />
@@ -574,7 +618,7 @@ const CollectionsERC721 = ({
                         >
                             <Box>
                                 <Typography variant="body2" color={theme.palette.text.secondary}>
-                                    {`${pageActualSize} results on page ${page + 1} out of X total results`}
+                                    {`${pageActualSize} results on page ${page + 1}/${pageCount} out of ${resultsCount} total results`}
                                 </Typography>
                             </Box>
                             <Box>
@@ -582,7 +626,7 @@ const CollectionsERC721 = ({
                                     sx={{
                                         py: 0,
                                     }}
-                                    disabled={!signer}
+                                    disabled={listings && listings.length > 0 && !signer}
                                     onClick={handleOpenQuickAddModal}
                                 >
                                     Quick Add

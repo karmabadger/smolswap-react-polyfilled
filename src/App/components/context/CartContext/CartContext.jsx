@@ -113,12 +113,23 @@ const cartContextObj = {
     },
     removeItem: function (itemState) {
 
-        // remove from collections
-        this.collections.removeItem(itemState);
+        if (this.checkIfItemInCart(itemState)) {
+            // remove from collections
+            this.collections.removeItem(itemState);
 
-        // remove from itemList
-        this.itemList.splice(this.itemList.indexOf(itemState), 1);
-        // console.log("remove:", itemState, this.itemList);
+            // remove from itemList
+            this.itemList.splice(this.itemList.indexOf(itemState), 1);
+            // console.log("remove:", itemState, this.itemList);
+        }
+    },
+    removeAllItems: function () {
+        const len = this.itemList.length;
+        for (let i = 0; i < len; i++) {
+            if (this.checkIfItemInCart(this.itemList[i])) {
+                this.collections.removeItem(this.itemList[i]);
+            }
+        }
+        this.itemList = [];
     },
     checkIfItemInCart: function (itemState) {
         // console.log("checkIfItemInCart:", itemState);
