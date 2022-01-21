@@ -73,22 +73,25 @@ function a11yProps(index) {
 }
 
 
-const QuickAddModal = ({ handleClose, open }) => {
+const QuickAddModal = ({
+    handleClose,
+    open,
+    collection,
+    listings,
+    attributesChosenList,
+    searchList,
+    page,
+    batchSize,
+    sortByObj,
+    ercType,
+}) => {
 
     const [tabValue, setTabValue] = useState(0);
     const handleChangeTabValue = (event, newValue) => {
         setTabValue(newValue);
     };
 
-
-    const [numberValue, setNumberValue] = useState(0);
-    const handleOnChangeNumber = (event) => {
-        if (event.target.value > 0) {
-            setNumberValue(event.target.value);
-        }
-    }
-
-    // console.log("QuickAddModal");
+    // console.log("attributesChosenList", attributesChosenList);
     return (
         <Dialog onClose={handleClose} open={open} >
             <DialogTitle>Quick Add</DialogTitle>
@@ -106,9 +109,38 @@ const QuickAddModal = ({ handleClose, open }) => {
                 </Box>
 
                 <Box>
-                    <QuickTabPanel value={tabValue} index={0} />
-                    <ByIndexTabPanel value={tabValue} index={1} />
-                    <SweepTabPanel value={tabValue} index={2} />
+                    <QuickTabPanel value={tabValue} index={0}
+                        collection={collection}
+                        listings={listings}
+                        attributesChosenList={attributesChosenList}
+                        searchList={searchList}
+                        page={page}
+                        batchSize={batchSize}
+                        sortByObj={sortByObj}
+                        ercType={ercType}
+                        handleClose={handleClose}
+                    />
+                    <ByIndexTabPanel value={tabValue} index={1}
+                        collection={collection}
+                        listings={listings}
+                        attributesChosenList={attributesChosenList}
+                        searchList={searchList}
+                        page={page}
+                        batchSize={batchSize}
+                        sortByObj={sortByObj}
+                        ercType={ercType}
+                        handleClose={handleClose}
+                    />
+                    <SweepTabPanel value={tabValue} index={2} collection={collection}
+                        listings={listings}
+                        attributesChosenList={attributesChosenList}
+                        searchList={searchList}
+                        page={page}
+                        batchSize={batchSize}
+                        sortByObj={sortByObj}
+                        ercType={ercType}
+                        handleClose={handleClose}
+                    />
                 </Box>
 
             </DialogContent>

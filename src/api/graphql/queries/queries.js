@@ -36,55 +36,56 @@ query getCollectionStats($id: ID!) {
 //     orderBy: 'pricePerItem',
 //     orderDirection: 'asc'
 //   },
-const GET_COLLECTION_LISTINGS = gql`
+const GET_COLLECTION_LISTINGS = gql`, 
 query getCollectionListings($id: ID!, $orderDirection: OrderDirection!, $tokenName: String, $skipBy: Int!, $first: Int!, $orderBy: Listing_orderBy!, $isERC1155: Boolean!, $filter: [String!]) {
-    collection(id: $id) {
-        name
-        address
-        standard
-        tokens(
-        orderBy: floorPrice
-        orderDirection: $orderDirection
-        where: {name_contains: $tokenName}
-        ) @include(if: $isERC1155) {
-        id
-        name
-        tokenId
-        listings(where: {status: Active}, orderBy: pricePerItem) {
-            pricePerItem
-            quantity
-        }
-        metadata {
-            image
-            name
-            description
-        }
-        }
-        listings(
-        first: $first
-        skip: $skipBy
-        orderBy: $orderBy
-        orderDirection: $orderDirection
-        where: {status: Active, tokenName_contains: $tokenName, filters_contains: $filter}
-        ) @skip(if: $isERC1155) {
-        user {
-            id
-        }
-        expires
-        id
+  collection(id: $id) {
+    name
+    address
+    standard
+    tokens(
+      orderBy: floorPrice
+      orderDirection: $orderDirection
+      where: {name_contains: $tokenName}
+    ) @include(if: $isERC1155) {
+      id
+      name
+      tokenId
+      listings(where: {status: Active}, orderBy: pricePerItem) {
         pricePerItem
-        token {
-            tokenId
-            metadata {
-            image
-            name
-            description
-            }
-            name
-        }
-        quantity
-        }
+        quantity,
+        status
+      }
+      metadata {
+        image
+        name
+        description
+      }
     }
+    listings(
+      first: $first
+      skip: $skipBy
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: {status: Active, tokenName_contains: $tokenName, filters_contains: $filter}
+    ) @skip(if: $isERC1155) {
+      user {
+        id
+      }
+      expires
+      id
+      pricePerItem
+      token {
+        tokenId
+        metadata {
+          image
+          name
+          description
+        }
+        name
+      }
+      quantity
+    }
+  }
 }
 `
 
@@ -140,6 +141,134 @@ query getCollectionListings($id: ID!, $orderDirection: OrderDirection!, $tokenNa
 }
 `
 
+
+// {
+//   "filter": [],
+//     "first": 42,
+//       "id": "0x6325439389e0797ab35752b4f43a14c004f22a9c",
+//         "isERC1155": false,
+//           "orderBy": "pricePerItem",
+//             "orderDirection": "asc",
+//               "skipBy": 0,
+//                 "tokenName": "",
+//                   "maxPrice": "3900000000000000000000"
+// }
+const GET_COLLECTION_LISTINGS_WITH_MAX_PRICE = gql`
+
+query getCollectionListings($id: ID!, $orderDirection: OrderDirection!, $tokenName: String, $skipBy: Int!, $first: Int!, $orderBy: Listing_orderBy!, $isERC1155: Boolean!, $filter: [String!], $maxPrice: BigInt) {
+  collection(id: $id) {
+    name
+    address
+    standard
+    tokens(
+      orderBy: floorPrice
+      orderDirection: $orderDirection
+      where: {name_contains: $tokenName}
+    ) @include(if: $isERC1155) {
+      id
+      name
+      tokenId
+      listings(where: {status: Active, pricePerItem_lte: $maxPrice}, orderBy: pricePerItem) {
+        pricePerItem
+        quantity,
+        status
+      }
+      metadata {
+        image
+        name
+        description
+      }
+    }
+    listings(
+      first: $first
+      skip: $skipBy
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: {status: Active, tokenName_contains: $tokenName, filters_contains: $filter, pricePerItem_lte: $maxPrice}
+    ) @skip(if: $isERC1155) {
+      user {
+        id
+      }
+      expires
+      id
+      pricePerItem
+      token {
+        tokenId
+        metadata {
+          image
+          name
+          description
+        }
+        name
+      }
+      quantity
+    }
+  }
+}
+`
+
+
+const GET_COLLECTION_LISTINGS_COUNT = gql`
+query getCollectionListings($id: ID!, $orderDirection: OrderDirection!, $tokenName: String, $skipBy: Int!, $first: Int!, $orderBy: Listing_orderBy!, $isERC1155: Boolean!, $filter: [String!]) {
+  collection(id: $id) {
+    name
+    address
+    standard
+    tokens(
+      orderBy: floorPrice
+      orderDirection: $orderDirection
+      where: {name_contains: $tokenName}
+    ) @include(if: $isERC1155) {
+     id
+     listings(where: {status: Active}, orderBy: pricePerItem) {
+        status
+      }
+    }
+    listings(
+      first: $first
+      skip: $skipBy
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: {status: Active, tokenName_contains: $tokenName, filters_contains: $filter}
+    ) @skip(if: $isERC1155) {
+   		id
+    }
+  }
+}
+`
+
+
+const GET_COLLECTION_LISTINGS_COUNT_WITH_MAX_PRICE = gql`
+query getCollectionListings($id: ID!, $orderDirection: OrderDirection!, $tokenName: String, $skipBy: Int!, $first: Int!, $orderBy: Listing_orderBy!, $isERC1155: Boolean!, $filter: [String!], $maxPrice: BigInt) {
+  collection(id: $id) {
+    name
+    address
+    standard
+    tokens(
+      orderBy: floorPrice
+      orderDirection: $orderDirection
+      where: {name_contains: $tokenName}
+    ) @include(if: $isERC1155) {
+     id
+     listings(where: {status: Active, pricePerItem_lte: $maxPrice}, orderBy: pricePerItem) {
+        status
+      }
+    }
+    listings(
+      first: $first
+      skip: $skipBy
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+      where: {status: Active, tokenName_contains: $tokenName, filters_contains: $filter, pricePerItem_lte: $maxPrice}
+    ) @skip(if: $isERC1155) {
+   		id
+    }
+  }
+}
+`
+
+
+
 // variables: { id: '0x6325439389e0797ab35752b4f43a14c004f22a9c' },
 const GET_COLLECTION_INFO = gql`
 query getCollectionInfo($id: ID!) {
@@ -193,6 +322,7 @@ query getTokenDetails($collectionId: ID!, $tokenId: BigInt!) {
             listings(orderBy: blockTimestamp, orderDirection: desc) {
                 id
                 status
+        transactionLink
         buyer {
                     id
                 }
@@ -210,6 +340,7 @@ query getTokenDetails($collectionId: ID!, $tokenId: BigInt!) {
 }
 
 fragment ListingFieldsWithToken on Listing {
+  transactionLink
   user {
         id
     }
@@ -222,4 +353,14 @@ fragment ListingFieldsWithToken on Listing {
 
 
 
-export { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_LISTINGS, GET_COLLECTION_LISTINGS_ERC1155, GET_COLLECTION_INFO, GET_TOKEN_DETAILS };
+export {
+  GET_COLLECTIONS,
+  GET_COLLECTION_STATS,
+  GET_COLLECTION_LISTINGS,
+  GET_COLLECTION_LISTINGS_WITH_MAX_PRICE,
+  GET_COLLECTION_LISTINGS_COUNT,
+  GET_COLLECTION_LISTINGS_COUNT_WITH_MAX_PRICE,
+  GET_COLLECTION_LISTINGS_ERC1155,
+  GET_COLLECTION_INFO,
+  GET_TOKEN_DETAILS
+};

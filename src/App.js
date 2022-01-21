@@ -62,6 +62,10 @@ const AppWithApollo = () => {
     uri: networkInfo.theGraph.url,
     cache: cache,
   });
+  // const client = new ApolloClient({
+  //   uri: mainnetInfo.theGraph.url,
+  //   cache: cache,
+  // });
 
   // console.log('network', useLocation().pathname.split('/')[1]);
 

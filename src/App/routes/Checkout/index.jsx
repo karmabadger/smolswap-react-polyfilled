@@ -556,7 +556,7 @@ const Checkout = ({ }) => {
                 </Box>
                 <Box sx={{
                     marginTop: "0px",
-                    marginBottom: "24px",
+                    marginBottom: "0px",
                     display: 'flex', flexDirection: 'row', gap: "24px",
                 }}>
                     <Box
@@ -582,6 +582,39 @@ const Checkout = ({ }) => {
                             }}
 
                             onClick={handleDeselectAll}
+                        />
+                    </Box>
+
+                </Box>
+
+                <Box sx={{
+                    marginTop: "0px",
+                    marginBottom: "24px",
+                    display: 'flex', flexDirection: 'row', gap: "24px",
+                }}>
+                    <Box
+                        sx={{
+                            display: 'flex', flexDirection: 'column',
+                            justifyContent: 'center', alignItems: 'center',
+                        }}>
+
+                        <Typography variant="h5" color="primary">
+                            Remove All
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Checkbox
+                            edge="start"
+                            // defaultChecked={true}
+                            checked={true}
+                            tabIndex={-1}
+                            disableRipple
+                            // inputProps={{ "aria-labelledby": labelId }}
+                            sx={{
+                                height: "100%",
+                            }}
+
+                            onClick={() => { cart.cartContextObj.removeAllItems(); handleDeselectAll(); }}
                         />
                     </Box>
 
