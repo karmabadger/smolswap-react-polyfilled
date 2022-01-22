@@ -83,8 +83,20 @@ const Checkout = ({ }) => {
 
     const [selectedList, setSelectedList] = useState(Array(cart.cartContextObj.itemList.length).fill(true));
 
-    const allTrue = checkIfAllTrue(selectedList);
-    const numberOfTrue = getNumberOfTrue(selectedList);
+    const [allTrue, setAllTrue] = useState(checkIfAllTrue(selectedList));
+    const [numberOfTrue, setNumberOfTrue] = useState(getNumberOfTrue(selectedList));
+
+
+    useEffect(() => {
+        if (cart.cartContextObj.itemList.length === 0) {
+            setSelectedList([]);
+        }
+    }, [cart.cartContextObj.itemList.length]);
+
+    useEffect(() => {
+        setAllTrue(checkIfAllTrue(selectedList));
+        setNumberOfTrue(getNumberOfTrue(selectedList));
+    }, [selectedList]);
 
     const handleSelectAll = () => {
         if (!allTrue) {
@@ -95,6 +107,12 @@ const Checkout = ({ }) => {
     const handleDeselectAll = () => {
         setSelectedList(selectedList.map(() => false));
     }
+
+    const handleRemoveAll = () => {
+        console.log('remove all');
+        cart.cartContextObj.removeAllItems();
+        setSelectedList([]);
+    };
 
     console.log("checkout", cart, selectedList, Array(cart.cartContextObj.itemList.length).fill(true), `${numberOfTrue} out of ${selectedList.length} items selected`);
 
@@ -614,7 +632,7 @@ const Checkout = ({ }) => {
                                 height: "100%",
                             }}
 
-                            onClick={() => { cart.cartContextObj.removeAllItems(); handleDeselectAll(); }}
+                            onClick={handleRemoveAll}
                         />
                     </Box>
 
