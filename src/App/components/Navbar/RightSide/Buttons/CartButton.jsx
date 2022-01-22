@@ -7,15 +7,23 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import WalletContext from '../../../context/WalletContext/WalletContext';
 
 
-const CartButton = ({ }) => {
+const CartButton = ({
+    openQuickCheckoutModal,
+    setOpenQuickCheckoutModal,
+}) => {
     const { signer, } = useContext(WalletContext);
 
+    const handleClick = () => {
+        setOpenQuickCheckoutModal(true);
+    }
 
     return (
         <IconButton
             disabled={(signer == null)}
             color="secondary"
-            aria-label="shopping cart checkout" sx={{ p: "12px", mx: "5px" }}>
+            aria-label="shopping cart checkout" sx={{ p: "12px", mx: "5px" }}
+            onClick={handleClick}
+        >
             <ShoppingCartIcon />
         </IconButton>
     )

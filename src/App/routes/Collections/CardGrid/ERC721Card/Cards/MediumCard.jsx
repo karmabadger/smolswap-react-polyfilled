@@ -19,11 +19,14 @@ import { strWeiToETH } from 'utils/erc/erc20utils.js';
 
 import ERC721Modal from "./Modals/ERC721Modal";
 
+import useAlertContext from "hooks/useAlertContext";
+
 import useCart from "hooks/useCart";
 
 export default function MediumCard({ item, collection }) {
     const [open, setOpen] = useState(false);
-    // const [anchorEl, setAnchorEl] = useState(null);
+
+    const alertContext = useAlertContext();
 
     const handleOpen = (event) => {
         setOpen(true);
@@ -36,12 +39,12 @@ export default function MediumCard({ item, collection }) {
     //     console.log("handleClickAway");
     // };
 
-    console.log("collection: ", collection);
+    // console.log("collection: ", collection);
 
     // console.log("ImgMediaCard item: ", item);
     const cart = useCart();
 
-    // console.log("item: ", item);
+    // console.log("alertContext: ", alertContext);
     const OrderData = {
         name: item.token.name,
         collectionAddress: item.id,
@@ -61,6 +64,14 @@ export default function MediumCard({ item, collection }) {
         if (!added) {
             cart.cartContextObj.addItem(OrderData);
             setAddedState(true);
+
+            alertContext.addTimedSnackbar(
+                "standard",
+                `${item.token.name} added to cart`,
+                "success",
+                3000,
+                false
+            )
         }
     }
 
@@ -68,6 +79,14 @@ export default function MediumCard({ item, collection }) {
         if (added) {
             cart.cartContextObj.removeItem(OrderData);
             setAddedState(false);
+
+            alertContext.addTimedSnackbar(
+                "standard",
+                `${item.token.name} removed from cart`,
+                "success",
+                3000,
+                false
+            )
         }
     }
 

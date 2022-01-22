@@ -36,7 +36,13 @@ const AppBar = styled(MuiAppBar, {
 
 
 
-export default function Navbar({ collections }) {
+export default function Navbar({
+    collections,
+    openSettingsModal,
+    setOpenSettingsModal,
+    openQuickCheckoutModal,
+    setOpenQuickCheckoutModal,
+}) {
     const theme = useTheme();
     const matchesDownMD = useMediaQuery(theme.breakpoints.down('md'));
     const matchesDownSM = useMediaQuery(theme.breakpoints.down('sm'));
@@ -71,7 +77,16 @@ export default function Navbar({ collections }) {
                         matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM}
                         collections={collections}
                     />
-                    <RightSideBox matchesDownMD={matchesDownMD} matchesDownSM={matchesDownSM} />
+                    <RightSideBox
+                        matchesDownMD={matchesDownMD}
+                        matchesDownSM={matchesDownSM}
+
+                        openSettingsModal={openSettingsModal}
+                        setOpenSettingsModal={setOpenSettingsModal}
+
+                        openQuickCheckoutModal={openQuickCheckoutModal}
+                        setOpenQuickCheckoutModal={setOpenQuickCheckoutModal}
+                    />
                 </Toolbar>
 
             </AppBar >

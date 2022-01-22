@@ -11,7 +11,13 @@ import WalletContext from '../../context/WalletContext/WalletContext';
 
 
 
-const ButtonSection = ({ matchesDownMD, }) => {
+const ButtonSection = ({
+    matchesDownMD,
+    openSettingsModal,
+    setOpenSettingsModal,
+    openQuickCheckoutModal,
+    setOpenQuickCheckoutModal,
+}) => {
     const { signer } = useContext(WalletContext);
     if (matchesDownMD) {
         if (signer == null) {
@@ -32,9 +38,15 @@ const ButtonSection = ({ matchesDownMD, }) => {
                 alignItems: 'center',
                 borderRadius: 1,
             }}>
-                <CartButton />
+                <CartButton
+                    openQuickCheckoutModal={openQuickCheckoutModal}
+                    setOpenQuickCheckoutModal={setOpenQuickCheckoutModal}
+                />
                 <CheckoutButton />
-                <SettingsButton />
+                <SettingsButton
+                    openSettingsModal={openSettingsModal}
+                    setOpenSettingsModal={setOpenSettingsModal}
+                />
             </Box>
             )
         }
@@ -47,14 +59,26 @@ const ButtonSection = ({ matchesDownMD, }) => {
             borderRadius: 1,
         }}>
             <ConnectButton />
-            <CartButton />
+            <CartButton
+                openQuickCheckoutModal={openQuickCheckoutModal}
+                setOpenQuickCheckoutModal={setOpenQuickCheckoutModal}
+            />
             <CheckoutButton />
-            <SettingsButton />
+            <SettingsButton
+                openSettingsModal={openSettingsModal}
+                setOpenSettingsModal={setOpenSettingsModal}
+            />
         </Box>)
     }
 }
 
-const RightSideBox = ({ matchesDownMD, }) => {
+const RightSideBox = ({
+    matchesDownMD,
+    openSettingsModal,
+    setOpenSettingsModal,
+    openQuickCheckoutModal,
+    setOpenQuickCheckoutModal,
+}) => {
 
     return (
         <Box dir="rtl" sx={{
@@ -72,7 +96,13 @@ const RightSideBox = ({ matchesDownMD, }) => {
                 alignItems: 'center',
                 borderRadius: 1,
             }}>
-                <ButtonSection matchesDownMD={matchesDownMD} />
+                <ButtonSection matchesDownMD={matchesDownMD}
+                    openSettingsModal={openSettingsModal}
+                    setOpenSettingsModal={setOpenSettingsModal}
+
+                    openQuickCheckoutModal={openQuickCheckoutModal}
+                    setOpenQuickCheckoutModal={setOpenQuickCheckoutModal}
+                />
             </Box>
         </Box>
     )
