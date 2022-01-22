@@ -53,6 +53,7 @@ import useNetwork from '../../../hooks/useNetwork';
 
 import NetworkContext from 'App/components/context/NetworkContext/NetworkContext';
 
+
 import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 import { useQuery, gql, useLazyQuery } from '@apollo/client';
 import { GET_COLLECTIONS, GET_COLLECTION_STATS, GET_COLLECTION_INFO, GET_COLLECTION_LISTINGS, GET_COLLECTION_LISTINGS_COUNT, GET_COLLECTION_LISTINGS_ERC1155 } from "api/graphql/queries/queries.js";
@@ -69,6 +70,10 @@ import useWallet from "hooks/useWallet";
 
 import QuickAddModal from './Modals/QuickAdd/QuickAddModal';
 import QuickCheckoutModal from './Modals/QuickCheckoutModal';
+
+import TimedAlert from 'App/components/Alerts/TimedAlert';
+import TimedSnackbar from 'App/components/Alerts/TimedSnackbar';
+import { Snackbar } from '@mui/material';
 
 const drawerWidth = 330;
 const drawerMinWidth = 38;
@@ -483,7 +488,7 @@ const CollectionsERC721 = ({
 
     const { data: countData, error: countError, loading: countLoading } = countObj;
 
-    console.log("countData", countObj);
+    // console.log("countData", countObj);
     let resultsCount = "X";
     let pageCount = "X";
 
@@ -550,6 +555,8 @@ const CollectionsERC721 = ({
     // const cart = useCart();
     // console.log("cart", cart);
 
+
+
     return (
         <Box id="collections-main-page"
             sx={{
@@ -557,6 +564,7 @@ const CollectionsERC721 = ({
                 display: 'flex', flexDirection: 'column',
             }}
         >
+
 
             <QuickAddModal
                 open={openQuickAddModal}
@@ -570,6 +578,7 @@ const CollectionsERC721 = ({
                 batchSize={batchSize}
                 sortByObj={sortByObj}
                 ercType={ercType}
+
             />
 
             <TopBox collection={collection} />

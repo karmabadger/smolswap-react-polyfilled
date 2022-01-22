@@ -7,16 +7,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import Switch from '@mui/material/Switch';
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
@@ -39,7 +33,6 @@ import Checkbox from "@mui/material/Checkbox";
 
 import Box from "@mui/material/Box";
 
-
 import IconButton from "@mui/material/IconButton";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
@@ -50,7 +43,12 @@ import { styled } from "@mui/system";
 import ModalUnstyled from "@mui/base/ModalUnstyled";
 import ClickAwayListener from "@mui/base/ClickAwayListener";
 
-import TextField from '@mui/material/TextField';
+
+// import ListingsTabPanel from "./TabPanels/ListingsTabPanel";
+// import AttributesTabPanel from "./TabPanels/AttributesTabPanel";
+// import DetailsTabPanel from "./TabPanels/DetailsTabPanel";
+// import ActivityTabPanel from "./TabPanels/ActivityTabPanel";
+// import RarityTabPanel from "./TabPanels/RarityTabPanel";
 
 import { strWeiToETH, strETHToWei } from 'utils/erc/erc20utils.js';
 import { getURL } from "utils/erc/metadataUtils.js";
@@ -60,48 +58,29 @@ import { testnetInfo, mainnetInfo } from 'configs/network/network.js';
 import { useQuery, gql, useLazyQuery } from '@apollo/client';
 import { GET_TOKEN_DETAILS } from "api/graphql/queries/queries.js";
 
-import QuickTabPanel from "./TabPanels/QuickTabPanel.jsx";
-import ByIndexTabPanel from "./TabPanels/ByIndexTabPanel.jsx";
-import SweepTabPanel from "./TabPanels/SweepTabPanel.jsx";
-
-import useAlertContext from "hooks/useAlertContext.jsx";
 
 
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
+        "aria-controls": `simple-tabpanel-${index}`
     };
 }
 
-
-const QuickAddModal = ({
-    handleClose,
-    open,
-    collection,
-    listings,
-    attributesChosenList,
-    searchList,
-    page,
-    batchSize,
-    sortByObj,
-    ercType,
-}) => {
+const SettingsModal = ({ handleClose, open }) => {
 
     const [tabValue, setTabValue] = useState(0);
     const handleChangeTabValue = (event, newValue) => {
         setTabValue(newValue);
     };
 
-    // const alertContext = useAlertContext();
 
-    // console.log("attributesChosenList", attributesChosenList);
     return (
         <Dialog onClose={handleClose} open={open} >
-            <DialogTitle>Quick Add</DialogTitle>
+            <DialogTitle>Settings</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    You can quickly add any number of listings from the current results.
+                    Defaults Settings to be applied.
                 </DialogContentText>
 
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -113,7 +92,7 @@ const QuickAddModal = ({
                 </Box>
 
                 <Box>
-                    <QuickTabPanel value={tabValue} index={0}
+                    {/* <QuickTabPanel value={tabValue} index={0}
                         collection={collection}
                         listings={listings}
                         attributesChosenList={attributesChosenList}
@@ -144,12 +123,12 @@ const QuickAddModal = ({
                         sortByObj={sortByObj}
                         ercType={ercType}
                         handleClose={handleClose}
-                    />
+                    /> */}
                 </Box>
 
             </DialogContent>
         </Dialog>
-    )
+    );
 }
 
-export default QuickAddModal;
+export default SettingsModal;

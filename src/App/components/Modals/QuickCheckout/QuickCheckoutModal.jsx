@@ -9,6 +9,8 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
@@ -56,21 +58,61 @@ import { testnetInfo, mainnetInfo } from 'configs/network/network.js';
 import { useQuery, gql, useLazyQuery } from '@apollo/client';
 import { GET_TOKEN_DETAILS } from "api/graphql/queries/queries.js";
 
+import CartTabPanel from "./TabPanels/CartTabPanel/CartTabPanel";
+import SettingsTabPanel from "./TabPanels/SettingsTabPanel/SettingsTabPanel";
+import ReviewTabPanel from "./TabPanels/ReviewTabPanel/ReviewTabPanel";
 
-
-// function a11yProps(index) {
-//     return {
-//         id: `simple-tab-${index}`,
-//         "aria-controls": `simple-tabpanel-${index}`
-//     };
-// }
-
-const QuickAddModal = ({ handleClose, open }) => {
-    <Dialog onClose={handleClose} open={open} >
-        <Typography>
-            Hello!
-        </Typography>
-    </Dialog>
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        "aria-controls": `simple-tabpanel-${index}`
+    };
 }
 
-export default QuickAddModal;
+const QuickCheckoutModal = ({ handleClose, open }) => {
+
+    const [tabValue, setTabValue] = useState(0);
+    const handleChangeTabValue = (event, newValue) => {
+        setTabValue(newValue);
+    };
+
+
+    return (
+        <Dialog onClose={handleClose} open={open} >
+            <DialogTitle>Quick Checkout</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Quickly checkout your cart in a few clicks.
+                </DialogContentText>
+
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
+                        <Tab label="Cart" {...a11yProps(0)} />
+                        <Tab label="Settings" {...a11yProps(1)} />
+                        <Tab label="Review and Go" {...a11yProps(2)} />
+                    </Tabs>
+                </Box>
+
+                <Box>
+                    <CartTabPanel
+                        value={tabValue}
+                        index={0}
+                    />
+
+                    <SettingsTabPanel
+                        value={tabValue}
+                        index={1}
+                    />
+
+                    <ReviewTabPanel
+                        value={tabValue}
+                        index={2}
+                    />
+                </Box>
+
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+export default QuickCheckoutModal;

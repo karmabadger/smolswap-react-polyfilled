@@ -28,6 +28,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Avatar from "@mui/material/Avatar";
 import TabPanel from "./TabPanel";
 
+import useAlertContext from "hooks/useAlertContext.jsx";
+
 const SweepTabPanel = ({
     value, index,
     collection,
@@ -46,6 +48,8 @@ const SweepTabPanel = ({
     const [loadListingsCount, { loading: loadingCount, error: errorCount, data: dataCount, called: calledCount }] = useLazyQuery(GET_COLLECTION_LISTINGS_COUNT_WITH_MAX_PRICE);
 
     const cart = useCart();
+
+    const alertContext = useAlertContext();
 
 
     const [maxPrice, setMaxPrice] = useState(0);
@@ -206,6 +210,16 @@ const SweepTabPanel = ({
                                 cart.cartContextObj.addItem(OrderData);
 
                             }
+
+
+                            // alertContext.addTimedSnackbar(
+                            //     "standard",
+                            //     "Added " + data.collection.listings.length + " items to cart",
+                            //     "success",
+                            //     3000,
+                            //     false
+                            // )
+
                             // handleClose();
                             return (
                                 <TabPanel value={value} index={index} >
@@ -287,10 +301,10 @@ const SweepTabPanel = ({
         if (maxPriceBN <= 0) {
             alert("Invalid max price: Must be greater than 0");
 
-        } else if (maxItemsBN.gt(0)) {
+        } else if (maxItemsBN.lte(0)) {
             alert("Invalid max items: Must be greater than 0");
 
-        } else if (maxItemsBN.lte(1000)) {
+        } else if (maxItemsBN.gt(1000)) {
             alert("Invalid max items: Must be less than 1000");
         } else {
 

@@ -15,6 +15,10 @@ import Box from '@mui/material/Box';
 // import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 
+import TimedAlert from "./components/Alerts/TimedAlert";
+import TimedSnackbar from './components/Alerts/TimedSnackbar';
+import AlertContextProvider from './components/context/AlertContext/AlertContextProvider'
+
 import { Routes, Route, Navigate } from "react-router-dom";
 import Collections from './routes/Collections'
 import Checkout from './routes/Checkout'
@@ -31,6 +35,9 @@ import { GET_COLLECTIONS, GET_COLLECTION } from "api/graphql/queries/queries.js"
 
 import { collectionNameToPath } from 'utils/data/collectionData.js'
 
+
+import SettingsModal from './components/Modals/Settings/SettingsModal';
+import QuickCheckoutModal from './components/Modals/QuickCheckout/QuickCheckoutModal';
 
 function CollectionsLoadedApp({ collections, themeType, setThemeType }) {
     const collectionsByNameObj = {}
@@ -50,6 +57,35 @@ function CollectionsLoadedApp({ collections, themeType, setThemeType }) {
     const [collectionsByPath, setCollectionsByPath] = useState(collectionsByNameObj);
     const [collectionsByAddress, setCollectionsByAddress] = useState(collectionsByAddressObj);
 
+
+
+    const [showTimedAlert, setShowTimedAlert] = useState(false);
+    const [timedAlertVariant, setTimedAlertVariant] = useState("standard");
+    const [timedAlertMessage, setTimedAlertMessage] = useState("");
+    const [timedAlertSeverity, setTimedAlertSeverity] = useState("success");
+    const [timedAlertTimeout, setTimedAlertTimeout] = useState(5000);
+    const [timedAlertProgressBarActive, setTimedAlertProgressBarActive] = useState(true);
+
+    const [showTimedSnackbar, setShowTimedSnackbar] = useState(false);
+    const [timedSnackbarVariant, setTimedSnackbarVariant] = useState("standard");
+    const [timedSnackbarMessage, setTimedSnackbarMessage] = useState("");
+    const [timedSnackbarSeverity, setTimedSnackbarSeverity] = useState("success");
+    const [timedSnackbarTimeout, setTimedSnackbarTimeout] = useState(5000);
+    const [timedSnackbarProgressBarActive, setTimedSnackbarProgressBarActive] = useState(false);
+
+
+    const [openQuickCheckoutModal, setOpenQuickCheckoutModal] = useState(false);
+    const handleCloseQuickCheckoutModal = () => {
+        setOpenQuickCheckoutModal(false);
+    }
+
+    const [openSettingsModal, setOpenSettingsModal] = useState(false);
+    const handleCloseSettingsModal = () => {
+        setOpenSettingsModal(false);
+    }
+
+
+
     return (
         <CollectionsContextProvider
             collectionsByPath={collectionsByPath}
@@ -58,32 +94,110 @@ function CollectionsLoadedApp({ collections, themeType, setThemeType }) {
             setCollectionsByAddress={setCollectionsByAddress}
 
             childrenEl={
-                <div className="MUIApp">
-                    <CssBaseline />
-                    <Navbar collections={collections} />
-                    <Toolbar />
-                    <Routes>
+                <AlertContextProvider
+                    showTimedAlert={showTimedAlert}
+                    setShowTimedAlert={setShowTimedAlert}
+                    timedAlertVariant={timedAlertVariant}
+                    setTimedAlertVariant={setTimedAlertVariant}
+                    timedAlertMessage={timedAlertMessage}
+                    setTimedAlertMessage={setTimedAlertMessage}
+                    timedAlertSeverity={timedAlertSeverity}
+                    setTimedAlertSeverity={setTimedAlertSeverity}
+                    timedAlertTimeout={timedAlertTimeout}
+                    setTimedAlertTimeout={setTimedAlertTimeout}
+                    timedAlertProgressBarActive={timedAlertProgressBarActive}
+                    setTimedAlertProgressBarActive={setTimedAlertProgressBarActive}
 
-                        <Route exact path="/" element={<Navigate to="/collection/smol-brains" replace />} />
-                        <Route path="/collection"  >
-                            <Route path=":collectionName" element={<Collections collections={collections} />} />
-                        </Route>
-                        <Route path="/checkout" element={<Checkout collections={collections} />} />
-                        <Route path="/*" element={<NotFound />} />
+                    showTimedSnackbar={showTimedSnackbar}
+                    setShowTimedSnackbar={setShowTimedSnackbar}
+                    timedSnackbarVariant={timedSnackbarVariant}
+                    setTimedSnackbarVariant={setTimedSnackbarVariant}
+                    timedSnackbarMessage={timedSnackbarMessage}
+                    setTimedSnackbarMessage={setTimedSnackbarMessage}
+                    timedSnackbarSeverity={timedSnackbarSeverity}
+                    setTimedSnackbarSeverity={setTimedSnackbarSeverity}
+                    timedSnackbarTimeout={timedSnackbarTimeout}
+                    setTimedSnackbarTimeout={setTimedSnackbarTimeout}
+                    timedSnackbarProgressBarActive={timedSnackbarProgressBarActive}
+                    setTimedSnackbarProgressBarActive={setTimedSnackbarProgressBarActive}
 
-                        <Route path="/testnet/">
-                            <Route exact path="" element={<Navigate to="/testnet/collection/smol-brains" replace />} />
-                            <Route path="collection"  >
-                                <Route path=":collectionName" element={<Collections networkName={"rinkeby"} collections={collections} />} />
-                            </Route>
-                            <Route path="checkout" element={<Checkout networkName={"rinkeby"} collections={collections} />} />
-                            <Route path="*" element={<NotFound networkName={"rinkeby"} />} />
-                        </Route>
-                    </Routes>
 
-                    <Footer themeType={themeType} setThemeType={setThemeType} />
+                    childrenEl={
+                        <div className="MUIApp">
+                            <CssBaseline />
+                            <Navbar
+                                collections={collections}
 
-                </div >
+                                openSettingsModal={openSettingsModal}
+                                setOpenSettingsModal={setOpenSettingsModal}
+
+                                openQuickCheckoutModal={openQuickCheckoutModal}
+                                setOpenQuickCheckoutModal={setOpenQuickCheckoutModal}
+                            />
+                            <Toolbar />
+
+                            <Box>
+                                <QuickCheckoutModal
+                                    open={openQuickCheckoutModal}
+                                    handleClose={handleCloseQuickCheckoutModal}
+                                />
+                            </Box>
+
+                            <Box>
+                                <SettingsModal
+                                    open={openSettingsModal}
+                                    handleClose={handleCloseSettingsModal}
+                                />
+                            </Box>
+
+
+                            <Box>
+                                {showTimedAlert && <TimedAlert
+                                    variant={timedAlertVariant}
+                                    message={timedAlertMessage}
+                                    severity={timedAlertSeverity}
+                                    timeout={timedAlertTimeout}
+                                    progressBarActive={timedAlertProgressBarActive}
+
+                                    setShowTimedAlert={setShowTimedAlert}
+                                />}
+                            </Box>
+
+                            <Box>
+                                {showTimedSnackbar && <TimedSnackbar
+                                    variant={timedSnackbarVariant}
+                                    message={timedSnackbarMessage}
+                                    severity={timedSnackbarSeverity}
+                                    timeout={timedSnackbarTimeout}
+                                    progressBarActive={timedSnackbarProgressBarActive}
+
+                                    setShowTimedSnackbar={setShowTimedSnackbar}
+                                />}
+                            </Box>
+
+                            <Routes>
+
+                                <Route exact path="/" element={<Navigate to="/collection/smol-brains" replace />} />
+                                <Route path="/collection"  >
+                                    <Route path=":collectionName" element={<Collections collections={collections} />} />
+                                </Route>
+                                <Route path="/checkout" element={<Checkout collections={collections} />} />
+                                <Route path="/*" element={<NotFound />} />
+
+                                <Route path="/testnet/">
+                                    <Route exact path="" element={<Navigate to="/testnet/collection/smol-brains" replace />} />
+                                    <Route path="collection"  >
+                                        <Route path=":collectionName" element={<Collections networkName={"rinkeby"} collections={collections} />} />
+                                    </Route>
+                                    <Route path="checkout" element={<Checkout networkName={"rinkeby"} collections={collections} />} />
+                                    <Route path="*" element={<NotFound networkName={"rinkeby"} />} />
+                                </Route>
+                            </Routes>
+
+                            <Footer themeType={themeType} setThemeType={setThemeType} />
+                        </div >
+                    }
+                />
             } />
     )
 }

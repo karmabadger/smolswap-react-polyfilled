@@ -22,7 +22,7 @@ import Box from "@mui/material/Box";
 
 import useWindowDimensions from "../../../../../../hooks/useWindowDimensions.jsx";
 
-// import smol from "../../../../../../__mock_data__/img/smol.png";
+import useAlertContext from "hooks/useAlertContext";
 
 import ERC721Modal from "./Modals/ERC721Modal";
 
@@ -33,7 +33,8 @@ import useCart from "hooks/useCart";
 
 export default function SmallCard({ item, collection }) {
     const [open, setOpen] = useState(false);
-    // const [anchorEl, setAnchorEl] = useState(null);
+
+    const alertContext = useAlertContext();
 
     const handleOpen = (event) => {
         setOpen(true);
@@ -46,7 +47,8 @@ export default function SmallCard({ item, collection }) {
     //     console.log("handleClickAway");
     // };
 
-    // console.log("ImgMediaCard item: ", item);
+    // console.log("alertContext: ", alertContext);
+
     const cart = useCart();
 
     // console.log("item: ", item);
@@ -69,6 +71,14 @@ export default function SmallCard({ item, collection }) {
         if (!added) {
             cart.cartContextObj.addItem(OrderData);
             setAddedState(true);
+
+            alertContext.addTimedSnackbar(
+                "standard",
+                `${item.token.name} added to cart`,
+                "success",
+                3000,
+                false
+            )
         }
     }
 
@@ -76,6 +86,14 @@ export default function SmallCard({ item, collection }) {
         if (added) {
             cart.cartContextObj.removeItem(OrderData);
             setAddedState(false);
+
+            alertContext.addTimedSnackbar(
+                "standard",
+                `${item.token.name} removed from cart`,
+                "success",
+                3000,
+                false
+            )
         }
     }
 
