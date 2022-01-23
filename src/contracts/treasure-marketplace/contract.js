@@ -1,4 +1,4 @@
-import abi from './contract.json';
+import abi from './contract.abi.js';
 import { ethers } from 'ethers';
 
 const getContract = (provider, address) => {

@@ -57,9 +57,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create("width"),
         width: "100%",
-        [theme.breakpoints.up("md")]: {
-            width: "20ch"
-        }
+        // [theme.breakpoints.up("md")]: {
+        //     width: "20ch"
+        // }
     }
 }));
 
@@ -106,9 +106,11 @@ function SearchBar({ collections }) {
     function handleOnKeyDown(e) {
         if (e.keyCode === 13) {
             console.log("navigate", navigate);
-            navigate(`${baseRoute}collection/${collectionNameToPath(results[0].name)}`, {
-                replace: false
-            });
+            if (results.length > 0) {
+                navigate(`${baseRoute}collection/${collectionNameToPath(results[0].name)}`, {
+                    replace: false
+                });
+            }
         }
         // console.log('value', e.target.value);
     }
@@ -131,6 +133,7 @@ function SearchBar({ collections }) {
                         <SearchIcon />
                     </SearchIconWrapper>
                     <StyledInputBase
+                        type="search"
                         placeholder="Search Collection…"
                         inputProps={{ "aria-label": "search" }}
                         onClick={handleClick}

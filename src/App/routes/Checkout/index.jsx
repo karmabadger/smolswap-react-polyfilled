@@ -55,6 +55,7 @@ import useNetwork from '../../../hooks/useNetwork';
 import { testnetInfo, mainnetInfo } from '../../../configs/network/network.js';
 
 
+import RemoveAllModal from './Modals/RemoveAllModal';
 import useCart from 'hooks/useCart';
 
 function checkIfAllTrue(checkList) {
@@ -81,25 +82,61 @@ const Checkout = ({ }) => {
 
     const cart = useCart();
 
-    const [selectedList, setSelectedList] = useState(Array(cart.cartContextObj.itemList.length).fill(true));
+    console.log(cart);
 
-    const allTrue = checkIfAllTrue(selectedList);
-    const numberOfTrue = getNumberOfTrue(selectedList);
+    const [selectedList, setSelectedList] = useState(cart.cartContextObj.getSelectedBooleanList());
+
+    const [allTrue, setAllTrue] = useState(checkIfAllTrue(selectedList));
+    const [numberOfTrue, setNumberOfTrue] = useState(getNumberOfTrue(selectedList));
+
+    const [openSureModal, setOpenSureModal] = useState(false);
+
+    useEffect(() => {
+        if (cart.cartContextObj.itemList.length === 0) {
+            setSelectedList([]);
+        }
+    }, [cart.cartContextObj.itemList.length]);
+
+    useEffect(() => {
+        setAllTrue(checkIfAllTrue(selectedList));
+        setNumberOfTrue(getNumberOfTrue(selectedList));
+    }, [selectedList]);
 
     const handleSelectAll = () => {
         if (!allTrue) {
+            cart.cartContextObj.selectAll();
             setSelectedList(selectedList.map(() => true));
         }
     }
 
     const handleDeselectAll = () => {
+        cart.cartContextObj.seselectAll();
         setSelectedList(selectedList.map(() => false));
     }
 
-    console.log("checkout", cart, selectedList, Array(cart.cartContextObj.itemList.length).fill(true), `${numberOfTrue} out of ${selectedList.length} items selected`);
+    const handleRemoveAll = () => {
+        console.log('remove all');
+        cart.cartContextObj.removeAllItems();
+        setSelectedList([]);
+    };
+
+    const handleClickRemoveAll = () => {
+        setOpenSureModal(true);
+    };
+
+    // console.log("checkout", cart, selectedList, Array(cart.cartContextObj.itemList.length).fill(true), `${numberOfTrue} out of ${selectedList.length} items selected`);
 
     return (
         <Box>
+
+            <Box>
+                <RemoveAllModal
+                    open={openSureModal}
+                    setOpen={setOpenSureModal}
+                    handleClose={() => setOpenSureModal(false)}
+                    handleRemoveAll={handleRemoveAll}
+                />
+            </Box>
             <Box className="checkout" id="checkout-page"
                 sx={{
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -130,7 +167,6 @@ const Checkout = ({ }) => {
                                 my: 0, width: "100%", display: 'flex', flexDirection: 'row',
                             }}>
                             <Box>
-
                                 <Typography
                                     sx={{
                                         alignSelf: 'flex-start',
@@ -479,10 +515,8 @@ const Checkout = ({ }) => {
                                     variant="contained" >Pay 12, 000, 000 $MAGIC</Button>
                             </Box>
                         </Box>
-
                     </Box>
                 </Box>
-
             </Box>
 
             <Box
@@ -614,7 +648,7 @@ const Checkout = ({ }) => {
                                 height: "100%",
                             }}
 
-                            onClick={() => { cart.cartContextObj.removeAllItems(); handleDeselectAll(); }}
+                            onClick={handleClickRemoveAll}
                         />
                     </Box>
 

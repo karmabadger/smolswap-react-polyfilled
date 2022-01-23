@@ -6,6 +6,8 @@ const WalletContext = createContext({
     web3Modal: web3Modal,
     signer: null,
     setSigner: (newSigner) => { },
+    treasureMarketplace: null,
+    smolswap: null,
 });
 
 export default WalletContext;

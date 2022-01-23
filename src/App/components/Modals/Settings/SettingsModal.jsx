@@ -43,12 +43,9 @@ import { styled } from "@mui/system";
 import ModalUnstyled from "@mui/base/ModalUnstyled";
 import ClickAwayListener from "@mui/base/ClickAwayListener";
 
-
-// import ListingsTabPanel from "./TabPanels/ListingsTabPanel";
-// import AttributesTabPanel from "./TabPanels/AttributesTabPanel";
-// import DetailsTabPanel from "./TabPanels/DetailsTabPanel";
-// import ActivityTabPanel from "./TabPanels/ActivityTabPanel";
-// import RarityTabPanel from "./TabPanels/RarityTabPanel";
+import DefaultsTabPanel from "./TabPanels/DefaultsTabPanel";
+import InputTabPanel from "./TabPanels/InputTabPanel";
+import UITabPanel from "./TabPanels/UITabPanel";
 
 import { strWeiToETH, strETHToWei } from 'utils/erc/erc20utils.js';
 import { getURL } from "utils/erc/metadataUtils.js";
@@ -92,38 +89,12 @@ const SettingsModal = ({ handleClose, open }) => {
                 </Box>
 
                 <Box>
-                    {/* <QuickTabPanel value={tabValue} index={0}
-                        collection={collection}
-                        listings={listings}
-                        attributesChosenList={attributesChosenList}
-                        searchList={searchList}
-                        page={page}
-                        batchSize={batchSize}
-                        sortByObj={sortByObj}
-                        ercType={ercType}
-                        handleClose={handleClose}
+                    <InputTabPanel value={tabValue} index={0}
                     />
-                    <ByIndexTabPanel value={tabValue} index={1}
-                        collection={collection}
-                        listings={listings}
-                        attributesChosenList={attributesChosenList}
-                        searchList={searchList}
-                        page={page}
-                        batchSize={batchSize}
-                        sortByObj={sortByObj}
-                        ercType={ercType}
-                        handleClose={handleClose}
+                    <DefaultsTabPanel value={tabValue} index={1}
                     />
-                    <SweepTabPanel value={tabValue} index={2} collection={collection}
-                        listings={listings}
-                        attributesChosenList={attributesChosenList}
-                        searchList={searchList}
-                        page={page}
-                        batchSize={batchSize}
-                        sortByObj={sortByObj}
-                        ercType={ercType}
-                        handleClose={handleClose}
-                    /> */}
+                    <UITabPanel value={tabValue} index={2}
+                    />
                 </Box>
 
             </DialogContent>

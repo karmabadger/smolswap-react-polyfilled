@@ -62,6 +62,7 @@ const SearchBar = ({ searchList, setSearchList }) => {
                 // autoComplete="off"
                 >
                     <TextField
+                        type="search"
                         sx={{ margin: '0px', width: '100%' }}
                         id="search-item"
                         label="Search Item"

@@ -37,7 +37,8 @@ import { useLocation } from 'react-router-dom';
 // });
 
 
-
+import getTreasureMarketplaceContract from 'contracts/treasure-marketplace/contract';
+import getSmolswapContract from 'contracts/smolswap/contract';
 
 const AppWithApollo = () => {
   const networkInfo = useNetwork();
@@ -105,7 +106,10 @@ function App() {
       <div className="App">
         <CartContextProvider childrenEl={
           <NetworkContextProvider network={network} setNetwork={setNetwork} childrenEl={
-            <WalletContextProvider web3Modal={web3Modal} signer={signer} setSigner={setSigner}
+            <WalletContextProvider
+              web3Modal={web3Modal} signer={signer} setSigner={setSigner}
+              treasureMarketplaceAddress={networkInfo.treasureMarketplaceAddress}
+              smolswap={networkInfo.smolswapAddress}
               childrenEl={
                 <MUIApp themeType={themeType} setThemeType={setThemeType} />
               } />
