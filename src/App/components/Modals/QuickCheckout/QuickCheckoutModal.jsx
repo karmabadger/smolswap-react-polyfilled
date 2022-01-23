@@ -104,7 +104,7 @@ const QuickCheckoutModal = ({ handleClose, open }) => {
 
     const [selectedList, setSelectedList] = useState(cart.cartContextObj.getSelectedBooleanList());
 
-    console.log("selectedListup", selectedList, cart.cartContextObj.getSelectedBooleanList());
+    // console.log("selectedListup", selectedList, cart.cartContextObj.getSelectedBooleanList());
     const [allTrue, setAllTrue] = useState(checkIfAllTrue(selectedList));
     const [numberOfTrue, setNumberOfTrue] = useState(getNumberOfTrue(selectedList));
 
@@ -139,10 +139,10 @@ const QuickCheckoutModal = ({ handleClose, open }) => {
     };
 
     const handleClickRemoveAll = () => {
-        // setOpenSureModal(true);
-        console.log('remove all');
-        cart.cartContextObj.removeAllItems();
-        setSelectedList([]);
+        setOpenSureModal(true);
+        // console.log('remove all');
+        // cart.cartContextObj.removeAllItems();
+        // setSelectedList([]);
     };
 
 
@@ -195,6 +195,9 @@ const QuickCheckoutModal = ({ handleClose, open }) => {
                         selectedList={selectedList}
                         numberOfTrue={numberOfTrue}
                         setSelectedList={setSelectedList}
+
+                        openSureModal={openSureModal}
+                        setOpenSureModal={setOpenSureModal}
 
                     />
 

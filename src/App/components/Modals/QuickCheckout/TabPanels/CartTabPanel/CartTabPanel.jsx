@@ -25,6 +25,8 @@ import useCart from "hooks/useCart";
 
 import CartSelectionCardsList from "./CartSelectionCards/CartSelectionCardsList";
 
+import RemoveAllModal from "../../Modals/RemoveAllModal";
+
 const CartTabPanel = ({
     value, index,
     handleSelectAll,
@@ -35,9 +37,16 @@ const CartTabPanel = ({
     selectedList,
     numberOfTrue,
     setSelectedList,
+
+    openSureModal,
+    setOpenSureModal,
 }) => {
 
     const cart = useCart();
+
+    const handleClose = () => {
+        setOpenSureModal(false);
+    }
 
     return (
         <Box
@@ -55,6 +64,14 @@ const CartTabPanel = ({
                         marginBottom: "48px",
                     }}
                     id="selection-section">
+
+                    <RemoveAllModal
+                        open={openSureModal}
+                        setOpen={setOpenSureModal}
+                        handleRemoveAll={handleRemoveAll}
+                        handleClose={handleClose}
+
+                    />
                     <Box sx={{
                         width: "100%",
                         display: 'flex', flexDirection: 'column', gap: "24px",

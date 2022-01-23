@@ -10,7 +10,9 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 
 const TimedAlert = ({
-    message, severity, timeout, variant, progressBarActive,
+    message, severity, 
+    timeout, variant, 
+    progressBarActive,
     setShowTimedAlert,
 }) => {
 

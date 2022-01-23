@@ -173,7 +173,7 @@ const cartContextObj = {
         // if item is erc1155 and is already in cart, do nothing
 
         const BigNumberPricePerItem = BigNumber.from(itemState.pricePerItem);
-        itemState.maxPricePerItem = BigNumberPricePerItem.add(BigNumberPricePerItem.mul(this.settings.maxPricePerItemDefaultIncreasePercent / 100)).toString();
+        itemState.maxPricePerItem = BigNumberPricePerItem.add(BigNumberPricePerItem.mul(this.settings.defaults.maxPricePerItemIncreasePercent / 100)).toString();
 
         itemState.selected = true;
 

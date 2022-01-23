@@ -104,7 +104,10 @@ export default function CheckboxListSecondary({ itemList, selectedList, setSelec
         <DragDropContext
             onDragEnd={result => handleDragEnd(result)}
         >
-            <List dense sx={{ width: "100%", bgcolor: "background.paper" }}>
+            <List dense sx={{
+                width: "100%", bgcolor: "background.paper",
+                p: 0,
+            }}>
 
                 <Droppable droppableId="droppable" >
                     {(provided, snapshot) => (

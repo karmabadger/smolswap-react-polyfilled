@@ -152,17 +152,17 @@ function CollectionsLoadedApp({ collections, themeType, setThemeType }) {
                             {/* </Box> */}
 
 
-                            {/* <Box> */}
-                            {showTimedAlert && <TimedAlert
-                                variant={timedAlertVariant}
-                                message={timedAlertMessage}
-                                severity={timedAlertSeverity}
-                                timeout={timedAlertTimeout}
-                                progressBarActive={timedAlertProgressBarActive}
+                            <Box>
+                                {showTimedAlert && <TimedAlert
+                                    variant={timedAlertVariant}
+                                    message={timedAlertMessage}
+                                    severity={timedAlertSeverity}
+                                    timeout={timedAlertTimeout}
+                                    progressBarActive={timedAlertProgressBarActive}
 
-                                setShowTimedAlert={setShowTimedAlert}
-                            />}
-                            {/* </Box> */}
+                                    setShowTimedAlert={setShowTimedAlert}
+                                />}
+                            </Box>
 
                             <Box>
                                 {showTimedSnackbar && <TimedSnackbar

@@ -295,7 +295,7 @@ const SettingsTabPanel = ({
                                                         onChange={handleChangeDEXId}
                                                     >
                                                         {DEXList.map((item, index) => (
-                                                            <MenuItem value={item.id}>{item.name}</MenuItem>
+                                                            <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
                                                         ))}
                                                     </Select>
                                                 </FormControl>
