@@ -26,6 +26,7 @@ const AlertContext = createContext({
     // setTimedSnackbarTimeout,
     // setTimedSnackbarProgressBarActive,
     addTimedAlert: function (variant, message, severity, timeout, progressBarActive) {
+        console.log('AlertContext.addTimedAlert()');
         this.setShowTimedAlert(true);
         this.setTimedAlertVariant(variant);
         this.setTimedAlertMessage(message);
@@ -35,6 +36,7 @@ const AlertContext = createContext({
     },
 
     addTimedSnackbar: function (variant, message, severity, timeout, progressBarActive) {
+        console.log('AlertContext.addTimedSnackbar()');
         this.setShowTimedSnackbar(true);
         this.setTimedSnackbarVariant(variant);
         this.setTimedSnackbarMessage(message);

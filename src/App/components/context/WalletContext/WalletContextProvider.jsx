@@ -1,8 +1,18 @@
 import WalletContext from "./WalletContext";
 
-const WalletContextProvider = ({ web3Modal, signer, setSigner, childrenEl }) => {
+import getContract from "contracts/treasure-marketplace/contract";
+
+
+const WalletContextProvider = ({
+    web3Modal,
+    signer,
+    setSigner,
+    treasureMarketplace,
+    smolswap,
+    childrenEl
+}) => {
     return (
-        <WalletContext.Provider value={{ web3Modal, signer, setSigner }} children={childrenEl}></WalletContext.Provider>
+        <WalletContext.Provider value={{ web3Modal, signer, setSigner, treasureMarketplace, smolswap }} children={childrenEl}></WalletContext.Provider>
     );
 };
 

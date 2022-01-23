@@ -23,41 +23,58 @@ import { BigNumber } from 'ethers';
 const settings = {
     inputAsset: {
         name: 'MAGIC',
+        type: 'ERC20',
         address: "0x0",
         symbol: 'MAGIC',
         decimals: 18,
         image: '',
-
     },
     DEXSettings: {
         DEXAddress: "0x0",
+        DEXId: 0,
         DEXName: '',
-        slippage: 0,
+        deadlineTime: 100, // in minutes
+        slippagePercent: 2,
         refundInInputAsset: false,
     },
-    mode: "sweep",
-    maxTotalPrice: 0,
+    defaults: {
+        mode: "normal",
+        maxPricePerItemIncreasePercent: 0,
+        maxTotalPriceIncreasePercent: 0,
+        minSpendAmountPercent: 100,
+        maxSuccessPercent: 100,
+        maxFailPercent: 100,
+    },
+    other: {
+        buyNow: {
+            marketplace: "treasure-marketplace", // or smolswap
+        },
+        pollInterval: 4000,
+        approval: {
+            infinite: true,
+        },
+    },
 
     // add x percent to the price of the item to get the max price per item by default
-    maxPricePerItemDefaultIncreasePercent: 0,
-    minSpendAmount: 0,
-    maxSuccess: 0,
-    maxFail: 0,
     ERC1155Settings: {
         insufficientQuantity: {
-            action: "skip",
+            action: "buyMax", // or skip
         }
     },
     failure: {
-        action: "skip",
-    },
-    allFailure: {
-        action: "skip",
-    },
+        first: {
+            action: "skip",
+        },
+        all: {
+            action: "skip",
+        },
+    }
 }
 
 const cartContextObj = {
     settings: settings,
+    setSettings: function (newSettings) { },
+    setSettingsByKey: function (key, value) { },
     itemList: [],
     collections: {
         mapping: {},
@@ -92,6 +109,61 @@ const cartContextObj = {
             // }
         }
     },
+    getSelected: function (index) {
+        return this.itemList[index].selected;
+    },
+    setSelected: function (index, selected) {
+        this.itemList[index].selected = selected;
+    },
+    selectAll: function () {
+        this.itemList.forEach(item => {
+            item.selected = true;
+        });
+    },
+    deselectAll: function () {
+        this.itemList.forEach(item => {
+            item.selected = false;
+        });
+    },
+    getSelectedList: function () {
+        let selectedList = [];
+        for (let i = 0; i < this.itemList.length; i++) {
+            if (this.itemList[i].selected) {
+                selectedList.push(this.itemList[i]);
+            }
+        }
+        return selectedList;
+    },
+    getSelectedBooleanList: function () {
+        let selectedList = [];
+        for (let i = 0; i < this.itemList.length; i++) {
+            selectedList.push(this.itemList[i].selected);
+        }
+        return selectedList;
+    },
+    getSelectedListTotalMaxPrice: function () {
+        let totalPrice = BigNumber.from(0);
+        for (let i = 0; i < this.itemList.length; i++) {
+            if (this.itemList[i].selected) {
+                const maxPricePerItemBN = BigNumber.from(this.itemList[i].maxPricePerItem);
+                const quantityBN = BigNumber.from(this.itemList[i].quantity);
+                totalPrice = totalPrice.add(maxPricePerItemBN.mul(quantityBN));
+            }
+        }
+        return totalPrice;
+    },
+    getSelectedListTotalPrice: function () {
+        let totalPrice = BigNumber.from(0);
+        for (let i = 0; i < this.itemList.length; i++) {
+            if (this.itemList[i].selected) {
+                const pricePerItemBN = BigNumber.from(this.itemList[i].pricePerItem);
+                const quantityBN = BigNumber.from(this.itemList[i].quantity);
+                totalPrice = totalPrice.add(pricePerItemBN.mul(quantityBN));
+            }
+        }
+        return totalPrice;
+    },
+
     addItem: function (itemState) {
         // if item is erc721 and is already in cart, do nothing
         if (itemState.standard === 'ERC721' && this.checkIfItemInCart(itemState)) {
@@ -102,6 +174,8 @@ const cartContextObj = {
 
         const BigNumberPricePerItem = BigNumber.from(itemState.pricePerItem);
         itemState.maxPricePerItem = BigNumberPricePerItem.add(BigNumberPricePerItem.mul(this.settings.maxPricePerItemDefaultIncreasePercent / 100)).toString();
+
+        itemState.selected = true;
 
         // add to collections
         this.collections.addItem(itemState);

@@ -28,7 +28,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-import CartSelectionCard from "./CartSelectionCards/CartSelectionCards";
+import CartSelectionCard from "./CartSelectionCard";
 import useCart from 'hooks/useCart';
 
 export default function CheckboxListSecondary({ itemList, selectedList, setSelectedList }) {

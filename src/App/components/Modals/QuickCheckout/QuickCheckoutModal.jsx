@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
@@ -24,6 +24,7 @@ import Tab from "@mui/material/Tab";
 
 import ListItemIcon from "@mui/material/ListItemIcon";
 
+import CloseIcon from "@mui/icons-material/Close";
 import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -58,6 +59,9 @@ import { testnetInfo, mainnetInfo } from 'configs/network/network.js';
 import { useQuery, gql, useLazyQuery } from '@apollo/client';
 import { GET_TOKEN_DETAILS } from "api/graphql/queries/queries.js";
 
+
+import useCart from "hooks/useCart";
+
 import CartTabPanel from "./TabPanels/CartTabPanel/CartTabPanel";
 import SettingsTabPanel from "./TabPanels/SettingsTabPanel/SettingsTabPanel";
 import ReviewTabPanel from "./TabPanels/ReviewTabPanel/ReviewTabPanel";
@@ -69,6 +73,25 @@ function a11yProps(index) {
     };
 }
 
+function checkIfAllTrue(checkList) {
+    for (let i = 0; i < checkList.length; i++) {
+        if (!checkList[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getNumberOfTrue(checkList) {
+    let count = 0;
+    for (let i = 0; i < checkList.length; i++) {
+        if (checkList[i]) {
+            count++;
+        }
+    }
+    return count;
+}
+
 const QuickCheckoutModal = ({ handleClose, open }) => {
 
     const [tabValue, setTabValue] = useState(0);
@@ -77,19 +100,85 @@ const QuickCheckoutModal = ({ handleClose, open }) => {
     };
 
 
-    return (
-        <Dialog onClose={handleClose} open={open} >
-            <DialogTitle>Quick Checkout</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    Quickly checkout your cart in a few clicks.
-                </DialogContentText>
+    const cart = useCart();
 
+    const [selectedList, setSelectedList] = useState(cart.cartContextObj.getSelectedBooleanList());
+
+    console.log("selectedListup", selectedList, cart.cartContextObj.getSelectedBooleanList());
+    const [allTrue, setAllTrue] = useState(checkIfAllTrue(selectedList));
+    const [numberOfTrue, setNumberOfTrue] = useState(getNumberOfTrue(selectedList));
+
+    const [openSureModal, setOpenSureModal] = useState(false);
+
+    useEffect(() => {
+        if (cart.cartContextObj.itemList.length === 0) {
+            setSelectedList([]);
+        }
+        setSelectedList(cart.cartContextObj.getSelectedBooleanList());
+    }, [cart.cartContextObj.itemList.length]);
+
+    useEffect(() => {
+        setAllTrue(checkIfAllTrue(selectedList));
+        setNumberOfTrue(getNumberOfTrue(selectedList));
+    }, [selectedList, cart.cartContextObj.itemList.length]);
+
+    const handleSelectAll = () => {
+        if (!allTrue) {
+            setSelectedList(selectedList.map(() => true));
+        }
+    }
+
+    const handleDeselectAll = () => {
+        setSelectedList(selectedList.map(() => false));
+    }
+
+    const handleRemoveAll = () => {
+        console.log('remove all');
+        cart.cartContextObj.removeAllItems();
+        setSelectedList([]);
+    };
+
+    const handleClickRemoveAll = () => {
+        // setOpenSureModal(true);
+        console.log('remove all');
+        cart.cartContextObj.removeAllItems();
+        setSelectedList([]);
+    };
+
+
+    return (
+        <Dialog
+            fullScreen
+            onClose={handleClose} open={open} >
+            <DialogTitle
+            // disableTypography
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexDirection: "row",
+                    }}>
+                    <Box
+                        sx={{
+                            flexGrow: 2,
+                        }}>
+                        <Typography
+                            variant="h3">
+                            Quick Checkout
+                        </Typography>
+                    </Box>
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
+            </DialogTitle>
+            <DialogContent>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
                         <Tab label="Cart" {...a11yProps(0)} />
                         <Tab label="Settings" {...a11yProps(1)} />
-                        <Tab label="Review and Go" {...a11yProps(2)} />
+                        <Tab label="Checkout" {...a11yProps(2)} />
                     </Tabs>
                 </Box>
 
@@ -97,6 +186,16 @@ const QuickCheckoutModal = ({ handleClose, open }) => {
                     <CartTabPanel
                         value={tabValue}
                         index={0}
+
+                        handleSelectAll={handleSelectAll}
+                        handleDeselectAll={handleDeselectAll}
+                        handleRemoveAll={handleRemoveAll}
+                        handleClickRemoveAll={handleClickRemoveAll}
+
+                        selectedList={selectedList}
+                        numberOfTrue={numberOfTrue}
+                        setSelectedList={setSelectedList}
+
                     />
 
                     <SettingsTabPanel
@@ -104,10 +203,17 @@ const QuickCheckoutModal = ({ handleClose, open }) => {
                         index={1}
                     />
 
-                    <ReviewTabPanel
-                        value={tabValue}
-                        index={2}
-                    />
+                    {
+                        open &&
+                        (
+                            <ReviewTabPanel
+                                value={tabValue}
+                                index={2}
+                                numberOfTrue={numberOfTrue}
+                                selectedList={selectedList}
+                            />
+                        )
+                    }
                 </Box>
 
             </DialogContent>

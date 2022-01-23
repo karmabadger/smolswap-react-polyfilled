@@ -125,6 +125,7 @@ function CollectionsLoadedApp({ collections, themeType, setThemeType }) {
                     childrenEl={
                         <div className="MUIApp">
                             <CssBaseline />
+
                             <Navbar
                                 collections={collections}
 
@@ -136,32 +137,32 @@ function CollectionsLoadedApp({ collections, themeType, setThemeType }) {
                             />
                             <Toolbar />
 
-                            <Box>
-                                <QuickCheckoutModal
-                                    open={openQuickCheckoutModal}
-                                    handleClose={handleCloseQuickCheckoutModal}
-                                />
-                            </Box>
+                            {/* <Box> */}
+                            <QuickCheckoutModal
+                                open={openQuickCheckoutModal}
+                                handleClose={handleCloseQuickCheckoutModal}
+                            />
+                            {/* </Box> */}
 
-                            <Box>
-                                <SettingsModal
-                                    open={openSettingsModal}
-                                    handleClose={handleCloseSettingsModal}
-                                />
-                            </Box>
+                            {/* <Box> */}
+                            <SettingsModal
+                                open={openSettingsModal}
+                                handleClose={handleCloseSettingsModal}
+                            />
+                            {/* </Box> */}
 
 
-                            <Box>
-                                {showTimedAlert && <TimedAlert
-                                    variant={timedAlertVariant}
-                                    message={timedAlertMessage}
-                                    severity={timedAlertSeverity}
-                                    timeout={timedAlertTimeout}
-                                    progressBarActive={timedAlertProgressBarActive}
+                            {/* <Box> */}
+                            {showTimedAlert && <TimedAlert
+                                variant={timedAlertVariant}
+                                message={timedAlertMessage}
+                                severity={timedAlertSeverity}
+                                timeout={timedAlertTimeout}
+                                progressBarActive={timedAlertProgressBarActive}
 
-                                    setShowTimedAlert={setShowTimedAlert}
-                                />}
-                            </Box>
+                                setShowTimedAlert={setShowTimedAlert}
+                            />}
+                            {/* </Box> */}
 
                             <Box>
                                 {showTimedSnackbar && <TimedSnackbar

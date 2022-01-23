@@ -2,18 +2,18 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import WalletLink from "walletlink";
 import Fortmatic from 'fortmatic';
-// import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 const infuraId = "9aa3d95b3bc440fa88ea12eaa4456161";
 const providerOptions = {
     /* See Provider Options Section */
-    // walletconnect: {
-    //   package: WalletConnectProvider,
-    //   options: {
-    //     // Mikko's test key - don't copy as your mileage may vary
-    //     infuraId: infuraId,
-    //   }
-    // },
+    walletconnect: {
+      package: WalletConnectProvider,
+      options: {
+        // Mikko's test key - don't copy as your mileage may vary
+        infuraId: infuraId,
+      }
+    },
     walletlink: {
         package: WalletLink, // Required
         options: {

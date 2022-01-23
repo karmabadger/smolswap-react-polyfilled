@@ -9,7 +9,8 @@ import { useState, useEffect } from 'react';
 import LinearProgress from '@mui/material/LinearProgress';
 
 
-const TimedAlert = ({ message, severity, timeout, variant, progressBarActive,
+const TimedAlert = ({
+    message, severity, timeout, variant, progressBarActive,
     setShowTimedAlert,
 }) => {
 
@@ -64,13 +65,26 @@ const TimedAlert = ({ message, severity, timeout, variant, progressBarActive,
     if (show) {
 
         return (
-            <Box>
+            <Box
+
+                sx={{
+                    position: 'fixed',
+                }}>
                 <Alert
                     variant={variant}
                     onClose={handleClose}
                     severity={severity}
 
-                    sx={{ width: 1 }}
+                    // PaperProps={{
+                    //     sx: {
+                    //         position: "fixed",
+                    //     }
+                    // }}
+
+                    sx={{
+                        position: 'fixed',
+                        width: 1
+                    }}
                 >
                     <Box
                         sx={{
@@ -99,6 +113,7 @@ const TimedAlert = ({ message, severity, timeout, variant, progressBarActive,
                         <LinearProgress
                             sx={{
                                 width: '100%',
+                                position: 'fixed',
                             }}
                             variant="determinate" value={progress}
                             color={severity}
